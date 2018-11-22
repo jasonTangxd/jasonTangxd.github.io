@@ -1559,6 +1559,11 @@
     <content type="text"><![CDATA["use strict"; const fs = require("fs"); const path = "../../photos"; fs.readdir(path, function (err, files) { if (err) { return; } let arr = []; (function iterator(index) { if (index == files.length) { fs.writeFile("output.json", JSON.stringify(arr, null, "\t")); return; } fs.stat(path + "/" + files[index], function (err, stats) { if (err) { return; } if (stats.isFile()) { arr.push(files[index]); } iterator(index + 1); }) }(0)); });]]></content>
   </entry>
   <entry>
+    <title><![CDATA[读书]]></title>
+    <url>%2Freading%2Findex.html</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
     <title><![CDATA[search]]></title>
     <url>%2Fsearch%2Findex.html</url>
     <content type="text"><![CDATA[正在加载搜索结果，请稍等。 .st-result-text { background: #fafafa; display: block; border-left: 0.5em solid #ccc; -webkit-transition: border-left 0.45s; -moz-transition: border-left 0.45s; -o-transition: border-left 0.45s; -ms-transition: border-left 0.45s; transition: border-left 0.45s; padding: 0.5em;}@media only screen and (min-width: 768px) { .st-result-text { padding: 1em; }}.st-result-text:hover { border-left: 0.5em solid #ea6753;}.st-result-text h3 a{ color: #2ca6cb; line-height: 1.5; font-size: 22px;}.st-snippet em { font-weight: bold; color: #ea6753;} (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){ (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t); e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e); })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st'); _st('install','A-M5aWjch5SsKqsbodXz','2.0.0');]]></content>
@@ -1566,11 +1571,6 @@
   <entry>
     <title><![CDATA[云标签]]></title>
     <url>%2Ftags%2Findex.html</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
-    <title><![CDATA[读书]]></title>
-    <url>%2Freading%2Findex.html</url>
     <content type="text"></content>
   </entry>
 </search>
