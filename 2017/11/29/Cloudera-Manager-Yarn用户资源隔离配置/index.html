@@ -1,0 +1,732 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Cloudera Manager--Yarn用户资源隔离配置 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Cloudera Manager--Yarn用户资源隔离配置"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Cloudera Manager--Yarn用户资源隔离配置</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-11-29T09:54:50.000Z"><a href="/2017/11/29/Cloudera-Manager-Yarn用户资源隔离配置/">2017-11-29</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cloudera/" class="chip red lighten-1">Cloudera</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#资源隔离前"><span class="section table-of-contents-text">资源隔离前</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#规划用户组"><span class="section table-of-contents-text">规划用户组</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#HDFS-设置"><span class="section table-of-contents-text">HDFS 设置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#YARN-设置"><span class="section table-of-contents-text">YARN 设置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#资源池设置"><span class="section table-of-contents-text">资源池设置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#示例展示"><span class="section table-of-contents-text">示例展示</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　Yarn用户资源隔离配置，主要使用 <strong>Yarn动态资源池(dynamic resource pool)</strong> _ 对YARN应用程序进行资源和策略分配的池。(Impala资源也可以动态管理)_<br>动态资源池允许安排和分配用户访问特定池，用来执行YARN应用程序。<strong>如果一个池的资源未被使用，它可以被占用(preempted)并分配给其他池。否则，就根据各个池的权重来共享资源。访问控制列表(Access control lists (ACLs)) 对提交访问和管理访问进行限制。</strong></p>
+<ul>
+<li>下面主要以下几个步骤来实际的操作：<ol>
+<li>资源隔离前：看看默认的组，以及为什么我们要去从新划分</li>
+<li>规划用户组：举例本例中分配的组，以及我们线上环境一般怎么分配的</li>
+<li>HDFS和Yarn设置：需要修改的一些配置</li>
+<li>资源池设置：主要是资源池设置以及配置相应的规则</li>
+<li>示例展示：截图说明一下修改后的一些运行效果</li>
+</ol>
+</li>
+</ul>
+<a id="more"></a>
+<h1 id="资源隔离前"><a href="#资源隔离前" class="headerlink" title="资源隔离前"></a>资源隔离前</h1><ul>
+<li>我弄了两张表，放入10G左右的数据，然后随便写了一个SQL在hive上运行(<strong>目的是消耗Yarn资源看看效果，以对比后面调整后的任务资源情况</strong>)</li>
+</ul>
+<ol>
+<li>可以看到运行后占用了32cores,16G内存(每个map，reduce任务我设置的512MB内存，每个容器设置的1cores)</li>
+<li>队列为：root.users.hue (后面说明为什么是这个队列)<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn99.png" alt=""></li>
+</ol>
+<h1 id="规划用户组"><a href="#规划用户组" class="headerlink" title="规划用户组"></a>规划用户组</h1><ul>
+<li>我这里把用户组分为三种，便于后面测试对比。线上环境一般也是按照这个区划分，或者按照部门去划分。（在主节点创建下面用户）</li>
+</ul>
+<ol>
+<li>超级用户组：root</li>
+<li>开发者组：dev</li>
+<li>业务分析组：query<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo.com ~]# groupadd dev</span><br><span class="line">[root@xiaoxiaomo.com ~]# groupadd query</span><br><span class="line">[root@xiaoxiaomo.com ~]# useradd -g dev dev1</span><br><span class="line">[root@xiaoxiaomo.com ~]# useradd -g dev dev2</span><br><span class="line">[root@xiaoxiaomo.com ~]# useradd -g query query1</span><br><span class="line">[root@xiaoxiaomo.com ~]# useradd -g query query2</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>（我是用hue提交的SQL任务）所以hue中配置好相关的用户，如果还有sentry授权，配置相关组权限即可，这里简单的截图<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn103.png" alt=""><br>（可能大部分用户不一定都使用了hue和sentry，没使用的完全可以跳过这个可以在linux等客户端中提交）<br>sentry权限可参考：<a href="http://blog.xiaoxiaomo.com/2016/10/19/Sentry-%E9%80%9A%E8%BF%87Cloudera-Manager%E9%85%8D%E7%BD%AESentry/">http://blog.xiaoxiaomo.com/2016/10/19/Sentry-%E9%80%9A%E8%BF%87Cloudera-Manager%E9%85%8D%E7%BD%AESentry/</a></li>
+</ul>
+<h1 id="HDFS-设置"><a href="#HDFS-设置" class="headerlink" title="HDFS 设置"></a>HDFS 设置</h1><ol>
+<li><strong>检查，HDFS权限检查是否开启，没有开启勾选即开启 (默认是开启的)</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/yarn102.png" alt=""></li>
+</ol>
+<h1 id="YARN-设置"><a href="#YARN-设置" class="headerlink" title="YARN 设置"></a>YARN 设置</h1><ol>
+<li><p><strong>开启，资源管理器ACL并设置相应的管理ACL (Admin ACL)</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/yarn104.png" alt=""></p>
+<blockquote>
+<ol>
+<li>yarn.acl.enable 默认值为true</li>
+<li>yarn.admin.acl 默认值为*，默认表示任何人都可以提交，查看，和关闭应用程序。<br>2.1. 格式为 “以逗号分隔的用户列表＋空格＋以逗号分隔的用户组列表”，例如 “dev1,query1 dev,query”。<br>2.2. 如果只有组信息，需要在最前端加入一个空格，例如” dev,query”。<br>2.3. 至少将”yarn”加入到用户列表中。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>关闭，未声明资源池的自动生成 (默认是开启的)</strong><br><code>yarn.scheduler.fair.allow-undeclared-pools</code> ，不然会自动创建资源池<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn100.png" alt=""></p>
+</li>
+<li><p><strong>取消，使用默认队列时的 Fair Scheduler 用户（默认是选中）</strong><br><code>yarn.scheduler.fair.user-as-default-queue</code>，不然用户提交任务时不指定特定的队列，就使用以用户命名的queue。<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn101.png" alt=""></p>
+</li>
+</ol>
+<h1 id="资源池设置"><a href="#资源池设置" class="headerlink" title="资源池设置"></a>资源池设置</h1><ol>
+<li><p>进入动态资源池配置页面<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn105.png" alt=""></p>
+</li>
+<li><p>可以看到默认有两个资源池（default,users）<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn106.png" alt=""></p>
+</li>
+<li><p>点击<code>Create Resource Pool</code>可以创建资源池，添加相关属性，配置策略，修改提交/管理控制<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn107.png" alt=""><br>比如下面我们就限制了dev资源池只能是dev组提交任务<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn115.png" alt=""><br>（<strong>注意</strong>：还有一点很重要就是勾选<code>Parent Pool</code>，不然配置root.[primary group].[username]规则就无法获得root.dev.dev1队列）</p>
+</li>
+<li><p>重点看一下放置规则，<strong>只有配置合理的规则才能很好的使用我们的资源池</strong>，从上到下的优先级(默认下面三种)<br> 4.1. 最优先运行时指定的那一个资源池，没有就创建<br> 4.2. 第二个规则使用<code>root.[pool name].[username]</code>，规则[pool name]默认为users，所以最开始我们看到的队列就是root.users.hue(我是用hue用户运行的)，比如：<br> <img src="https://img.xiaoxiaomo.com/blog/img/yarn110.png" alt=""><br> 4.3. 最后一个，root.default，下面已经有中文说明了<br> <img src="https://img.xiaoxiaomo.com/blog/img/yarn109.png" alt=""></p>
+</li>
+<li><p><strong>设置我们自己的资源池，并配置规则库</strong><br>现在我们就要求dev组的用户使用dev资源池，query组的使用query的资源池<br> 5.1. 资源池配置（删掉之前的users资源池，添加需要的并配置权重），例如<br> <img src="https://img.xiaoxiaomo.com/blog/img/yarn111.png" alt=""><br> 5.2. 配置规则库，如下，其中root.[primary group].[username]只要我们上面的资源池中配置好对应的用户组的资源池即可<br> <img src="https://img.xiaoxiaomo.com/blog/img/yarn112.png" alt=""><br> fair-scheduler.xml文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">allocations</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"root"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">weight</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">weight</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">schedulingPolicy</span>&gt;</span>drf<span class="tag">&lt;/<span class="name">schedulingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aclSubmitApps</span>&gt;</span> <span class="tag">&lt;/<span class="name">aclSubmitApps</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aclAdministerApps</span>&gt;</span>*<span class="tag">&lt;/<span class="name">aclAdministerApps</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"default"</span> <span class="attr">type</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">weight</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">weight</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">schedulingPolicy</span>&gt;</span>drf<span class="tag">&lt;/<span class="name">schedulingPolicy</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">aclSubmitApps</span>&gt;</span>*<span class="tag">&lt;/<span class="name">aclSubmitApps</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">aclAdministerApps</span>&gt;</span>*<span class="tag">&lt;/<span class="name">aclAdministerApps</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"dev"</span> <span class="attr">type</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">weight</span>&gt;</span>3.0<span class="tag">&lt;/<span class="name">weight</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">schedulingPolicy</span>&gt;</span>drf<span class="tag">&lt;/<span class="name">schedulingPolicy</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">aclSubmitApps</span>&gt;</span> dev<span class="tag">&lt;/<span class="name">aclSubmitApps</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">aclAdministerApps</span>&gt;</span>*<span class="tag">&lt;/<span class="name">aclAdministerApps</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"query"</span> <span class="attr">type</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">weight</span>&gt;</span>4.0<span class="tag">&lt;/<span class="name">weight</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">schedulingPolicy</span>&gt;</span>drf<span class="tag">&lt;/<span class="name">schedulingPolicy</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">aclSubmitApps</span>&gt;</span> query<span class="tag">&lt;/<span class="name">aclSubmitApps</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">aclAdministerApps</span>&gt;</span>*<span class="tag">&lt;/<span class="name">aclAdministerApps</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">defaultQueueSchedulingPolicy</span>&gt;</span>fair<span class="tag">&lt;/<span class="name">defaultQueueSchedulingPolicy</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">queuePlacementPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rule</span> <span class="attr">name</span>=<span class="string">"specified"</span> <span class="attr">create</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rule</span> <span class="attr">name</span>=<span class="string">"nestedUserQueue"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">rule</span> <span class="attr">name</span>=<span class="string">"primaryGroup"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rule</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rule</span> <span class="attr">name</span>=<span class="string">"nestedUserQueue"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">rule</span> <span class="attr">name</span>=<span class="string">"default"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rule</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rule</span> <span class="attr">name</span>=<span class="string">"default"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">queuePlacementPolicy</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">allocations</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="示例展示"><a href="#示例展示" class="headerlink" title="示例展示"></a>示例展示</h1><ol>
+<li><p>我们通过上面创建的dev1，dev2，query1，query2用户运行任务，可以看到下面的<strong>队列分配情况</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/yarn113.png" alt=""></p>
+</li>
+<li><p>我在linux上创建了一个test用户，通过job ID无法kill job。通过hue登陆也能明显看到下图标记中没有kill按钮<br>（应为test创建时组为test，而该组和用户没在yarn.admin.acl中配置）<br><img src="https://img.xiaoxiaomo.com/blog/img/yarn114.png" alt=""></p>
+</li>
+</ol>
+<ul>
+<li><p><strong>附录规则库说明</strong><br>  ▪ specified at run time - 使用 root.[pool name],其中pool name是运行时指定的池的名称。<br>  ▪ root.users.[username] - 使用父池root.users，以提交应用程序的用户名在该吃中创建以用户名为池名的子池。<br>  ▪ root.default - 使用root.default池<br>  ▪ root.[pool name] - 这里的pool name是你在Pool Name中指定的池名。<br>  ▪ root.[primary group] - 使用与用户提交应用程序的主组相匹配的池。<br>  ▪ root.[secondary group] - 使用与提交应用程序的用户的次组相匹配的池。<br>  ▪ root.[username] - 使用与提交应用程序的用户的名称相匹配的池。<br>  ▪ root.[primary group].[username] - 父池匹配提交程序用户的主组，然后根据用户名创建子池。<br>  ▪ root.[secondary group].[username] - 父池匹配提交程序用户的次组，然后根据用户名创建子池。</p>
+</li>
+<li><p><strong>参考</strong>：<br><a href="http://cwiki.apachecn.org/pages/viewpage.action?pageId=5505362" target="_blank" rel="noopener">http://cwiki.apachecn.org/pages/viewpage.action?pageId=5505362</a></p>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2017/12/14/SparkException-Could-not-find-CoarseGrainedScheduler-or-it-has-been-stopped/" rel="next" title="SparkException: Could not find CoarseGrainedScheduler or it has been stopped.">
+    上一篇：SparkException: Could not find CoarseGrainedScheduler or it has been stopped.
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/11/29/Hive-Hive元数据HDFS路径异常/" rel="next" title="Hive--Hive元数据HDFS路径异常">
+    下一篇：Hive--Hive元数据HDFS路径异常
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Cloudera Manager--Yarn用户资源隔离配置" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,872 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Hadoop--快速搭建大数据开发环境 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Hadoop--快速搭建大数据开发环境"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Hadoop--快速搭建大数据开发环境</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-07-30T03:23:48.000Z"><a href="/2017/07/30/Hadoop-快速搭建大数据开发环境/">2017-07-30</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hadoop/" class="chip red lighten-1">Hadoop</a>
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+            <a href="/tags/Hive/" class="chip red lighten-1">Hive</a>
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+            <a href="/tags/Mysql/" class="chip red lighten-1">Mysql</a>
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#背景"><span class="section table-of-contents-text">背景</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#准备"><span class="section table-of-contents-text">准备</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装linux"><span class="section table-of-contents-text">安装linux</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#环境准备"><span class="section table-of-contents-text">环境准备</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Hadoop"><span class="section table-of-contents-text">安装Hadoop</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装zookeeper"><span class="section table-of-contents-text">安装zookeeper</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装HBase"><span class="section table-of-contents-text">安装HBase</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装MySQL"><span class="section table-of-contents-text">安装MySQL</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Hive"><span class="section table-of-contents-text">安装Hive</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Kafka"><span class="section table-of-contents-text">安装Kafka</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Redis"><span class="section table-of-contents-text">安装Redis</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Spark"><span class="section table-of-contents-text">安装Spark</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#附录"><span class="section table-of-contents-text">附录</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>　　最近自己电脑的磁盘坏了，导致数据也没了。安装好系统之后就是各种弄环境了，之前的博客也写过Hadoop环境搭建 <code>Hadoop</code>，<code>Hive</code>，<code>HBase</code>，<code>Kafka</code>，<code>Spark</code>，<code>MySQL</code>，<code>Redis</code>等等一系列的。<br>之前记录的目的也是为了方便自己吧，但整个流程下来还是的花费几个小时。从前面的博客找到从虚拟机的网络配置，下载软件上传在修改配置挺麻烦的。这里再次做个汇总，以后做这个过程或者升级就更加方便（<strong>主要便捷是后面会给出一个Virtual Box的包直接导入就有这些所有环境了</strong>）。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>软件下载(可以通过该链接自己下载，同时我在附录中也提供了<a href="http://pan.baidu.com/s/1ge9cHiV" target="_blank" rel="noopener">百度云下载</a>地址)</li>
+</ul>
+<ol>
+<li><a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="noopener">https://www.virtualbox.org/wiki/Downloads virtual box 使用了5.0.40版本</a></li>
+<li><a href="http://vault.centos.org/6.5/isos/x86_64/" target="_blank" rel="noopener">http://vault.centos.org/6.5/isos/x86_64/ box 使用CentOS-6.5-x86_64-minimal.iso</a></li>
+<li><a href="http://archive.apache.org/dist/hadoop/common/" target="_blank" rel="noopener">http://archive.apache.org/dist/hadoop/common 使用 hadoop-2.7.2</a></li>
+<li><a href="http://archive.apache.org/dist/hbase/" target="_blank" rel="noopener">http://archive.apache.org/dist/hbase/ 使用 hbase-1.3.1-bin.tar.gz</a></li>
+<li><a href="http://archive.apache.org/dist/hive/" target="_blank" rel="noopener">http://archive.apache.org/dist/hive/ 使用apache-hive-1.2.1-bin.tar.gz</a></li>
+<li><a href="http://archive.apache.org/dist/kafka/" target="_blank" rel="noopener">http://archive.apache.org/dist/kafka/ 使用 kafka_2.11-0.11.0.0.tgz</a></li>
+<li><a href="http://archive.apache.org/dist/zookeeper/" target="_blank" rel="noopener">http://archive.apache.org/dist/zookeeper/ 使用 zookeeper-3.4.9.tar.gz</a></li>
+<li><a href="http://archive.apache.org/dist/spark/" target="_blank" rel="noopener">http://archive.apache.org/dist/spark/ 使用 spark-2.0.0-bin-hadoop2.7.tgz</a></li>
+<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">http://www.oracle.com/technetwork/java/javase/downloads/index.html 使用 jdk-8u144-linux-x64.tar.gz</a></li>
+<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">https://redis.io/download 使用 redis-3.0.6.tar.gz</a></li>
+<li><a href="https://dev.mysql.com/downloads/mysql/5.5.html?os=31&amp;version=5.1" target="_blank" rel="noopener">https://dev.mysql.com/downloads/mysql/5.5.html?os=31&amp;version=5.1 使用 mysql-5.7.9-1.el6.x86_64.rpm-bundle.tar</a></li>
+</ol>
+<a id="more"></a>
+<h2 id="安装linux"><a href="#安装linux" class="headerlink" title="安装linux"></a>安装linux</h2><ol>
+<li>安装virtual box（略，这个没什么好说的，一直下一步就ok！）<br><img src="https://img.xiaoxiaomo.com/blog/img/hadoopstack1.png" alt="https://img.xiaoxiaomo.com/blog/img/hadoopstack1.png"></li>
+<li>安装Linux虚拟机注意（选择第一个）<br><img src="https://img.xiaoxiaomo.com/blog/img/hadoopstack2.png" alt="https://img.xiaoxiaomo.com/blog/img/hadoopstack2.png"></li>
+<li>添加虚拟机后网络配置</li>
+</ol>
+<ul>
+<li>这个网络配置部分参考:<a href="http://blog.xiaoxiaomo.com/2016/11/11/VirtualBox-网络配置/">http://blog.xiaoxiaomo.com/2016/11/11/VirtualBox-网络配置/</a></li>
+</ul>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
+<li>规划</li>
+</ul>
+<ol>
+<li>创建一个data目录所有东西都放在那儿：<em>mkdir /data</em></li>
+<li>再在data目录下创建一个data目录用来保存一些数据，比如hdfs,kafka等：<em>mkdir /data/data</em></li>
+</ol>
+<ul>
+<li><p>上传软件<br><img src="https://img.xiaoxiaomo.com/blog/img/hadoopstack3.png" alt="https://img.xiaoxiaomo.com/blog/img/hadoopstack3.png"></p>
+</li>
+<li><p>准备</p>
+</li>
+</ul>
+<ol>
+<li><p>关闭防火墙：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# service iptables stop </span><br><span class="line">[root@xiaoxiaomo ~]# chkconfig --list | grep iptables</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改主机名：修改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# vi /etc/sysconfig/network</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 修改为：</span></span></span><br><span class="line">HOSTNAME=xiaoxiaomo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>绑定hosts Name：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# vi /etc/hosts</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 添加 </span></span></span><br><span class="line">192.168.56.102 xiaoxiaomo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置ssh：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# ssh-keygen -t rsa  #生成rsa格式的ssh私钥和公钥</span><br><span class="line">[root@xiaoxiaomo ~]# ssh-copy-id -i xiaoxiaomo #把公钥复制到对方节点(这里我复制到自己的主机xiaoxiaomo01上)</span><br><span class="line">[root@xiaoxiaomo ~]# ssh xiaoxiaomo01 #验证</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装国内的yum镜像<br>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/02/11/Linux-Yum%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">http://blog.xiaoxiaomo.com/2016/02/11/Linux-Yum%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/</a></p>
+</li>
+<li>安装JDK <a href="http://blog.xiaoxiaomo.com/2016/01/22/Linux-软件安装之JDK/">参考，这里我们安装jdk1.8</a>：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#解压到/data &amp;&amp; 修改名称</span></span></span><br><span class="line">[root@xiaoxiaomo ~]# tar -zxvf /opt/jdk-8u144-linux-x64.tar.gz -C /data</span><br><span class="line">[root@xiaoxiaomo ~]# mv /data/jdk1.8.0_144/ /data/jdk</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#配置环境变量 </span></span></span><br><span class="line">[root@xiaoxiaomo ~]# vi /etc/profile</span><br><span class="line">export JAVA_HOME=/data/jdk</span><br><span class="line">export PATH=.:$JAVA_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/04/09/Hadoop-%E5%AE%89%E8%A3%85%E5%89%8D%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/">http://blog.xiaoxiaomo.com/2016/04/09/Hadoop-%E5%AE%89%E8%A3%85%E5%89%8D%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/</a></p>
+</blockquote>
+<h2 id="安装Hadoop"><a href="#安装Hadoop" class="headerlink" title="安装Hadoop"></a>安装Hadoop</h2><ul>
+<li><p>解压&amp;&amp;重命名&amp;&amp;配置环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# tar -zxvf /opt/hadoop-2.7.2.tar.gz -C /data/</span><br><span class="line">[root@xiaoxiaomo ~]# mv /data/hadoop-2.7.2/ /data/hadoop</span><br><span class="line">[root@xiaoxiaomo ~]# mkdir -p /data/data/hdfs/name ##需要创建一个目录不然启动会报错</span><br><span class="line">[root@xiaoxiaomo ~]# vim /etc/profile ##添加如下</span><br><span class="line">export HADOOP_HOME=/data/hadoop</span><br><span class="line">export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 【**备注后面的环境变量就略了，参考附录中的环境变量**】</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置</p>
+</li>
+</ul>
+<ol>
+<li><p>配置core-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://xiaoxiaomo:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/data/data/hdfs/tmp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 垃圾回收站</span></span><br><span class="line"><span class="comment">    &lt;property&gt;</span></span><br><span class="line"><span class="comment">        &lt;name&gt;fs.trash.interval&lt;/name&gt;</span></span><br><span class="line"><span class="comment">        &lt;value&gt;1440&lt;/value&gt;</span></span><br><span class="line"><span class="comment">    &lt;/property&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置hadoop-env.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/data/jdk</span><br><span class="line">export HADOOP_LOG_DIR=/data/data/hdfs/logs</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置hdfs-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.name.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:///data/data/hdfs/name<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.datanode.data.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:///data/data/hdfs/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.checkpoint.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:///data/data/hdfs/namesecondary<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>xiaoxiaomo:9001<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.webhdfs.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.permissions<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>false<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        &lt;property&gt;</span></span><br><span class="line"><span class="comment">                &lt;name&gt;dfs.hosts&lt;/name&gt;</span></span><br><span class="line"><span class="comment">                &lt;value&gt;/data/hadoop/etc/hadoop/datanode-allow&lt;/value&gt;</span></span><br><span class="line"><span class="comment">        &lt;/property&gt;</span></span><br><span class="line"><span class="comment">        &lt;property&gt;</span></span><br><span class="line"><span class="comment">                &lt;name&gt;dfs.hosts.exclude&lt;/name&gt;</span></span><br><span class="line"><span class="comment">                &lt;value&gt;/data/hadoop/etc/hadoop/datanode-deny&lt;/value&gt;</span></span><br><span class="line"><span class="comment">        &lt;/property&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置log4j.properties</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop.log.dir=/data/data/hdfs/logs</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置log4j.properties</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;yarn&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:10020&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:19888&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;/history&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">        &lt;name&gt;mapreduce.jobhistory.done-dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;$&#123;yarn.app.mapreduce.am.staging-dir&#125;/history/done&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;mapreduce.jobhistory.intermediate-done-dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;$&#123;yarn.app.mapreduce.am.staging-dir&#125;/history/done_intermediate&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;mapreduce.map.log.level&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;DEBUG&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;mapreduce.reduce.log.level&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;DEBUG&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置slaves</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#localtion修改为</span></span></span><br><span class="line">xiaoxiaomo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>yarn-env.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/data/jdk</span><br><span class="line">export YARN_LOG_DIR=/data/data/hdfs/logs</span><br><span class="line">export YARN_ROOT_LOGGER=DEBUG,DRFA</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置yarn-site.xml</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;xiaoxiaomo&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:8032&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:8030&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:8031&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:8033&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;xiaoxiaomo:8088&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;yarn.log-aggregation-enable&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>启动测试<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 格式化数据目录</span></span></span><br><span class="line">[root@xiaoxiaomo ~]# hdfs namenode -format</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动hdfs</span></span></span><br><span class="line">[root@xiaoxiaomo ~]# start-dfs.sh ##访问：http://xiaoxiaomo:50070</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动yarn</span></span></span><br><span class="line">[root@xiaoxiaomo ~]# start-yarn.sh ##访问：http://xiaoxiaomo:8088</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/05/08/Hadoop-2-0%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%89%E8%A3%85/">http://blog.xiaoxiaomo.com/2016/05/08/Hadoop-2-0%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%89%E8%A3%85/</a></p>
+</blockquote>
+<h2 id="安装zookeeper"><a href="#安装zookeeper" class="headerlink" title="安装zookeeper"></a>安装zookeeper</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# tar -zxvf /opt/zookeeper-3.4.9.tar.gz -C /data/</span><br><span class="line">[root@xiaoxiaomo ~]# mv /data/zookeeper-3.4.9/ /data/zookeeper</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置环境变量略</span></span></span><br><span class="line">[root@xiaoxiaomo ~]# vi /etc/profile ## 添加：export ZK_HOME=/data/zookeeper</span><br><span class="line">[root@xiaoxiaomo ~]# cd $ZK_HOME/conf</span><br><span class="line">[root@xiaoxiaomo conf]# mv zoo_sample.cfg zoo.cfg</span><br><span class="line">[root@xiaoxiaomo conf]# vi zoo.cfg ##修改：dataDir=/data/data/zookeeper</span><br><span class="line">[root@xiaoxiaomo conf]# vi log4j.properties  ##修改：zookeeper.log.dir=/data/data/zookeeper/logs</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#启动</span></span></span><br><span class="line">[root@xiaoxiaomo conf]# zkServer.sh start</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</a></p>
+</blockquote>
+<h2 id="安装HBase"><a href="#安装HBase" class="headerlink" title="安装HBase"></a>安装HBase</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# tar -zxvf hbase-1.3.1-bin.tar.gz -C /data/</span><br><span class="line">[root@xiaoxiaomo ~]# mv /data/hbase-1.3.1/ /data/hbase</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改配置</li>
+</ul>
+<ol>
+<li><p>vi $HBASE_HOME/conf/hbase-env.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/data/jdk</span><br><span class="line">export HBASE_LOG_DIR=/data/data/hbase/logs</span><br><span class="line">export HBASE_ROOT_LOGGER=INFO,DRFA</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vi $HBASE_HOME/conf/hbase-site.xml</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.tmp.dir&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/data/data/hbase/tmp&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.rootdir&lt;/name&gt;</span><br><span class="line">&lt;value&gt;hdfs://xiaoxiaomo:9000/hbase&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;!--zk --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;xiaoxiaomo&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt; </span><br><span class="line">  &lt;name&gt;hbase.zookeeper.property.dataDir&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/data/data/hbase/zk&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vi $HBASE_HOME/conf/log4j.propertie</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hbase.log.dir=/data/data/hbase/logs ##修改为统一目录</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">## 启动hbase</span><br><span class="line">[root@xiaoxiaomo ~]# start-hbase.sh</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/06/04/HBase-%E4%BC%AA%E5%88%86%E5%B8%83%E5%92%8C%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F/">http://blog.xiaoxiaomo.com/2016/06/04/HBase-%E4%BC%AA%E5%88%86%E5%B8%83%E5%92%8C%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F/</a></p>
+</blockquote>
+<h2 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo opt]# rpm -qa|grep mysql #如有就卸载</span><br><span class="line">[root@xiaoxiaomo opt]# tar -xvf mysql-5.7.9-1.el6.x86_64.rpm-bundle.tar </span><br><span class="line">[root@xiaoxiaomo opt]# rpm -ivh mysql-community-common-5.7.9-1.el6.x86_64.rpm </span><br><span class="line">[root@xiaoxiaomo opt]# rpm -ivh mysql-community-libs-5.7.9-1.el6.x86_64.rpm </span><br><span class="line">[root@xiaoxiaomo opt]# rpm -ivh mysql-community-client-5.7.9-1.el6.x86_64.rpm </span><br><span class="line">[root@xiaoxiaomo opt]# yum install -y mysql-community-server-5.7.9-1.el6.x86_64.rpm </span><br><span class="line">[root@xiaoxiaomo opt]# mysqld --initialize #初始化</span><br><span class="line">[root@xiaoxiaomo opt]# cat /var/log/mysqld.log #可以获取初始密码</span><br><span class="line">[root@xiaoxiaomo opt]# chown -R mysql:mysql /var/lib/mysql #授权</span><br><span class="line">[root@xiaoxiaomo opt]# /etc/init.d/mysqld start #启动</span><br><span class="line">[root@xiaoxiaomo opt]# mysql -uroot -p #登录（通过默认的初始密码）</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#登录进去后要重设密码</span></span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> SET PASSWORD = PASSWORD(<span class="string">'root'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#mysql启动&amp;&amp;停止</span></span></span><br><span class="line">[root@xiaoxiaomo opt]# /etc/init.d/mysqld start ##启动服务</span><br><span class="line">[root@xiaoxiaomo opt]# service mysqld start ##启动服务</span><br><span class="line">[root@xiaoxiaomo opt]# /etc/init.d/mysqld stop ##启停止服务</span><br><span class="line">[root@xiaoxiaomo opt]# service mysqld stop ##停止服务</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/02/22/Linux-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B9%8BMysql/">http://blog.xiaoxiaomo.com/2016/02/22/Linux-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B9%8BMysql/</a></p>
+</blockquote>
+<h2 id="安装Hive"><a href="#安装Hive" class="headerlink" title="安装Hive"></a>安装Hive</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo opt]# tar -zxvf apache-hive-1.2.1-bin.tar.gz -C /data/</span><br><span class="line">[root@xiaoxiaomo opt]# mv /data/apache-hive-1.2.1-bin/ /data/hive</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置环境变量略</span></span></span><br><span class="line">[root@xiaoxiaomo opt]# cd $HIVE_HOME</span><br><span class="line">[root@xiaoxiaomo hive]# cp conf/hive-env.sh.template conf/hive-env.sh</span><br><span class="line">[root@xiaoxiaomo hive]# cp conf/hive-default.xml.template conf/hive-site.xml</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改配置</li>
+</ul>
+<ol>
+<li><p>hive-env.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo hive]# vim conf/hive-env.sh ##添加如下配置</span><br><span class="line">export JAVA_HOME=/data/jdk</span><br><span class="line">export HIVE_HOME=/data/hive</span><br><span class="line">export HADOOP_HOME=/data/hadoop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>hive-env.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo hive]# vim conf/hive-env.sh ##修改如下配置</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hive.querylog.location&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/data/data/hive/tmp&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hive.exec.local.scratchdir&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/data/data/hive/tmp&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hive.downloaded.resources.dir&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/data/data/hive/tmp&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 修改metadata为mysql --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;jdbc:mysql://localhost:3306/hive?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=UTF-8&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;root&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;root&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>复制mysql驱动jar包到$HIVE_HOME/lib/目录下</p>
+</li>
+<li>启动。查看mysql数据库 ##[root@xiaoxiaomo hive]# hive</li>
+</ol>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/05/27/Hive-%E6%A6%82%E8%BF%B0%E4%B8%8E%E4%BD%BF%E7%94%A8/">http://blog.xiaoxiaomo.com/2016/05/27/Hive-%E6%A6%82%E8%BF%B0%E4%B8%8E%E4%BD%BF%E7%94%A8/</a></p>
+</blockquote>
+<h2 id="安装Kafka"><a href="#安装Kafka" class="headerlink" title="安装Kafka"></a>安装Kafka</h2><ol>
+<li><p>解压 &amp;&amp; 配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo opt]# tar -zxvf kafka_2.11-0.11.0.0.tgz -C /data</span><br><span class="line">[root@xiaoxiaomo opt]# mv /data/kafka_2.11-0.11.0.0/ /data/kafka</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置环境变量 &amp;&amp; 修改配置文件</span></span></span><br><span class="line">cd $KAFKA_HOME</span><br><span class="line">log.dirs=/data/data/kafka/logs</span><br><span class="line">zookeeper.connect=xiaoxiaomo:2181</span><br><span class="line">[root@xiaoxiaomo kafka]# mkdir -p /data/data/kafka/logs</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动 &amp;&amp; 测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动</span></span></span><br><span class="line">[root@xiaoxiaomo kafka]# nohup /data/kafka/bin/kafka-server-start.sh /data/kafka/config/server.properties &gt;&gt;/data/data/kafka/logs/kafka-server.log 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 测试</span></span></span><br><span class="line">[root@xiaoxiaomo kafka]# bin/kafka-topics.sh --create --zookeeper xiaoxiaomo:2181 --replication-factor 1 --partitions 1  --topic hello</span><br><span class="line">[root@xiaoxiaomo kafka]# bin/kafka-topics.sh --describe --zookeeper xiaoxiaomo:2181   --topic hello</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/05/14/Kafka-%E9%9B%86%E7%BE%A4%E5%8F%8AAPI%E6%93%8D%E4%BD%9C/">http://blog.xiaoxiaomo.com/2016/05/14/Kafka-%E9%9B%86%E7%BE%A4%E5%8F%8AAPI%E6%93%8D%E4%BD%9C/</a></p>
+</blockquote>
+<h2 id="安装Redis"><a href="#安装Redis" class="headerlink" title="安装Redis"></a>安装Redis</h2><ol>
+<li><p>解压编译</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# yum -y install gcc #依赖于gcc</span><br><span class="line">[root@xiaoxiaomo ~]# tar -zxvf /opt/redis-3.0.6.tar.gz -C /data</span><br><span class="line">[root@xiaoxiaomo ~]# cd /data/redis-3.0.6/</span><br><span class="line">[root@xiaoxiaomo ~]# make PREFIX=/data/redis install　　　#安装到指定目录</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将redis做成服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">###将redis_init_script复制到/etc/rc.d/init.d/同时改名为redis</span></span></span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# cp /opt/redis-3.0.6/utils/redis_init_script /etc/rc.d/init.d/redis</span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# vim /etc/rc.d/init.d/redis</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">###修改下面4行</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="comment">#chkconfig: 2345 80 90   ##注意：这个在上面蓝色字体第二行</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> EXEC=/data/redis/bin/redis-server　　<span class="comment">##第七行</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> CLIEXEC=/data/redis/bin/redis-cli　　<span class="comment">##第八行</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="variable">$EXEC</span> <span class="variable">$CONF</span> &amp;　　　　<span class="comment">##第二十行</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置环境变量 &amp;&amp; 修改配置文件</span></span></span><br><span class="line">cd $REDIS_HOME</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">##配置文件拷贝到/etc/redis/$&#123;REDISPORT&#125;.conf </span></span></span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# mkdir /etc/redis   </span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# cp /opt/redis-3.0.6/redis.conf /etc/redis/6379.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注册服务 &amp;&amp; 启动 &amp;&amp; 停止</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 注册redis服务：</span></span></span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# vim /etc/redis/6379.conf</span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# service redis start ##启动</span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# service redis stop ##停止</span><br><span class="line">[root@xiaoxiaomo redis-3.0.6]# redis-cli</span><br><span class="line">127.0.0.1:6379&gt; shutdown ##停止</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>参考：<br><a href="http://blog.xiaoxiaomo.com/2016/02/23/Linux-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B9%8BRedis/">http://blog.xiaoxiaomo.com/2016/02/23/Linux-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B9%8BRedis/</a><br><a href="http://blog.xiaoxiaomo.com/2016/04/28/Redis-%E9%9B%86%E7%BE%A4/">http://blog.xiaoxiaomo.com/2016/04/28/Redis-%E9%9B%86%E7%BE%A4/</a></p>
+</blockquote>
+<h2 id="安装Spark"><a href="#安装Spark" class="headerlink" title="安装Spark"></a>安装Spark</h2><ol>
+<li><p>安装 &amp;&amp; 配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo opt]# tar -zxvf spark-2.0.0-bin-hadoop2.7.tgz -C /data/</span><br><span class="line">[root@xiaoxiaomo opt]# mv /data/spark-2.0.0-bin-hadoop2.7/ /data/spark</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置环境变量</span></span></span><br><span class="line">[root@xiaoxiaomo conf]# cd $SPARK_HOME/conf</span><br><span class="line">[root@xiaoxiaomo conf]# mv spark-env.sh.template spark-env.sh</span><br><span class="line">[root@xiaoxiaomo conf]# mv slaves.template slaves</span><br><span class="line">[root@xiaoxiaomo conf]# vi spark-env.sh  </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 添加下面两项</span></span></span><br><span class="line">SPARK_MASTER_IP=xiaoxiaomo</span><br><span class="line">export JAVA_HOME=/data/jdk</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动 &amp;&amp; 访问</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动</span></span></span><br><span class="line">[root@xiaoxiaomo conf]# $SPARK_HOME/sbin/start-master.sh </span><br><span class="line">[root@xiaoxiaomo conf]# $SPARK_HOME/sbin/start-slave.sh </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 访问</span></span></span><br><span class="line">http://xiaoxiaomo:8080/</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><ol>
+<li><p>环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/data/jdk</span><br><span class="line">export JRE_HOME=$JAVA_HOME/jre</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib</span><br><span class="line"></span><br><span class="line">export HADOOP_HOME=/data/hadoop</span><br><span class="line">export HIVE_HOME=/data/hive</span><br><span class="line">export HBASE_HOME=/data/hbase</span><br><span class="line">export ZK_HOME=/data/zookeeper</span><br><span class="line">export KAFKA_HOME=/data/kafka</span><br><span class="line">export REDIS_HOME=/data/redis</span><br><span class="line">export SPARK_HOME=/data/spark</span><br><span class="line"></span><br><span class="line">export PATH=.:$JAVA_HOME/bin:$HADOOP_HOME/bin:$&#123;HADOOP_HOME&#125;/sbin:$HIVE_HOME/bin:$HBASE_HOME/bin:$ZK_HOME/bin:$KAFKA_HOME/bin:$REDIS_HOME/bin:$SPARK_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>软件下载(百度云下载地址)</p>
+<blockquote>
+<p><a href="http://blog.xiaoxiaomo.com/2017/07/30/Hadoop-快速搭建大数据开发环境/">本博客</a>所用到的所有软件（除了Virtual Box因为自己的电脑是linux系统直接就安装了没单独下再）<a href="http://pan.baidu.com/s/1ge9cHiV" target="_blank" rel="noopener">http://pan.baidu.com/s/1ge9cHiV</a></p>
+</blockquote>
+</li>
+<li><p>搭建好的虚拟机下载，下载后直接导入就可以使用</p>
+<blockquote>
+<ol>
+<li>本博客中讲到的所有环境已经搭建好的虚拟机下载(root密码123456)：<a href="http://pan.baidu.com/s/1slsd9iH" target="_blank" rel="noopener">http://pan.baidu.com/s/1slsd9iH</a></li>
+<li>另外一个类似的已经搭建好的虚拟机下载(不同只是版本低一点root密码bd745127)：<a href="http://pan.baidu.com/s/1dFCKPED" target="_blank" rel="noopener">使用java1.7 + hadoop2.6 + hive0.14 + hbase0.98 + spark1.4.1 + kafka_2.11-0.8.2.2 + zk3.5.6 + redis3.0.6</a></li>
+</ol>
+</blockquote>
+</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2017/08/28/OWL-监控系统实战一平台概述/" rel="next" title="OWL--监控系统实战一平台概述">
+    上一篇：OWL--监控系统实战一平台概述
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/07/06/SparkStreaming-相关介绍/" rel="next" title="Spark Streaming--相关介绍">
+    下一篇：Spark Streaming--相关介绍
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Hadoop--快速搭建大数据开发环境" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

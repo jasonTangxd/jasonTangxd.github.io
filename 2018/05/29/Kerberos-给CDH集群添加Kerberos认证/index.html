@@ -1,0 +1,747 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Kerberos-给CDH集群添加Kerberos认证 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Kerberos-给CDH集群添加Kerberos认证"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Kerberos-给CDH集群添加Kerberos认证</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2018-05-29T03:58:26.000Z"><a href="/2018/05/29/Kerberos-给CDH集群添加Kerberos认证/">2018-05-29</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cloudera/" class="chip red lighten-1">Cloudera</a>
+        
+            <a href="/tags/Kerberos/" class="chip red lighten-1">Kerberos</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Kerberos服务"><span class="section table-of-contents-text">安装Kerberos服务</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#准备"><span class="section table-of-contents-text">准备</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#安装服务"><span class="section table-of-contents-text">安装服务</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#修改配置"><span class="section table-of-contents-text">修改配置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#创建-初始化Kerberos"><span class="section table-of-contents-text">创建/初始化Kerberos</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#启动服务和测试"><span class="section table-of-contents-text">启动服务和测试</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装Kerberos客户端"><span class="section table-of-contents-text">安装Kerberos客户端</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#CDH集群启用Kerberos"><span class="section table-of-contents-text">CDH集群启用Kerberos</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#测试-amp-操作"><span class="section table-of-contents-text">测试&amp;操作</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>近期网络曝出<strong>通过Hadoop Yarn资源管理系统未授权访问漏洞从外网进行攻击内部服务器并植入挖矿木马的行为和自动化脚本的产生</strong>。此次事件主要因Hadoop YARN 资源管理系统配置不当，导致可以未经授权进行访问，从而被攻击者恶意利用。攻击者无需认证即可通过REST API部署任务来执行任意指令，最终完全控制服务器。被攻击后的特征在Hadoop Yarn的管理页面可看到，是用dr.who创建了多个任务：<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos01.png" alt=""></li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>内部修复建议其中一点，就是需要在集群中<strong>启动”Kerberos“认证</strong>，正式环境我已近启用了”Kerberos“，下面是测试环境的启用操作日志记录，整理后写下该博文：</li>
+</ul>
+<h2 id="安装Kerberos服务"><a href="#安装Kerberos服务" class="headerlink" title="安装Kerberos服务"></a>安装Kerberos服务</h2><h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>对于Kerberos的介绍这里就不多说了，直接进入主题吧，首先我们<strong>选择一台服务器安装Kerberos的核心服务master KDC</strong>，<strong>其他节点安装Kerberos client</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">主机名          角色</span><br><span class="line">fetch-master   master KDC</span><br><span class="line">fetch-slave1   Kerberos client</span><br><span class="line">fetch-slave2   Kerberos client</span><br><span class="line">fetch-slave3   Kerberos client</span><br><span class="line">fetch-slave4   Kerberos client</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装服务"><a href="#安装服务" class="headerlink" title="安装服务"></a>安装服务</h3><ul>
+<li>我们选择fetch-master运行KDC，并在该主机上安装<code>krb5-server</code>,<code>krb-5libs</code>,<code>krb5-auth-dialog</code>,<code>krb5-workstation</code>。<br>命令：<code>yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation</code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation</span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  krb5-auth-dialog.x86_64 0:0.13-6.el6                                              krb5-workstation.x86_64 0:1.10.3-65.el6                                             </span><br><span class="line"></span><br><span class="line">Dependency Installed:</span><br><span class="line">  libkadm5.x86_64 0:1.10.3-65.el6                                                                                                                                        </span><br><span class="line"></span><br><span class="line">Dependency Updated:</span><br><span class="line">  krb5-devel.x86_64 0:1.10.3-65.el6                                                   krb5-libs.x86_64 0:1.10.3-65.el6                                                  </span><br><span class="line"></span><br><span class="line">Complete!</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h3><ol>
+<li><p>修改配置文件，<strong>/etc/krb5.conf</strong>。<br>LOCAL.DOMAIN:是设定的realms，名字随意但注意后面相应的地方必须一致。修改日志目录，以及制定kdc、admin_server服务地址，如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# vim /etc/krb5.conf</span><br><span class="line">[logging]</span><br><span class="line"> default = FILE:/app/log/krb5libs.log</span><br><span class="line"> kdc = FILE:/app/log/krb5kdc.log</span><br><span class="line"> admin_server = FILE:/app/log/kadmind.log</span><br><span class="line"></span><br><span class="line">[libdefaults]</span><br><span class="line"> default_realm = LOCAL.DOMAIN</span><br><span class="line"> dns_lookup_realm = false</span><br><span class="line"> dns_lookup_kdc = false</span><br><span class="line"> ticket_lifetime = 24h</span><br><span class="line"> renew_lifetime = 7d</span><br><span class="line"> forwardable = true</span><br><span class="line"></span><br><span class="line">[realms]</span><br><span class="line"> LOCAL.DOMAIN = &#123;</span><br><span class="line">  kdc = localhost</span><br><span class="line">  admin_server = localhost</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">[domain_realm]</span><br><span class="line">.local.domain = LOCAL.DOMAIN</span><br><span class="line">local.domain = LOCAL.DOMAIN</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置文件，<strong>/var/Kerberos/krb5kdc/kadm5.acl</strong>。<br>匹配的用户和权限，下面就是默认以<a href="mailto:/admin@LOCAL.DOMAIN" target="_blank" rel="noopener">/admin@LOCAL.DOMAIN</a>结尾有所有权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# vim /var/Kerberos/krb5kdc/kadm5.acl</span><br><span class="line">*/admin@LOCAL.DOMAIN    *</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置文件， <strong>/var/Kerberos/krb5kdc/kdc.conf</strong>。<br>master_key_type和supported_enctypes默认使用aes256-cts。JAVA使用aes256-cts验证方式需要安装额外的jar包，下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files</a>，下载解压后(local_policy.jar、US_export_policy.jar)放入$JAVA_HOME/jre/lib/security<br><strong>也可以不使用aes256-cts，即把aes256-cts去掉</strong>，如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# vim /var/Kerberos/krb5kdc/kdc.conf</span><br><span class="line">[kdcdefaults]</span><br><span class="line"> kdc_ports = 88</span><br><span class="line"> kdc_tcp_ports = 88</span><br><span class="line"> </span><br><span class="line">[realms]</span><br><span class="line"> LOCAL.DOMAIN = &#123;</span><br><span class="line"><span class="meta">  #</span><span class="bash">master_key_type = aes256-cts</span></span><br><span class="line">  max_renewable_life= 7d 0h 0m 0s</span><br><span class="line">  acl_file = /var/Kerberos/krb5kdc/kadm5.acl</span><br><span class="line">  dict_file = /app/share/dict/words</span><br><span class="line">  admin_keytab = /var/Kerberos/krb5kdc/kadm5.keytab</span><br><span class="line">  supported_enctypes = aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="创建-初始化Kerberos"><a href="#创建-初始化Kerberos" class="headerlink" title="创建/初始化Kerberos"></a>创建/初始化Kerberos</h3><ol>
+<li><p><strong>创建/初始化Kerberos数据库</strong>，kdb5_util create -s –r LOCAL.DOMAIN ，并设置密码。</p>
+<ul>
+<li>[-s]表示生成stash file，并在其中存储master server key（krb5kdc）；</li>
+<li>[-r]来指定一个realm name，当krb5.conf中定义了多个realm时才是必要的。</li>
+<li>保存路径为/var/Kerberos/krb5kdc 如果需要重建数据库，将该目录下的principal相关的文件删除即可<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# kdb5_util create –r LOCAL.DOMAIN -s</span><br><span class="line">Loading random data</span><br><span class="line">Initializing database '/var/Kerberos/krb5kdc/principal' for realm 'LOCAL.DOMAIN',</span><br><span class="line">master key name 'K/M@LOCAL.DOMAIN'</span><br><span class="line">You will be prompted for the database Master Password.</span><br><span class="line">It is important that you NOT FORGET this password.</span><br><span class="line">Enter KDC database master key: </span><br><span class="line">Re-enter KDC database master key to verify: </span><br><span class="line">kdb5_util: Unable to find requested database type while creating database '/var/Kerberos/krb5kdc/principal'</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong>创建Kerberos的管理账号</strong>，并设置密码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# kadmin.local </span><br><span class="line">Authenticating as principal root/admin@LOCAL.DOMAIN with password.</span><br><span class="line">kadmin.local:  add</span><br><span class="line">add_policy     add_principal  addpol         addprinc       </span><br><span class="line">kadmin.local:  addprinc admin/admin@LOCAL.DOMAIN</span><br><span class="line">WARNING: no policy specified for admin/admin@LOCAL.DOMAIN; defaulting to no policy</span><br><span class="line">Enter password for principal "admin/admin@LOCAL.DOMAIN": </span><br><span class="line">Re-enter password for principal "admin/admin@LOCAL.DOMAIN": </span><br><span class="line">Principal "admin/admin@LOCAL.DOMAIN" created.</span><br><span class="line">kadmin.local:  </span><br><span class="line">kadmin.local:  exit</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="启动服务和测试"><a href="#启动服务和测试" class="headerlink" title="启动服务和测试"></a>启动服务和测试</h3><ol>
+<li><p><strong>添加到开机启动，并启动服务krb5kdc和kadmin</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# chkconfig krb5kdc on</span><br><span class="line">[root@fetch-master ~]# chkconfig kadmin on</span><br><span class="line">[root@fetch-master ~]# service krb5kdc start</span><br><span class="line">正在启动 Kerberos 5 KDC：                                  [确定]</span><br><span class="line">[root@fetch-master ~]# service kadmin start</span><br><span class="line">正在启动 Kerberos 5 Admin Server：                         [确定]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-master ~]# kinit admin/admin@LOCAL.DOMAIN</span><br><span class="line">Password for admin/admin@LOCAL.DOMAIN: </span><br><span class="line">[root@fetch-master ~]# klist</span><br><span class="line">Ticket cache: FILE:/tmp/krb5cc_0</span><br><span class="line">Default principal: admin/admin@LOCAL.DOMAIN</span><br><span class="line"></span><br><span class="line">Valid starting     Expires            Service principal</span><br><span class="line">05/28/18 15:20:04  05/29/18 15:20:04  krbtgt/LOCAL.DOMAIN@LOCAL.DOMAIN</span><br><span class="line">	renew until 06/04/18 15:20:04</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="安装Kerberos客户端"><a href="#安装Kerberos客户端" class="headerlink" title="安装Kerberos客户端"></a>安装Kerberos客户端</h2><ol>
+<li><p><strong>给集群所有节点安装Kerberos客户端</strong>：<br>命令：<code>yum -y install krb5-workstation krb5-libs krb5-auth-dialog</code><br>（因为我测试环境，KDC与CM在同一节点我就不用在CM上安装了上面已近安装，如果没在同一节点记得CM也要安装这些）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave1 ~]#  yum -y install krb5-workstation krb5-libs krb5-auth-dialog</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  krb5-workstation.x86_64 0:1.10.3-65.el6                                                                                                                                                      </span><br><span class="line"></span><br><span class="line">Dependency Installed:</span><br><span class="line">  libkadm5.x86_64 0:1.10.3-65.el6                                                                                                                                                              </span><br><span class="line"></span><br><span class="line">Updated:</span><br><span class="line">  krb5-libs.x86_64 0:1.10.3-65.el6                                                                                                                                                             </span><br><span class="line"></span><br><span class="line">Dependency Updated:</span><br><span class="line">  krb5-devel.x86_64 0:1.10.3-65.el6                                                                                                                                                            </span><br><span class="line"></span><br><span class="line">Complete!</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>CM节点安装额外组件，<br>命令：<code>yum -y install openldap-clients</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@fetch-master ~]# yum -y install openldap-clients</span><br><span class="line"></span><br><span class="line">Running Transaction Test</span><br><span class="line">Transaction Test Succeeded</span><br><span class="line">Running Transaction</span><br><span class="line">  Updating   : openldap-2.4.40-16.el6.x86_64                                                                                                                                               1/3 </span><br><span class="line">  Installing : openldap-clients-2.4.40-16.el6.x86_64                                                                                                                                       2/3 </span><br><span class="line">  Cleanup    : openldap-2.4.23-31.el6.x86_64                                                                                                                                               3/3 </span><br><span class="line">  Verifying  : openldap-clients-2.4.40-16.el6.x86_64                                                                                                                                       1/3 </span><br><span class="line">  Verifying  : openldap-2.4.40-16.el6.x86_64                                                                                                                                               2/3 </span><br><span class="line">  Verifying  : openldap-2.4.23-31.el6.x86_64                                                                                                                                               3/3 </span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  openldap-clients.x86_64 0:2.4.40-16.el6                                                                                                                                                      </span><br><span class="line"></span><br><span class="line">Dependency Updated:</span><br><span class="line">  openldap.x86_64 0:2.4.40-16.el6                                                                                                                                                              </span><br><span class="line"></span><br><span class="line">Complete!</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拷贝配置文件，将KDC Server上的krb5.conf文件拷贝到所有Kerberos客户端(集群所有节点)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#记得指定对的admin_server  、 default_domain</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#我上面都是localhost,所以需要修改为fectch-master</span></span></span><br><span class="line">scp -P 2222 /etc/krb5.conf fetch-slave1:/etc/</span><br><span class="line">scp -P 2222 /etc/krb5.conf fetch-slave2:/etc/</span><br><span class="line">scp -P 2222 /etc/krb5.conf fetch-slave3:/etc/</span><br><span class="line">scp -P 2222 /etc/krb5.conf fetch-slave4:/etc/</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="CDH集群启用Kerberos"><a href="#CDH集群启用Kerberos" class="headerlink" title="CDH集群启用Kerberos"></a>CDH集群启用Kerberos</h2><ol>
+<li><p>在KDC中给Cloudera Manager添加管理员账号,并设置密码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@fetch-master ~]# kadmin.local</span><br><span class="line">Authenticating as principal admin/admin@LOCAL.DOMAIN with password.</span><br><span class="line">kadmin.local:  add</span><br><span class="line">add_policy     add_principal  addpol         addprinc       </span><br><span class="line">kadmin.local:  addprinc cloudera-scm/admin@LOCAL.DOMAIN</span><br><span class="line">WARNING: no policy specified for cloudera-scm/admin@LOCAL.DOMAIN; defaulting to no policy</span><br><span class="line">Enter password for principal "cloudera-scm/admin@LOCAL.DOMAIN": </span><br><span class="line">Re-enter password for principal "cloudera-scm/admin@LOCAL.DOMAIN": </span><br><span class="line">Principal "cloudera-scm/admin@LOCAL.DOMAIN" created.</span><br><span class="line">kadmin.local:  exit</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>CDH启用Kerberos<br>2.1. 进入Cloudera Manager的“管理”-&gt; “Security”界面-&gt;启用Kerberos<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos02.png" alt=""><br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos03.png" alt=""><br>2.2. 检查信息,勾选<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos04.png" alt=""><br>2.3. 配置KDC信息<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos05.png" alt=""><br>2.4. 不建议让Cloudera Manager来管理krb5.conf，点击“继续”<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos06.png" alt=""><br>2.5. 输入CM的Kerbers管理员账号<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos07.png" alt=""><br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos08.png" alt=""><br>2.6. Kerberos主体<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos09.png" alt=""><br>2.7. 重启集群<br><img src="https://img.xiaoxiaomo.com/blog/img/kerberos10.png" alt=""></p>
+</li>
+</ol>
+<h2 id="测试-amp-操作"><a href="#测试-amp-操作" class="headerlink" title="测试&amp;操作"></a>测试&amp;操作</h2><ol>
+<li><p>先开看几个命令：</p>
+<blockquote>
+<p>klist： 查看当前的认证用户<br>kinit： 进行验证<br>kadmin.local： 直接登录<br>addprinc： 添加用户，在kadmin.local下面<br>delprinc： 删除用户，在kadmin.local下面<br>modprinc： 修改用户，在kadmin.local下面<br>listprincs：列出用户，在kadmin.local下面<br>kinit –R：  更新ticket<br>kdestroy：  删除当前的认证的缓存</p>
+</blockquote>
+</li>
+<li><p>示例1：登录到管理员账户: 如果在本机上，可以通过kadmin.local直接登录。其它机器的，先使用kinit进行验证。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#登陆管理账户</span></span></span><br><span class="line">[root@fetch-master ~]# kadmin.local</span><br><span class="line">Authenticating as principal root/admin@LOCAL.DOMAIN with password.</span><br><span class="line">kadmin.local:  exit</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#查看当前的认证用户</span></span></span><br><span class="line">[root@fetch-master ~]# klist</span><br><span class="line">Ticket cache: FILE:/tmp/krb5cc_0</span><br><span class="line">Default principal: root@LOCAL.DOMAIN</span><br><span class="line"></span><br><span class="line">Valid starting     Expires            Service principal</span><br><span class="line">05/28/18 17:43:12  05/29/18 17:43:12  krbtgt/LOCAL.DOMAIN@LOCAL.DOMAIN</span><br><span class="line">	renew until 06/04/18 17:43:1</span><br><span class="line">	</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#其他节点-通过kinit验证</span></span></span><br><span class="line">[root@fetch-slave1 hbase]# kinit admin/admin</span><br><span class="line">Password for admin/admin@LOCAL.DOMAIN: </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#其它节点-查看当前认证用户</span></span></span><br><span class="line">[root@fetch-slave1 hbase]# klist</span><br><span class="line">Ticket cache: FILE:/tmp/krb5cc_0</span><br><span class="line">Default principal: admin/admin@LOCAL.DOMAIN</span><br><span class="line"></span><br><span class="line">Valid starting     Expires            Service principal</span><br><span class="line">05/28/18 18:07:26  05/29/18 18:07:26  krbtgt/LOCAL.DOMAIN@LOCAL.DOMAIN</span><br><span class="line">	renew until 06/04/18 18:07:26</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#如果不认证，会有如下异常:</span></span></span><br><span class="line">FATAL ipc.AbstractRpcClient: SASL authentication failed. The most likely cause is missing or invalid credentials. Consider 'kinit'.</span><br><span class="line">javax.security.sasl.SaslException: </span><br><span class="line">    GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例2：销毁后就无法查看，重新认证后查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 ~]# kdestroy    ##销毁</span><br><span class="line">You have mail in /var/spool/mail/root</span><br><span class="line">[root@fetch-slave2 ~]# klist</span><br><span class="line">klist: No credentials cache found (ticket cache FILE:/tmp/krb5cc_0)</span><br><span class="line">[root@fetch-slave2 ~]# hadoop fs -ls / ##销毁后就无法查看</span><br><span class="line">18/05/29 17:22:26 WARN security.UserGroupInformation: PriviledgedActionException as:root (auth:KERBEROS) cause:javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]</span><br><span class="line">18/05/29 17:22:26 WARN ipc.Client: Exception encountered while connecting to the server : javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]</span><br><span class="line">18/05/29 17:22:26 WARN security.UserGroupInformation: PriviledgedActionException as:root (auth:KERBEROS) cause:java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]</span><br><span class="line">ls: Failed on local exception: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]; Host Details : local host is: &quot;fetch-slave2/10.141.4.203&quot;; destination host is: &quot;fetch-master&quot;:8020; </span><br><span class="line">[root@fetch-slave2 ~]# kinit admin/admin  ##重新认证后，就能操作</span><br><span class="line">Password for admin/admin@LOCAL.DOMAIN: </span><br><span class="line">[root@fetch-slave2 ~]# hadoop fs -ls /</span><br><span class="line">Found 5 items</span><br><span class="line">drwxrwxrwx   - hdfs  supergroup          0 2017-06-22 16:39 /data</span><br><span class="line">drwx------   - hbase hbase               0 2018-05-28 17:08 /hbase</span><br><span class="line">drwxr-xr-x   - hdfs  supergroup          0 2017-01-16 18:03 /system</span><br><span class="line">drwxrwxrwt   - hdfs  supergroup          0 2018-01-09 11:06 /tmp</span><br><span class="line">drwxrwxrwx   - hdfs  supergroup          0 2018-05-28 18:38 /user</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例3：运行hive，然后让他在Yarn上跑job<br>4.1. 直接使用admin凭证，会有如下异常，因为系统上没有admin用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Application application_1527494654301_0004 failed 2 times due to AM Container for appattempt_1527494654301_0004_000002 exited with exitCode: -1000</span><br><span class="line">For more detailed output, check application tracking page:http://fetch-master:8088/proxy/application_1527494654301_0004/Then, click on links to logs of each attempt.</span><br><span class="line">Diagnostics: Application application_1527494654301_0004 initialization failed (exitCode=255) with output: main : command provided 0</span><br><span class="line">main : run as user is admin</span><br><span class="line">main : requested yarn user is admin</span><br><span class="line">User admin not found</span><br><span class="line">Failing this attempt. Failing the application.</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>4.2. 运行任务，出现如下异常，用户id小于1000<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Application application_1527494654301_0003 failed 2 times due to AM Container for appattempt_1527494654301_0003_000002 exited with exitCode: -1000</span><br><span class="line">For more detailed output, check application tracking page:http://fetch-master:8088/proxy/application_1527494654301_0003/Then, click on links to logs of each attempt.</span><br><span class="line">Diagnostics: Application application_1527494654301_0003 initialization failed (exitCode=255) with output: main : command provided 0</span><br><span class="line">main : run as user is yarn</span><br><span class="line">main : requested yarn user is yarn</span><br><span class="line">Requested user yarn is not whitelisted and has id 488,which is below the minimum allowed 1000</span><br><span class="line">Failing this attempt. Failing the application.</span><br></pre></td></tr></table></figure></p>
+<p>解决方法：<br>4.2.1. 修改一个用户的user id ：usermod -u <new-user-id> <user><br>4.2.2. 修改Clouder关于这个该项的设置 ：ARN -&gt; NodeManager -&gt; Security -&gt;  min.user.id改为0。</user></new-user-id></p>
+<p>4.3. 使用yarn用户运行，出现用户被禁用的异常,需要在CM yarn服务页面，配置禁止的系统用户banned.users列表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Application application_1527590116657_0001 failed 2 times due to AM Container for appattempt_1527590116657_0001_000002 exited with exitCode: -1000</span><br><span class="line">For more detailed output, check application tracking page:http://fetch-master:8088/proxy/application_1527590116657_0001/Then, click on links to logs of each attempt.</span><br><span class="line">Diagnostics: Application application_1527590116657_0001 initialization failed (exitCode=255) with output: main : command provided 0</span><br><span class="line">main : run as user is yarn</span><br><span class="line">main : requested yarn user is yarn</span><br><span class="line">Requested user yarn is banned</span><br><span class="line">Failing this attempt. Failing the application.</span><br></pre></td></tr></table></figure></p>
+<p>4.4. 使用allowed.system.users允许的用户查询，例如hive,先添加一个用户,再运行，成功!<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">##添加用户</span><br><span class="line">[root@fetch-slave3 ~]# kadmin</span><br><span class="line">Authenticating as principal admin/admin@LOCAL.DOMAIN with password.</span><br><span class="line">Password for admin/admin@LOCAL.DOMAIN:</span><br><span class="line">kadmin:  addprinc hive/admin@LOCAL.DOMAIN</span><br><span class="line">WARNING: no policy specified for hive/admin@LOCAL.DOMAIN; defaulting to no policy</span><br><span class="line">Enter password for principal &quot;hive/admin@LOCAL.DOMAIN&quot;: </span><br><span class="line">Re-enter password for principal &quot;hive/admin@LOCAL.DOMAIN&quot;: </span><br><span class="line">Principal &quot;hive/admin@LOCAL.DOMAIN&quot; created.</span><br><span class="line">kadmin:  exit</span><br><span class="line"></span><br><span class="line">##然后再查询,运行成功</span><br><span class="line">[root@fetch-slave3 ~]# kinit hive/admin</span><br><span class="line">[root@fetch-slave3 ~]# hive</span><br><span class="line">##运行SQL,让它跑mapreduce</span><br><span class="line">hive&gt; select count(1) from test11;</span><br><span class="line">Query ID = root_20180529185252_84fdbaf2-6b3a-4470-b823-dda693865b54</span><br><span class="line">Total jobs = 1</span><br><span class="line">Launching Job 1 out of 1</span><br><span class="line">Number of reduce tasks determined at compile time: 1</span><br><span class="line">In order to change the average load for a reducer (in bytes):</span><br><span class="line">  set hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">In order to limit the maximum number of reducers:</span><br><span class="line">  set hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">In order to set a constant number of reducers:</span><br><span class="line">  set mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1527590116657_0002, Tracking URL = http://fetch-master:8088/proxy/application_1527590116657_0002/</span><br><span class="line">Kill Command = /opt/cloudera/parcels/CDH/lib/hadoop/bin/hadoop job  -kill job_1527590116657_0002</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1</span><br><span class="line">2018-05-29 18:52:48,536 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2018-05-29 18:52:58,874 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.33 sec</span><br><span class="line">2018-05-29 18:53:05,081 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 2.74 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 2 seconds 740 msec</span><br><span class="line">Ended Job = job_1527590116657_0002</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 2.74 sec   HDFS Read: 6800 HDFS Write: 3 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 2 seconds 740 msec</span><br><span class="line">OK</span><br><span class="line">18</span><br><span class="line">Time taken: 71.793 seconds, Fetched: 1 row(s)</span><br></pre></td></tr></table></figure></p>
+<p>4.5. <strong>使用普通用户运行job，这里以xuandongtang为例。</strong><br>4.5.1. 在Kerberos上创建该用户，然后kinit验证用户<br>4.5.2. 随后就可以运行(注：集群所有节点必须有该用户不然会报错User xuandongtang not found)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave3 ~]# kadmin</span><br><span class="line">Authenticating as principal lidongxiao/admin@LOCAL.DOMAIN with password.</span><br><span class="line">Password for lidongxiao/admin@LOCAL.DOMAIN: </span><br><span class="line">kadmin:  addprinc xuandongtang/admin@LOCAL.DOMAIN</span><br><span class="line">WARNING: no policy specified for xuandongtang/admin@LOCAL.DOMAIN; defaulting to no policy</span><br><span class="line">Enter password for principal &quot;xuandongtang/admin@LOCAL.DOMAIN&quot;: </span><br><span class="line">Re-enter password for principal &quot;xuandongtang/admin@LOCAL.DOMAIN&quot;: </span><br><span class="line">Principal &quot;xuandongtang/admin@LOCAL.DOMAIN&quot; created.</span><br><span class="line">kadmin:  exit</span><br><span class="line">[root@fetch-slave3 ~]# kinit xuandongtang/admin@LOCAL.DOMAIN</span><br><span class="line">Password for xuandongtang/admin@LOCAL.DOMAIN: </span><br><span class="line">##运行成功！</span><br><span class="line">[root@fetch-slave3 ~]# hive</span><br><span class="line">hive&gt; </span><br><span class="line">    &gt; select count(1) from test11;</span><br><span class="line">Query ID = root_20180530161717_62a841bc-6a27-45b7-9901-f97c7c8c3916</span><br><span class="line">Total jobs = 1</span><br><span class="line">Launching Job 1 out of 1</span><br><span class="line">Number of reduce tasks determined at compile time: 1</span><br><span class="line">In order to change the average load for a reducer (in bytes):</span><br><span class="line">  set hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">In order to limit the maximum number of reducers:</span><br><span class="line">  set hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">In order to set a constant number of reducers:</span><br><span class="line">  set mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1527590116657_0006, Tracking URL = http://fetch-master:8088/proxy/application_1527590116657_0006/</span><br><span class="line">Kill Command = /opt/cloudera/parcels/CDH/lib/hadoop/bin/hadoop job  -kill job_1527590116657_0006</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1</span><br><span class="line">2018-05-30 16:18:19,573 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2018-05-30 16:18:27,805 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.3 sec</span><br><span class="line">2018-05-30 16:18:37,097 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 2.79 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 2 seconds 790 msec</span><br><span class="line">Ended Job = job_1527590116657_0006</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 2.79 sec   HDFS Read: 6830 HDFS Write: 3 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 2 seconds 790 msec</span><br><span class="line">OK</span><br><span class="line">18</span><br><span class="line">Time taken: 71.835 seconds, Fetched: 1 row(s)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>参考：<br><a href="https://www.jianshu.com/p/f28467450859" target="_blank" rel="noopener">https://www.jianshu.com/p/f28467450859</a><br><a href="https://blog.csdn.net/lovebomei/article/details/79807484" target="_blank" rel="noopener">https://blog.csdn.net/lovebomei/article/details/79807484</a><br><a href="https://www.zybuluo.com/xtccc/note/177146" target="_blank" rel="noopener">https://www.zybuluo.com/xtccc/note/177146</a></li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2019/03/12/Java-HashMap笔记整理/" rel="next" title="Java--HashMap笔记整理">
+    上一篇：Java--HashMap笔记整理
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2018/03/11/Cloudera-Manager-新版本中的警告/" rel="next" title="Cloudera Manager--新版本中的警告">
+    下一篇：Cloudera Manager--新版本中的警告
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Kerberos-给CDH集群添加Kerberos认证" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Linux--MySQL源码安装及配置 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Linux--MySQL源码安装及配置"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Linux--MySQL源码安装及配置</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-02-25T09:15:15.000Z"><a href="/2016/02/25/Linux-Mysql源码安装及配置/">2016-02-25</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Mysql/" class="chip red lighten-1">Mysql</a>
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#准备"><span class="section table-of-contents-text">准备</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装"><span class="section table-of-contents-text">安装</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#配置"><span class="section table-of-contents-text">配置</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　上篇博客<a href="http://blog.xiaoxiaomo.com/2016/02/22/Linux-软件安装之Mysql/">http://blog.xiaoxiaomo.com/2016/02/22/Linux-软件安装之Mysql/</a>，使用了一种相对比较简单的安装方式。本片博客，在讲解另外一种安装方式。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>下载地址Cmake：<a href="https://cmake.org/download/" target="_blank" rel="noopener">http://www.cmake.org/cmake/resources/software.html</a></li>
+<li>下载地址Mysql：<a href="http://www.mysql.com" target="_blank" rel="noopener">http://www.mysql.com</a></li>
+<li>博主下载了版本分别为：<a href="http://download.csdn.net/detail/tang__xuandong/9502755" target="_blank" rel="noopener">mysql-5.5.40 linux.tar.gz</a>和<a href="http://download.csdn.net/detail/tang__xuandong/9502759" target="_blank" rel="noopener">cmake-3.0.2.tar.gz</a>（<em>这里提供了下载</em>）</li>
+</ul>
+<a id="more"></a>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li>1.先安装cmake<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ up]<span class="comment"># tar -zxvf cmake-3.0.2.tar.gz </span></span><br><span class="line">[root@iZ94r8hgrjcZ up]<span class="comment"># mv cmake-3.0.2 /opt/   </span></span><br><span class="line">[root@iZ94r8hgrjcZ up]<span class="comment"># cd /opt/cmake-3.0.2/</span></span><br><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># ./configure ##如报错，请看下面解决办法</span></span><br><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># make</span></span><br><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>问题一：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># ./configure </span></span><br><span class="line">---------------------------------------------</span><br><span class="line">CMake 3.0.2, Copyright 2000-2014 Kitware, Inc.</span><br><span class="line">---------------------------------------------</span><br><span class="line">Error when bootstrapping CMake:</span><br><span class="line">Cannot find appropriate C compiler on this system.</span><br><span class="line">Please specify one using environment variable CC.</span><br><span class="line">See cmake_bootstrap.log <span class="keyword">for</span> compilers attempted.</span><br><span class="line"></span><br><span class="line">---------------------------------------------</span><br><span class="line">Log of errors: /opt/cmake-3.0.2/Bootstrap.cmk/cmake_bootstrap.log</span><br><span class="line">---------------------------------------------</span><br></pre></td></tr></table></figure></p>
+<p>解决办法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">1. <span class="comment">##安装gcc环境</span></span><br><span class="line">yum -y install gcc </span><br><span class="line"></span><br><span class="line">2. 然后运行：[root@iZ94r8hgrjcZ</span><br><span class="line">3. </span><br><span class="line">4.  cmake-3.0.2]<span class="comment"># ./bootstrap #报错如下</span></span><br><span class="line">---------------------------------------------</span><br><span class="line">CMake 3.0.2, Copyright 2000-2014 Kitware, Inc.</span><br><span class="line">C compiler on this system is: cc </span><br><span class="line">---------------------------------------------</span><br><span class="line">Error when bootstrapping CMake:</span><br><span class="line">Cannot find appropriate C++ compiler on this system.</span><br><span class="line">Please specify one using environment variable CXX.</span><br><span class="line">See cmake_bootstrap.log <span class="keyword">for</span> compilers attempted.</span><br><span class="line">---------------------------------------------</span><br><span class="line">Log of errors: /opt/cmake-3.0.2/Bootstrap.cmk/cmake_bootstrap.log</span><br><span class="line">---------------------------------------------</span><br><span class="line"></span><br><span class="line"><span class="comment">##缺少c++的环境</span></span><br><span class="line">yum -y install gcc-c++  </span><br><span class="line"></span><br><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># ./bootstrap </span></span><br><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># gmake  </span></span><br><span class="line">[root@iZ94r8hgrjcZ cmake-3.0.2]<span class="comment"># gmake install</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>2.创建mysql的安装目录及数据库存放目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ opt]<span class="comment"># mkdir -p /opt/mysql //安装mysql </span></span><br><span class="line">[root@iZ94r8hgrjcZ opt]<span class="comment"># mkdir -p /opt/mysql/data //存放数据库</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>3.创建mysql用户及用户组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ opt]<span class="comment"># groupadd mysql</span></span><br><span class="line">[root@iZ94r8hgrjcZ opt]<span class="comment"># useradd -r -g mysql mysql</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>4.安装mysql</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ up]<span class="comment"># tar -zxvf mysql-5.5.40\ linux.tar.gz </span></span><br><span class="line">[root@iZ94r8hgrjcZ up]<span class="comment"># cd mysql-5.5.40</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql-5.5.40]<span class="comment"># cmake . -DCMAKE_INSTALL_PREFIX=/opt/mysql -DMYSQL_DATADIR=/opt/mysql/data -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DEXTRA_CHARSETS=all -DENABLED_LOCAL_INFILE=1 //注意：上面是一条命令</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql-5.5.40]<span class="comment"># make  </span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql-5.5.40]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>5.问题解决（博主报了如下错误）</p>
+</li>
+</ul>
+<p>错误一： 在cmake时，出现如下错误：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- Could NOT find Curses (missing:  CURSES_LIBRARY CURSES_INCLUDE_PATH) </span><br><span class="line">CMake Error at cmake/readline.cmake:83 (MESSAGE):</span><br><span class="line">  Curses library not found.  Please install appropriate package,</span><br><span class="line"></span><br><span class="line">      remove CMakeCache.txt and rerun cmake.On Debian/Ubuntu, package name is libncurses5-dev, on Redhat andevel.</span><br><span class="line">Call Stack (most recent call first):</span><br><span class="line">  cmake/readline.cmake:127 (FIND_CURSES)</span><br><span class="line">  cmake/readline.cmake:217 (MYSQL_USE_BUNDLED_LIBEDIT)</span><br><span class="line">  CMakeLists.txt:369 (MYSQL_CHECK_READLINE)</span><br></pre></td></tr></table></figure></p>
+<p>解决办法：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y install ncurses-devel</span><br><span class="line">yum -y install bison</span><br><span class="line">make &amp;&amp; make install <span class="comment">#编译完成</span></span><br></pre></td></tr></table></figure></p>
+<p>错误二： 在make时，出现了如下错误：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make: *** No targets specified and no makefile found.  Stop.</span><br></pre></td></tr></table></figure></p>
+<p>解决办法：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.6.tar.gz</span><br><span class="line">2、tar zxvf ncurses-5.6.tar.gz</span><br><span class="line">3、<span class="built_in">cd</span> ncurses-5.6</span><br><span class="line">4、 ./configure -prefix=/opt -with-shared -without-debug</span><br><span class="line">    ./configure --with-shared --without-debug --with-ticlib</span><br><span class="line">5、make &amp;&amp; make install</span><br></pre></td></tr></table></figure></p>
+<p>注意：如果执行<code>cmake . -DCMAKE_INSTALL_PREFIX=/opt/mysql -DMYSQL_DATADIR=/opt/mysql/data -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DEXTRA_CHARSETS=all -DENABLED_LOCAL_INFILE=1</code>还是报错:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">remove CMakeCache.txt and rerun cmake.On Debian/Ubuntu, package name is libncurses5-dev, </span><br><span class="line">on Redhat and derivates it is ncurses-devel.  </span><br><span class="line">Call Stack (most recent call first):  </span><br><span class="line">  cmake/readline.cmake:127 (FIND_CURSES)  </span><br><span class="line">  cmake/readline.cmake:217 (MYSQL_USE_BUNDLED_LIBEDIT)  </span><br><span class="line">  CMakeLists.txt:257 (MYSQL_CHECK_READLINE)</span><br></pre></td></tr></table></figure></p>
+<p>记得清除旧的对象文件和缓存<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># make clean</span></span><br><span class="line"><span class="comment"># rm -f CMakeCache.txt</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>6.参数说明：<blockquote>
+<p>-DCMAKE_INSTALL_PREFIX=/opt/mysql //安装目录<br>-DINSTALL_DATADIR=/opt/mysql/data //数据库存放目录<br>-DDEFAULT_CHARSET=utf8 //使用utf8字符<br>-DDEFAULT_COLLATION=utf8_general_ci //校验字符<br>-DEXTRA_CHARSETS=all //安装所有扩展字符集<br>-DENABLED_LOCAL_INFILE=1  //允许从本地导入数据</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ul>
+<li>一、设置目录权限</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql-5.5.40]<span class="comment"># cd /opt/mysql/</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># ll</span></span><br><span class="line">total 200</span><br><span class="line">drwxr-xr-x  2 root root   4096 Apr 25 19:24 bin</span><br><span class="line">-rw-r--r--  1 root root  17987 Sep  8  2014 COPYING</span><br><span class="line">drwxr-xr-x  3 root root   4096 Apr 25 19:24 data</span><br><span class="line">drwxr-xr-x  2 root root   4096 Apr 25 19:24 docs</span><br><span class="line">drwxr-xr-x  3 root root   4096 Apr 25 19:24 include</span><br><span class="line">-rw-r--r--  1 root root 132608 Sep  8  2014 INSTALL-BINARY</span><br><span class="line">drwxr-xr-x  3 root root   4096 Apr 25 19:24 lib</span><br><span class="line">drwxr-xr-x  4 root root   4096 Apr 25 19:24 man</span><br><span class="line">drwxr-xr-x 10 root root   4096 Apr 25 19:24 mysql-test</span><br><span class="line">-rw-r--r--  1 root root   2496 Sep  8  2014 README</span><br><span class="line">drwxr-xr-x  2 root root   4096 Apr 25 19:24 scripts</span><br><span class="line">drwxr-xr-x 27 root root   4096 Apr 25 19:24 share</span><br><span class="line">drwxr-xr-x  4 root root   4096 Apr 25 19:24 sql-bench</span><br><span class="line">drwxr-xr-x  2 root root   4096 Apr 25 19:24 support-files、</span><br><span class="line"></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># chown -R root:mysql .</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># chown -R mysql:mysql data</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>二、将mysql的启动服务添加到系统服务中</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># cp support-files/my-medium.cnf /etc/my.cnf //my-medium.cnf不仅限于这一个文件</span></span><br><span class="line"></span><br><span class="line">//查看可以使用的文件</span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># cd support-files/</span></span><br><span class="line">[root@iZ94r8hgrjcZ support-files]<span class="comment"># ll</span></span><br><span class="line"><span class="comment">#下面列出的×.cnf结尾的都可以，但是每一个都有不同的用处</span></span><br><span class="line">total 152</span><br><span class="line">-rwxr-xr-x 1 root mysql  1153 May 29 11:14 binary-configure</span><br><span class="line">-rwxr-xr-x 1 root mysql  4528 May 29 11:14 config.huge.ini</span><br><span class="line">-rwxr-xr-x 1 root mysql  2382 May 29 11:14 config.medium.ini</span><br><span class="line">-rwxr-xr-x 1 root mysql  1626 May 29 11:14 config.small.ini</span><br><span class="line">-rw-r--r-- 1 root mysql   773 Jul  2  2012 magic</span><br><span class="line">-rw-r--r-- 1 root mysql  4691 May 29 11:14 my-huge.cnf</span><br><span class="line">-rw-r--r-- 1 root mysql 19759 May 29 11:14 my-innodb-heavy-4G.cnf</span><br><span class="line">-rw-r--r-- 1 root mysql  4665 May 29 11:14 my-large.cnf</span><br><span class="line">-rw-r--r-- 1 root mysql  4676 May 29 11:14 my-medium.cnf</span><br><span class="line">-rw-r--r-- 1 root mysql  2840 May 29 11:14 my-small.cnf</span><br><span class="line">-rwxr-xr-x 1 root mysql  1061 May 29 11:14 mysqld_multi.server</span><br><span class="line">-rwxr-xr-x 1 root mysql   839 May 29 11:14 mysql-log-rotate</span><br><span class="line">-rwxr-xr-x 1 root mysql 10650 May 29 11:14 mysql.server</span><br><span class="line">-rwxr-xr-x 1 root mysql  1326 May 29 11:14 ndb-config-2-node.ini</span><br></pre></td></tr></table></figure>
+<ul>
+<li>三、创建系统数据库的表</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># cd /opt/mysql</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># scripts/mysql_install_db --user=mysql</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>四、设置环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># vi /etc/profile</span></span><br><span class="line"><span class="comment"># Path manipulation</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$EUID</span>"</span> = <span class="string">"0"</span> ]; <span class="keyword">then</span></span><br><span class="line">        pathmunge /sbin</span><br><span class="line">        pathmunge /usr/sbin</span><br><span class="line">        pathmunge /usr/<span class="built_in">local</span>/sbin</span><br><span class="line">        pathmunge /opt/mysql/bin/<span class="comment">##添加行</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># source /etc/profile</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>五、将mysql添加到系统服务中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># cp support-files/mysql.server /etc/init.d/mysqld　//将mysql的启动服务添加到系统服务中</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>六、启动mysql的方法(mysql已经被添加到系统服务中)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># service mysql start  //启动mysql服务</span></span><br><span class="line">***********************************************</span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># service mysql stop　　//停止mysql服务</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># service mysql restart     //重启mysql服务</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>七、修改MySQL的root用户的密码以及打开远程连接</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment">#  mysql -u root -p</span></span><br><span class="line">Enter password:</span><br><span class="line">//这里MySQL的root用户还没有配置密码，直接点回车键即可。</span><br><span class="line"></span><br><span class="line">mysql&gt; use mysql; //使用mysql这个库</span><br><span class="line">Database changed</span><br><span class="line"></span><br><span class="line">mysql&gt; GRANT ALL PRIVILEGES ON *.* TO root@<span class="string">"%"</span> IDENTIFIED BY <span class="string">"root"</span>;  //添加远程连接</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; update user <span class="built_in">set</span> Password = password(<span class="string">'xiaoxiaomo.com'</span>) <span class="built_in">where</span> User=<span class="string">'root'</span>; //设置密码为xiaoxiaomo.com</span><br><span class="line">Query OK, 5 rows affected (0.01 sec)</span><br><span class="line">Rows matched: 5  Changed: 5  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select Host,User,Password  from user <span class="built_in">where</span> User=<span class="string">'root'</span>;</span><br><span class="line">+--------------+------+-------------------------------------------+</span><br><span class="line">| Host         | User | Password                                  |</span><br><span class="line">+--------------+------+-------------------------------------------+</span><br><span class="line">| localhost    | root | *758A8EEE3D96A07C409995FD1E7C66493AC52206 |</span><br><span class="line">| iz94r8hgrjcz | root | *758A8EEE3D96A07C409995FD1E7C66493AC52206 |</span><br><span class="line">| 127.0.0.1    | root | *758A8EEE3D96A07C409995FD1E7C66493AC52206 |</span><br><span class="line">| ::1          | root | *758A8EEE3D96A07C409995FD1E7C66493AC52206 |</span><br><span class="line">| %            | root | *758A8EEE3D96A07C409995FD1E7C66493AC52206 |</span><br><span class="line">+--------------+------+-------------------------------------------+</span><br><span class="line">5 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="built_in">exit</span></span><br><span class="line">Bye</span><br><span class="line"></span><br><span class="line">[root@ iZ94r8hgrjcZ mysql]<span class="comment"># mysql -u root -p</span></span><br><span class="line"></span><br><span class="line">若还不能进行远程连接，则查看防火墙是否开启</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>八、设置开机启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># chkconfig --level 345 mysql on //设置开机启动(取消开机启动：把 on 改为 off)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>九、修改mysql的最大连接数</p>
+</li>
+</ul>
+<p>mysql默认安装的最大连接数是100。100一般是不够用的。要增大连接数，要怎样增加呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]# vi /etc/my.cnf  </span><br><span class="line"></span><br><span class="line"># The MySQL server</span><br><span class="line">[mysqld]</span><br><span class="line">port = 3306</span><br><span class="line">socket = /tmp/mysql.sock</span><br><span class="line">skip-external-locking</span><br><span class="line">key_buffer_size = 16M</span><br><span class="line">max_allowed_packet = 4M</span><br><span class="line">table_open_cache = 64</span><br><span class="line">sort_buffer_size = 512K</span><br><span class="line">net_buffer_length = 8K</span><br><span class="line">read_buffer_size = 256K</span><br><span class="line">read_rnd_buffer_size = 512K</span><br><span class="line">myisam_sort_buffer_size = 8M</span><br><span class="line">#一定要加在[mysqld]这段里面,根据你的需求自行更改数据</span><br><span class="line">max_connections=1000         # 最大连接数</span><br><span class="line">max_user_connections=500     # 每个用户最大连接数</span><br><span class="line">wait_timeout=200             # 多少秒后关闭空闲（IDLE）</span><br></pre></td></tr></table></figure>
+<p>检测：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># service mysql restart  //重启mysql服务</span></span><br><span class="line">[root@iZ94r8hgrjcZ mysql]<span class="comment"># cd /opt/mysql/bin</span></span><br><span class="line">[root@iZ94r8hgrjcZ bin]<span class="comment"># mysqladmin -u root -p variables //检测</span></span><br><span class="line">输入root数据库账号的密码后可看到 (屏幕上的数据有点多，慢慢找)</span><br><span class="line"></span><br><span class="line">|max_connections             | 1000</span><br><span class="line">|max_user_connections        | 500</span><br><span class="line">|wait_timeout                | 200</span><br><span class="line"><span class="comment">#改动已经生效。</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>十、查看修改mysql编码方式</li>
+</ul>
+<p>MySQL的默认编码是Latin1，不支持中文，要支持中文需要把数据库的默认编码修改为gbk或者utf8（java的一般都是用utf-8，乱码问题蛋疼啊，我就用utf-8演示）。</p>
+<ol>
+<li><p>需要以root用户身份登陆才可以查看数据库编码方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like <span class="string">'character%'</span>;</span><br><span class="line">+--------------------------+----------------------------------+</span><br><span class="line">| Variable_name            | Value                            |</span><br><span class="line">+--------------------------+----------------------------------+</span><br><span class="line">| character_set_client     | utf8                             |</span><br><span class="line">| character_set_connection | utf8                             |</span><br><span class="line">| character_set_database   | latin1                           |</span><br><span class="line">| character_set_filesystem | binary                           |</span><br><span class="line">| character_set_results    | utf8                             |</span><br><span class="line">| character_set_server     | latin1                           |</span><br><span class="line">| character_set_system     | utf8                             |</span><br><span class="line">| character_sets_dir       | /opt/mysql/share/charsets/ |</span><br><span class="line">+--------------------------+----------------------------------+</span><br><span class="line">8 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>停止mysql服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ etc]<span class="comment"># service mysql stop</span></span><br><span class="line">Shutting down MySQL.                                       [  OK  ]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑my.cnf</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ etc]<span class="comment"># vi /etc/my.cnf</span></span><br><span class="line"><span class="comment"># The following options will be passed to all MySQL clients</span></span><br><span class="line">[client]</span><br><span class="line"><span class="comment">#password       = your_password</span></span><br><span class="line">port            = 3306</span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">default-character-set=utf8  <span class="comment">##为添加内容1</span></span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">port            = 3306</span><br><span class="line">max_connections=1000       <span class="comment"># 最大连接数</span></span><br><span class="line">max_user_connections=500   <span class="comment"># 每个用户最大连接数</span></span><br><span class="line">wait_timeout=200           <span class="comment"># 多少秒后关闭空闲（IDLE）</span></span><br><span class="line">character-set-server =utf8 <span class="comment">##为添加内容2</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>检查<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ etc]<span class="comment"># service mysql start</span></span><br><span class="line">Starting MySQL..                                           [  OK  ]</span><br><span class="line">[root@iZ94r8hgrjcZ etc]<span class="comment"># mysql -u root -p</span></span><br><span class="line">Enter password:</span><br><span class="line">mysql&gt; show variables like <span class="string">'character%'</span>;</span><br><span class="line">+--------------------------+----------------------------------+</span><br><span class="line">| Variable_name            | Value                            |</span><br><span class="line">+--------------------------+----------------------------------+</span><br><span class="line">| character_set_client     | utf8                             |</span><br><span class="line">| character_set_connection | utf8                             |</span><br><span class="line">| character_set_database   | utf8                             |</span><br><span class="line">| character_set_filesystem | binary                           |</span><br><span class="line">| character_set_results    | utf8                             |</span><br><span class="line">| character_set_server     | utf8                             |</span><br><span class="line">| character_set_system     | utf8                             |</span><br><span class="line">| character_sets_dir       | /opt/mysql/share/charsets/ |</span><br><span class="line">+--------------------------+----------------------------------+</span><br><span class="line">8 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>参考资料<br><a href="http://www.cnblogs.com/zz0412/archive/2013/05/21/mysql.html" target="_blank" rel="noopener">http://www.cnblogs.com/zz0412/archive/2013/05/21/mysql.html</a><br><a href="http://hezuyou.blog.163.com/blog/static/78497415201311734452972/" target="_blank" rel="noopener">http://hezuyou.blog.163.com/blog/static/78497415201311734452972/</a><br><a href="http://wytoy.iteye.com/blog/1161906" target="_blank" rel="noopener">http://wytoy.iteye.com/blog/1161906</a></li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/02/28/Linux-常用VI-VIM命令/" rel="next" title="Linux--常用VI/VIM命令">
+    上一篇：Linux--常用VI/VIM命令
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/02/23/Linux-软件安装之Redis/" rel="next" title="Linux--软件安装之Redis">
+    下一篇：Linux--软件安装之Redis
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Linux--MySQL源码安装及配置" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

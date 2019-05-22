@@ -1,0 +1,812 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Cassandra--配置文件讲解 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Cassandra--配置文件讲解"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Cassandra--配置文件讲解</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-11-16T06:54:48.000Z"><a href="/2017/11/16/Cassandra-配置文件讲解/">2017-11-16</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Cassandra配置文件"><span class="section table-of-contents-text">Cassandra配置文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#集群相关"><span class="section table-of-contents-text">集群相关</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#种子地址"><span class="section table-of-contents-text">种子地址</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#权限相关"><span class="section table-of-contents-text">权限相关</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据分区策略"><span class="section table-of-contents-text">数据分区策略</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据目录"><span class="section table-of-contents-text">数据目录</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#commit-log文件"><span class="section table-of-contents-text">commit log文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据文件访问"><span class="section table-of-contents-text">数据文件访问</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#并发"><span class="section table-of-contents-text">并发</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#地址端口通信"><span class="section table-of-contents-text">地址端口通信</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据压缩"><span class="section table-of-contents-text">数据压缩</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#memtable设置"><span class="section table-of-contents-text">memtable设置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#策略相关"><span class="section table-of-contents-text">策略相关</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本篇博客主要讲Cassandra的配置文件，主要是说的<code>cassandra.yaml</code>里面的一些配置项。这里会把主要的都列出来，以供参考，后续有新的东西也会持续补充更新。</p>
+<h2 id="Cassandra配置文件"><a href="#Cassandra配置文件" class="headerlink" title="Cassandra配置文件"></a>Cassandra配置文件</h2><ol>
+<li>在0.7版本之前,cassandra的配置文件是<code>conf/storage-conf.xml</code>文件。0.7之后是<code>conf/cassandra.yaml</code>文件</li>
+<li>可以通过-Dcassandra.conf指定需要加载的配置文件，例如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-Dcassandra.config=alternate-cassandra.yaml</span><br><span class="line">-Dcassandra.config=http://www.example.com/remote-cassandra.yaml</span><br><span class="line">-Dcassandra.config=file:///home/me/external-local-cassandra.yaml</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<h2 id="集群相关"><a href="#集群相关" class="headerlink" title="集群相关"></a>集群相关</h2><ol>
+<li><p><code>cluster_name</code><br> 集群名称：同一集群该值相同，默认：Test Cluster</p>
+</li>
+<li><p><code>initial_token</code>(Token值，表示了一致性哈希环中的位置)<br> 默认为空，系统自动生成。为空还表示使用virtual nodes，删除了节点之后它会自动均衡数据，不要你手动处理。 </p>
+</li>
+<li><p><code>auto_bootstrap</code> 　　<br> 第一次启动的时候，是否在加入Cassandra集群时从其他服务器获取属于本服务器的数据。如果当前Cassandra服务器不在seed配置选项中，并且是第一次启动，将从Cassandra集群中其他服务器获取属于本服务器的数据。 　</p>
+</li>
+</ol>
+<h2 id="种子地址"><a href="#种子地址" class="headerlink" title="种子地址"></a>种子地址</h2><ul>
+<li><code>seed_provider</code><br>  通过该参数设置种子地址，以用来发现子节点<ul>
+<li>class_name (默认: org.apache.cassandra.locator.SimpleSeedProvider)，可以自定义</li>
+<li>seeds (默认: 127.0.0.1)<br>  gossip用来引导新节点加入集群中去，多数据中心的集群，最好每个数据中心都包含一个种子节点（容错，推荐超过一个种子节点）。<br>  否则，gossip在引导一个新节点时不得不和另外一个数据中心通信了。不推荐把每个节点都当成种子节点(大概每个数据中心三个种子节点)。<br><img src="https://img.xiaoxiaomo.com/blog/img/cassandra19.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<h2 id="权限相关"><a href="#权限相关" class="headerlink" title="权限相关"></a>权限相关</h2><ol>
+<li><p>authenticator 用户授权，选项：<br> 1.1. AllowAllAuthenticator：（默认值）不需要密码，具备所有的权限<br> 1.2. SimpleAuthenticator：需要账号密码（用户/密码在passwd.properties文件中定义）</p>
+</li>
+<li><p>authority 校验权限<br> 验证该用户是否具备操作某一个Column Family的权限，这是安全认证的第一步。Cassandra中定义了一系列验证用户权限的策略，可以选择的项为： 　　<br> 2.1. AllowAllAuthority：（默认值），用户具备所有的权限<br> 2.2. SimpleAuthority：需要校验（用户/权限在access.properties文件中定义）</p>
+</li>
+<li><p>role_manager: CassandraRoleManager</p>
+</li>
+<li>roles_validity_in_ms: 2000</li>
+<li>permissions_validity_in_ms: 2000</li>
+<li>credentials_validity_in_ms: 2000</li>
+</ol>
+<h2 id="数据分区策略"><a href="#数据分区策略" class="headerlink" title="数据分区策略"></a>数据分区策略</h2><ul>
+<li>partitioner：数据分区的策略（集群中所有节点该配置相同） 　　<ol>
+<li>org.apache.cassandra.dht.RandomPartitioner 　　</li>
+<li>org.apache.cassandra.dht.ByteOrderedPartitioner 　　</li>
+<li>org.apache.cassandra.dht.OrderPreservingPartitioner 　　</li>
+<li>org.apache.cassandra.dht.CollatingOrderPreservingPartitioner 　</li>
+</ol>
+</li>
+</ul>
+<h2 id="数据目录"><a href="#数据目录" class="headerlink" title="数据目录"></a>数据目录</h2><ol>
+<li><p>data_file_directories：SSTable数据文件存储位置<br>（默认：$CASSANDRA_HOME/data/data）下面示例多个的写法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data_file_directories:</span><br><span class="line">    - /data1/cassandra/data</span><br><span class="line">    - /data2/cassandra/data</span><br><span class="line">    - /data3/cassandra/data</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>commitlog_directory：日志文件目录<br>（默认：$CASSANDRA_HOME/data/commitlog），最好和SSTable文件目录分不同磁盘　</p>
+</li>
+<li><p>saved_caches_directory：数据缓存目录<br>（默认：$CASSANDRA_HOME/data/saved_caches）这个目录是table key和row缓存存放的地方</p>
+</li>
+</ol>
+<h2 id="commit-log文件"><a href="#commit-log文件" class="headerlink" title="commit log文件"></a>commit log文件</h2><ol>
+<li><p>commitlog_sync：commitlog同步方式<br> 2.1. periodic：周期同步commitlog，每一次有数据更新都将操作commitlog。 　　<br> 2.2. batch   ：批量同步commitlog</p>
+</li>
+<li><p>commitlog_sync_period_in_ms 　　<br> 周期记录commitlog时，刷新commitlog文件的时间间隔。这个选项只有在commitlog_sync= periodic时才能设置。 　　</p>
+</li>
+<li><p>commitlog_sync_batch_window_in_ms 　　<br> 批量记录commitlog时，批量操作缓存的时间间隔。这个选项只有在commitlog_sync= batch时才能设置。 　　</p>
+</li>
+<li><p>commitlog_segment_size_in_mb: 32</p>
+</li>
+</ol>
+<h2 id="数据文件访问"><a href="#数据文件访问" class="headerlink" title="数据文件访问"></a>数据文件访问</h2><ul>
+<li>disk_access_mode：Cassandra访问SSTable文件中的Data文件和Index文件时是否使用虚拟内存映射的形式。<ol>
+<li>auto 　　自动选择合适的文件访问形式，如果是64位系统，则为mmap形式，否则为standard形式。 　　</li>
+<li>mmap 　　访问SSTable文件中的Data文件和Index文件时，都采用虚拟内存映射的形式。 　　</li>
+<li>mmap_index_only 　　访问SSTable文件中的Index文件时采用虚拟内存映射的形式。 　　</li>
+<li>standard 　　访问SSTable文件中的Data文件和Index文件时，都不采用虚拟内存映射的形式。使用虚拟内存映射的形式访问文件能够加快对文件的读写速度，但是这是以消耗而外的内存作为代价的。所以要根据实际内存大小与文件大小来选择合适的文件访问方式。 　　</li>
+</ol>
+</li>
+</ul>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><ol>
+<li><p><code>concurrent_reads</code> 　　<br> (默认: 32)并发读取的线程数，这个选项设置得越大，Cassandra在进行读取操作时可以使用的线程数就越多。推荐的配置为：CPU的个数*2。 　　</p>
+</li>
+<li><p><code>concurrent_writes</code> 　　<br> (默认: 32)并发写入的线程数，这个选项设置得越大，Cassandra在进行写入操作时可以使用的线程数就越多。 　　</p>
+</li>
+<li><p><code>concurrent_counter_writes</code><br> (默认: 32)注计数器在自增之前写当前读的值，然后写回调。推荐值是(16x处理器数量)</p>
+</li>
+<li><p><code>concurrent_batchlog_writes</code><br> (默认: 32)并发批量写日志的限制，类似于concurrent_writes</p>
+</li>
+<li><p><code>concurrent_materialized_view_writes</code><br> (默认: 32) 比并发读或者并发写更少的并发物化视图的写，因为物化视图写中包含了一个读取。</p>
+</li>
+</ol>
+<h2 id="地址端口通信"><a href="#地址端口通信" class="headerlink" title="地址端口通信"></a>地址端口通信</h2><ol>
+<li><p><code>storage_port</code>： 服务器与服务器通信端口　　</p>
+</li>
+<li><p><code>listen_address</code>： 服务器与服务器通信地址(默认：localhost)，也可以设置<code>listen_interface</code>，不需要同时设置</p>
+</li>
+<li><p><code>rpc_address</code>： 服务器对外通信地址(默认使用主机名)　</p>
+</li>
+<li><p><code>rpc_port</code>： 服务器对外通信端口
+　　</p>
+</li>
+<li><p><code>rpc_keepalive</code>： rpc连接是否一直保持。 　</p>
+</li>
+<li><p><code>rpc_timeout_in_ms</code>： rpc超时限制</p>
+</li>
+<li><code>rpc_min_threads</code>:  16</li>
+<li><p><code>rpc_max_threads</code>:  2048</p>
+</li>
+<li><p><code>thrift_framed_transport_size_in_mb</code> ：使用Thrift Frame每次传递的数据大小。如果该选项为0，则禁用Thrift Frame。 　　</p>
+</li>
+<li><code>thrift_max_message_length_in_mb</code>  ：使用Thrift传递的数据最大值。 　　</li>
+</ol>
+<h2 id="数据压缩"><a href="#数据压缩" class="headerlink" title="数据压缩"></a>数据压缩</h2><ol>
+<li><p><code>compaction_throughput_mb_per_sec</code><br> (默认: 16) compaction指定的总吞吐量的阀值。你插入速度越快，越需要在规定时间内更快的压缩速度。推荐的值是16到32的写吞吐量(单位：Mb/s)。<br>设为0，表示禁用compaction throttling。</p>
+</li>
+<li><p><code>compaction_large_partition_warning_threshold_mb</code><br> (默认: 100) 在压缩分区大于设定值时记录警告。</p>
+</li>
+<li><p><code>snapshot_before_compaction</code>：在执行数据压缩操作前<br> 是否对需要压缩的SSTable文件做数据快照(snapshot)，默认：false。 　　　　</p>
+</li>
+<li><p><code>in_memory_compaction_limit_in_mb</code>：在Cassandra执行数据压缩时<br> 如果某一个key对应的数据的大小超过了in_memory_compaction_limit_in_mb的限制，将采用延后压缩的机制进行压缩，避免使用过多的内存。 　　</p>
+</li>
+<li><p><code>column_index_size_in_kb</code>：SSTable数据文件对应索引的数据大小间隔。如果这个值越小，在Column索引中找到相应的值速度就越快，但是会消耗更多的内存与磁盘空间。 </p>
+</li>
+<li><p><code>index_interval</code> 　　<br> SSTable文件中的Index文件对应内存索引的数据大小间隔。如果这个值越小，在内存索引中找到相应的值速度就越快，但是会消耗更多的内存。 　　</p>
+</li>
+</ol>
+<h2 id="memtable设置"><a href="#memtable设置" class="headerlink" title="memtable设置"></a>memtable设置</h2><ol>
+<li><code>memtable_heap_space_in_mb</code><br> (默认: 1/4 堆大小)<br> 设置在堆内存里分配的memtables的大小。Cassandra使用这个和memtable_offheap_space_in_mb的值总和来决定何时自动刷新memtables。</li>
+<li><p><code>memtable_offheap_space_in_mb</code><br> (默认: 1/4堆大小)<br> 设置在堆外内存里分配的memtables大小。Cassandra使用这个和memtable_heap_space_in_mb的值总和来决定何时自动刷新memtable</p>
+</li>
+<li><p><code>memtable_flush_writers</code> 　　<br> memtable中的数据写入到磁盘成为SSTable文件的并发数, 这个选项的默认配置为data_file_directories中指定的目录的个数。 　
+　</p>
+</li>
+<li><code>sliced_buffer_size_in_kb</code>：进行范围读取操作时，读取SSTable文件使用的缓存大小。 </li>
+</ol>
+<h2 id="策略相关"><a href="#策略相关" class="headerlink" title="策略相关"></a>策略相关</h2><ol>
+<li><p><code>commit_failure_policy</code>：(默认: stop)提交磁盘故障策略</p>
+<ul>
+<li>die：关闭gossip和Thrift，然后杀掉JVM进程，这样节点就可以被替换。</li>
+<li>stop：关闭gossip和Thrift，使节点实际上死亡了，但是可以使用JMX检查。</li>
+<li>stop_commit：关闭commit log，让写聚集，但继续提供读服务(就像Cassandra 2.0.5之前的版本)。</li>
+<li>ignore：忽略致命错误，并让批失败。</li>
+</ul>
+</li>
+<li><p><code>disk_optimization_strategy</code>：(默认: ssd)优化磁盘读取策略可以设置成固态硬盘或者旋转的。</p>
+</li>
+<li><p><code>disk_failure_policy</code>：(默认: stop)设置Cassandra如何响应磁盘故障。建议设置成stop或者best_effort。</p>
+<ul>
+<li>die：关闭gossip和Thrift，然后对于任何系统错误或者仅仅是SSTable错误，都杀掉JVM进程，这样节点就可以被替换。</li>
+<li>stop_paranoid：关闭gossip和Thrift，即使仅仅是SSTable错误。</li>
+<li>stop：关闭gossip和Thrift，让节点实际上死亡了，但是可以使用JVX检查。</li>
+<li>best_effort：停止使用故障磁盘，然后基于剩余可用的SSTables来响应请求。这意味着你会在一致性级别为1的基础上看到过时的数据。</li>
+<li>ignore：忽略致命错误，并允许请求失败；所有文件系统错误都会被记录，但是忽略。在Cassandra 1.2版本之前是这种情况</li>
+</ul>
+</li>
+<li><p>endpoint_snitch：网络选择策略，选项：<br> 4.1. SimpleSnitch（默认）<br> 用于单数据中心部署或者公共云中的单个区域。不识别数据中心或者机架信息。它视策略顺序为接近，当忽略读修复时可以提高缓存局部性。<br> 4.2. GossipingPropertyFileSnitch<br> 建议生产使用。本地节点机架和数据中心定义在cassandra-rackdc.properties文件里，通过八卦协议传播到其他节点。<br> 为了便于从PropertyFileSnitch移植，它也使用cassandra-topology.properties，如果存在的话。<br> 4.3. PropertyFileSnitch<br> 决定于机架和数据中心的距离，这是明确的在cassandratopology.properties文件里配置的。<br> 4.4. 更多参考：<a href="http://blog.csdn.net/qq_32523587/article/details/53982900" target="_blank" rel="noopener">http://blog.csdn.net/qq_32523587/article/details/53982900</a></p>
+</li>
+<li><p>dynamic_snitch：是否启用动态的节点选择策略，相关的其他选项为：<br> 2.1. dynamic_snitch_update_interval_in_ms:<br> 2.2. dynamic_snitch_reset_interval_in_ms:<br> 2.3. dynamic_snitch_badness_threshold:</p>
+</li>
+<li><p>request_scheduler：资源调度分配策略 ，选项： 　　<br> 3.1. org.apache.cassandra.scheduler.NoScheduler，所有的请求分配的计算资源都是均等的（默认）。 　　<br> 3.2. org.apache.cassandra.scheduler.RoundRobinScheduler，对不同的Keyspace分配不同的计算资源（多租户的情况下适合）。 　　</p>
+</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2017/11/16/Cassandra-CQL/" rel="next" title="Cassandra--CQL">
+    上一篇：Cassandra--CQL
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/11/16/Cassandra-搭建单节点和集群/" rel="next" title="Cassandra--搭建单节点和集群">
+    下一篇：Cassandra--搭建单节点和集群
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Cassandra--配置文件讲解" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

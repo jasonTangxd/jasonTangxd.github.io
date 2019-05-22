@@ -1,0 +1,709 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java--NIO之通道 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java--NIO之通道"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java--NIO之通道</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-23T02:53:26.000Z"><a href="/2016/04/23/Java-NIO之通道/">2016-04-23</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#打开通道"><span class="section table-of-contents-text">打开通道</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#使用通道"><span class="section table-of-contents-text">使用通道</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Scatter-Gather"><span class="section table-of-contents-text">Scatter/Gather</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　通道与缓冲区不同，<code>通道 API 主要由接口指定</code>。<em>不同的操作系统上通道实现（Channel Implementation）会有根本性的差异</em>，所以通道 API 仅仅描述了可以做什么。因此很自然地，通道实现经常使用操作系统的本地代码。通道接口允许您以一种受控且可移植的方式来访问底层的 I/O服务。<br>　<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160423165143.png" alt="Channel结构关系图"></p>
+<a id="more"></a>
+<p>首先，我们来更近距离地看一下基本的 Channel 接口。下面是 Channel 接口的完整源码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.nio.channels;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Channel</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">( )</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>从 Channel 接口引申出的其他接口都是面向字节的子接口</code>，包括 Writable ByteChannel 和ReadableByteChannel。这也正好支持了我们之前所学的：<strong>通道只能在字节缓冲区上操作</strong>。层次结构表明其他数据类型的通道也可以从 <code>Channel</code> 接口引申而来。这是一种很好的类设计，不过非字节实现是不可能的，因为操作系统都是以字节的形式实现底层 I/O 接口的。</p>
+<h2 id="打开通道"><a href="#打开通道" class="headerlink" title="打开通道"></a>打开通道</h2><p>通道是访问 I/O 服务的导管，<strong>打开一个管道，通常就是创建一个管道</strong>。I/O 可以分为广义的两大类别：File I/O 和 Stream I/O。那么相应地也有两种类型的通道：文件（file）通道和套接字（socket）通道。通道可以以多种方式创建。</p>
+<ol>
+<li><strong>Socket</strong>： 通道有可以直接创建新 socket 通道的工厂方法，分别是<code>SocketChannel</code>、<code>ServerSocketChannel</code>和<code>DatagramChannel</code>。</li>
+<li><strong>FileChannel</strong>： 对象却只能通过在一个打开的 <code>RandomAccessFile</code>、<code>FileInputStream</code> 或 <code>FileOutputStream</code>对象上调用getChannel()方法来获取，不能直接创建。</li>
+</ol>
+<ul>
+<li>打开管道。例如</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Socket（套接字）</span></span><br><span class="line">SocketChannel sc = SocketChannel.open();</span><br><span class="line">ServerSocketChannel ssc = ServerSocketChannel.open();</span><br><span class="line">DatagramChannel dc = DatagramChannel.open();</span><br><span class="line"></span><br><span class="line"><span class="comment">//FileChannel</span></span><br><span class="line">FileChannel raf = <span class="keyword">new</span> RandomAccessFile(<span class="string">"file"</span>, <span class="string">"r"</span>).getChannel();</span><br><span class="line">FileChannel channel = <span class="keyword">new</span> FileInputStream(<span class="string">"abc.txt"</span>).getChannel();</span><br><span class="line">FileChannel channe = <span class="keyword">new</span> FileOutputStream(<span class="string">"abc.txt"</span>).getChannel();</span><br></pre></td></tr></table></figure>
+<h2 id="使用通道"><a href="#使用通道" class="headerlink" title="使用通道"></a>使用通道</h2><p>打开一个管道之后就是管道的字节读写，有 <code>ReadableByteChannel</code>, <code>WritableByteChannel</code>,和<code>InterruptibleChannel</code>。ByteChannel类继承了ReadableByteChannel和WritableByteChannel的属性。然后还有很多很多的Channel了。例如：SocketChannel，FileChannel，ServerSocketChannel等等。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160423165742.png" alt="ByteChannel 接口"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReadableByteChannel</span> <span class="keyword">extends</span> <span class="title">Channel</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(ByteBuffer dst)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WritableByteChannel</span> <span class="keyword">extends</span> <span class="title">Channel</span> </span>&#123; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">write</span><span class="params">(ByteBuffer src)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ByteChannel</span> <span class="keyword">extends</span> </span></span><br><span class="line"><span class="class">	<span class="title">ReadableByteChannel</span>, <span class="title">WritableByteChannel</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>实例代码</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.momo.nio;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.Channels;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.ReadableByteChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.WritableByteChannel;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 通道</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/23.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChannelTest01</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//1. 创建通道</span></span><br><span class="line">        ReadableByteChannel rbyc = Channels.newChannel(System.in);</span><br><span class="line">        WritableByteChannel wbyc = Channels.newChannel(System.out);</span><br><span class="line"></span><br><span class="line">        detailChnnel(rbyc, wbyc);</span><br><span class="line">        <span class="comment">//detailChnnel2(rbyc, wbyc);//第二种方法</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//4. 关闭</span></span><br><span class="line">        rbyc.close();</span><br><span class="line">        wbyc.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">detailChnnel</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            ReadableByteChannel rbyc, WritableByteChannel wbyc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">//2. 创建缓冲区</span></span><br><span class="line">        ByteBuffer buffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3. 处理数据-输入并打印到控制台</span></span><br><span class="line">        <span class="keyword">while</span> ( rbyc.read( buffer ) != -<span class="number">1</span> )&#123;<span class="comment">//读入数据到缓冲区</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//翻转-准备读出缓冲区的数据</span></span><br><span class="line">            buffer.flip() ;</span><br><span class="line"></span><br><span class="line">            wbyc.write( buffer ) ;<span class="comment">//从缓冲区写出到控制台</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//压缩-把已经读过的数据抛弃，使用后面的数据覆盖（移动至索引0）</span></span><br><span class="line">            buffer.compact() ;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"结束程序后--------"</span>);</span><br><span class="line">        <span class="keyword">while</span> ( buffer.hasRemaining() )&#123;<span class="comment">//告知在当前位置和限制之间是否有元素。</span></span><br><span class="line">            wbyc.write( buffer ) ;<span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">detailChnnel2</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            ReadableByteChannel rbyc, WritableByteChannel wbyc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2. 创建缓冲区</span></span><br><span class="line">        ByteBuffer buffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">        <span class="keyword">while</span> (rbyc.read(buffer) != -<span class="number">1</span>) &#123;</span><br><span class="line">            buffer.flip();</span><br><span class="line">            <span class="keyword">while</span> (buffer.hasRemaining()) &#123;</span><br><span class="line">                wbyc.write(buffer);<span class="comment">//从缓冲区写出到控制台</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//重设缓冲区以便接收更多的字节</span></span><br><span class="line">            buffer.compact();</span><br><span class="line">            <span class="comment">//buffer.clear();</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SocketChannel和FileChannel都是实现了以上三个接口的。那么，也就是说，他们都有读写的方法，但是对于FileChannel来说，并非如此，因为有的文件可能是只读的，那么，如果调用write方法的，就会抛出NonWritableChannelException异常。 </li>
+</ul>
+<h2 id="Scatter-Gather"><a href="#Scatter-Gather" class="headerlink" title="Scatter/Gather"></a>Scatter/Gather</h2><p>有时候可能为了提高I/O性能，要<strong>组合多个缓冲区，或者从多个缓冲区读数据</strong>，就可以使用<code>Scatter（分散）</code>和<code>Gather（聚合）</code></p>
+<ol>
+<li><strong>Scatter</strong>：<strong>从一个Channel读取的信息分散到N个缓冲区中Buufer</strong>。</li>
+<li><strong>Gather</strong>：<strong>将N个Buffer里面内容按照顺序发送到一个Channel</strong>。</li>
+</ol>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160423175154.png" alt="Scatter/Gather"></p>
+<ul>
+<li>ReadableByteChannel、WritableByteChannel接口提供了通道的读写功能</li>
+<li>ScatteringByteChannel、GatheringByteChannel接口提供了分散和聚合</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ScatteringByteChannel</span> <span class="keyword">extends</span> <span class="title">ReadableByteChannel</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">read</span> <span class="params">(ByteBuffer [] dsts)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">read</span> <span class="params">(ByteBuffer [] dsts, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> <span class="keyword">throws</span> IOException</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">GatheringByteChannel</span> <span class="keyword">extends</span> <span class="title">WritableByteChannel</span></span>&#123; </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">write</span><span class="params">(ByteBuffer[] srcs)</span> <span class="keyword">throws</span> IOException</span>; </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">write</span><span class="params">(ByteBuffer[] srcs, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> <span class="keyword">throws</span> IOException</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面以FileChannel为例（<em>FileChannel implements GatheringByteChannel, ScatteringByteChannel</em>）</li>
+<li>实例Scatter</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.momo.nio;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.RandomAccessFile;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.FileChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.charset.Charset;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * scatter 分散</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/23.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScatterDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Charset charset = Charset.forName(<span class="string">"GBK"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String fileName = <span class="string">"D:/test.log"</span>;</span><br><span class="line">        <span class="comment">//写入数据</span></span><br><span class="line">        writeData(fileName, <span class="string">"abcde999efghigk12345678"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**----------Scatter------------*/</span></span><br><span class="line">        <span class="comment">//read(java.nio.ByteBuffer[])</span></span><br><span class="line">        scatter(fileName);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//read(java.nio.ByteBuffer[], int, int)</span></span><br><span class="line">        scatter2(fileName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Scatter 分散</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">scatter</span><span class="params">(<span class="keyword">final</span> String fileName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//1. 获取文件通道</span></span><br><span class="line">        RandomAccessFile accessFile = <span class="keyword">new</span> RandomAccessFile(fileName, <span class="string">"r"</span>);</span><br><span class="line">        FileChannel channel = accessFile.getChannel();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//2. 创建两个缓冲区</span></span><br><span class="line">        ByteBuffer head = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        ByteBuffer body = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3. 缓冲区数组</span></span><br><span class="line">        ByteBuffer[] buffers = &#123;head, body&#125;;</span><br><span class="line">        <span class="comment">// channel读取的信息分散到head和body缓冲区中</span></span><br><span class="line">        <span class="comment">// head 前5个字节 |  body 剩下的</span></span><br><span class="line">        System.out.println(<span class="string">"scatter====共读到多少字节:"</span> + channel.read(buffers));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//head缓冲区中的数据:abcde</span></span><br><span class="line">        head.flip();</span><br><span class="line">        System.out.println(<span class="string">"head缓冲区中的数据:"</span> + charset.decode(head));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//body缓冲区中的数据:999efghigk12345678</span></span><br><span class="line">        body.flip();</span><br><span class="line">        System.out.println(<span class="string">"body缓冲区中的数据:"</span> + charset.decode(body));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//4. 关闭通道</span></span><br><span class="line">        accessFile.close();</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * scatter2</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">scatter2</span><span class="params">(<span class="keyword">final</span> String fileName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//1. 获取文件通道</span></span><br><span class="line">        RandomAccessFile accessFile = <span class="keyword">new</span> RandomAccessFile(fileName, <span class="string">"r"</span>);</span><br><span class="line">        FileChannel channel = accessFile.getChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2. 创建一个四个缓冲区</span></span><br><span class="line">        ByteBuffer head = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        ByteBuffer body1 = ByteBuffer.allocate(<span class="number">3</span>);</span><br><span class="line">        ByteBuffer body2 = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        ByteBuffer body3 = ByteBuffer.allocate(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        ByteBuffer[] buffers = <span class="keyword">new</span> ByteBuffer[]&#123; head, body1, body2, body3&#125;;</span><br><span class="line">        <span class="comment">//0从那个缓冲区开始被使用，使用3个缓冲区即head,body1,body2</span></span><br><span class="line">        System.out.println(<span class="string">"scatter2====共读到多少字节:"</span> + channel.read(buffers, <span class="number">0</span>, <span class="number">3</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//head缓冲区中的数据:abcde</span></span><br><span class="line">        head.flip();</span><br><span class="line">        System.out.println(<span class="string">"head缓冲区中的数据:"</span> + charset.decode(head));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//body1缓冲区中的数据:999</span></span><br><span class="line">        body1.flip();</span><br><span class="line">        System.out.println(<span class="string">"body1缓冲区中的数据:"</span> + charset.decode(body1));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//body2缓冲区中的数据:efghi</span></span><br><span class="line">        body2.flip();</span><br><span class="line">        System.out.println(<span class="string">"body2缓冲区中的数据:"</span> + charset.decode(body2));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//body3，没有数据</span></span><br><span class="line">        body3.flip();</span><br><span class="line">        System.out.println(<span class="string">"body3缓冲区中的数据:"</span> + charset.decode(body3));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//4. 关闭流</span></span><br><span class="line">        accessFile.close();</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 写入数据</span></span><br><span class="line"><span class="comment">     * writeData</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writeData</span><span class="params">(<span class="keyword">final</span> String fileName, String data)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        RandomAccessFile accessFile = <span class="keyword">new</span> RandomAccessFile(fileName, <span class="string">"rw"</span>);</span><br><span class="line">        accessFile.writeBytes(data);</span><br><span class="line">        accessFile.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//scatter====共读到多少字节:23</span></span><br><span class="line"><span class="comment">//head缓冲区中的数据:abcde</span></span><br><span class="line"><span class="comment">//body缓冲区中的数据:999efghigk12345678</span></span><br><span class="line"><span class="comment">//scatter2====共读到多少字节:13</span></span><br><span class="line"><span class="comment">//head缓冲区中的数据:abcde</span></span><br><span class="line"><span class="comment">//body1缓冲区中的数据:999</span></span><br><span class="line"><span class="comment">//body2缓冲区中的数据:efghi</span></span><br><span class="line"><span class="comment">//body3缓冲区中的数据:</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>实例Gather</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.momo.nio;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.RandomAccessFile;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.FileChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.charset.Charset;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Gather 聚合</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/23.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GatherDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String fileName = <span class="string">"D:/test2.log"</span>;</span><br><span class="line">        <span class="comment">/**----------Gather------------*/</span></span><br><span class="line">        <span class="comment">//FileChannel#write(java.nio.ByteBuffer[])</span></span><br><span class="line">        gather(fileName);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//FileChannel#write(java.nio.ByteBuffer[], int, int)</span></span><br><span class="line">        gather2(fileName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * gather</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">gather</span><span class="params">(String fileName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">//1. 获取文件通道</span></span><br><span class="line">        RandomAccessFile accessFile = <span class="keyword">new</span> RandomAccessFile(fileName, <span class="string">"rw"</span>);</span><br><span class="line">        FileChannel channel = accessFile.getChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2. 创建两个缓冲区head,body 并写入数据</span></span><br><span class="line">        ByteBuffer head = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        head.put(<span class="string">"abcde"</span>.getBytes());</span><br><span class="line"></span><br><span class="line">        ByteBuffer body = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">        body.put(<span class="string">"999efghigk12345678"</span>.getBytes());</span><br><span class="line"></span><br><span class="line">        ByteBuffer[] allBuffers = &#123; head, body &#125;;</span><br><span class="line"></span><br><span class="line">        head.flip();</span><br><span class="line">        body.flip();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将按allBuffers顺序  写入abcde999efghigk12345678</span></span><br><span class="line">        System.out.println(<span class="string">"gather====共写入多少字节:"</span> + channel.write(allBuffers));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3. 关闭</span></span><br><span class="line">        accessFile.close();</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * gather2</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">gather2</span><span class="params">(String fileName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//1. 获取文件通道</span></span><br><span class="line">        RandomAccessFile accessFile = <span class="keyword">new</span> RandomAccessFile(fileName, <span class="string">"rw"</span>);</span><br><span class="line">        FileChannel channel = accessFile.getChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2. 创建四个缓冲区</span></span><br><span class="line">        ByteBuffer head = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        ByteBuffer body1 = ByteBuffer.allocate(<span class="number">3</span>);</span><br><span class="line">        ByteBuffer body2 = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        ByteBuffer body3 = ByteBuffer.allocate(<span class="number">20</span>);</span><br><span class="line"></span><br><span class="line">        head.put(<span class="string">"abcde"</span>.getBytes());</span><br><span class="line">        body1.put(<span class="string">"999"</span>.getBytes());</span><br><span class="line">        body2.put(<span class="string">"efghi"</span>.getBytes());</span><br><span class="line">        body3.put(<span class="string">"gk12345678"</span>.getBytes());</span><br><span class="line"></span><br><span class="line">        ByteBuffer[] allBuffers = <span class="keyword">new</span> ByteBuffer[]&#123;</span><br><span class="line">            head, body1, body2, body3&#125;;</span><br><span class="line"></span><br><span class="line">        head.flip();</span><br><span class="line">        body1.flip();</span><br><span class="line">        body2.flip();</span><br><span class="line">        body3.flip();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将按allBuffers数组顺序使用两个缓冲区</span></span><br><span class="line">        <span class="comment">//0从哪开始</span></span><br><span class="line">        <span class="comment">//2使用几个</span></span><br><span class="line">        <span class="comment">//当前使用head  body1</span></span><br><span class="line">        <span class="comment">//最终写入abcdefg</span></span><br><span class="line">        <span class="keyword">long</span> n = channel.write(allBuffers, <span class="number">0</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//应该返回8个字节</span></span><br><span class="line">        System.out.println(<span class="string">"gather2====共写入多少字节:"</span> + n);</span><br><span class="line"></span><br><span class="line">        accessFile.close();</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//运行结果</span></span><br><span class="line"><span class="comment">//gather====共写入多少字节:23</span></span><br><span class="line"><span class="comment">//gather2====共写入多少字节:8</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>文件通道详解：<a href="http://blog.xiaoxiaomo.com/2016/04/25/Java-NIO之通道-文件通道">http://blog.xiaoxiaomo.com/2016/04/25/Java-NIO之通道-文件通道</a></p>
+</li>
+<li><p>参考资料<br><a href="http://blog.csdn.net/java2000_wl/article/details/7619395" target="_blank" rel="noopener">http://blog.csdn.net/java2000_wl/article/details/7619395</a><br><a href="http://download.csdn.net/detail/tang__xuandong/9500450" title="Java NIO" target="_blank" rel="noopener">《Java NIO》-(<em>Developing High Performance Applications</em>)</a></p>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/25/Java-NIO之通道-文件通道/" rel="next" title="Java--NIO之通道(文件通道)">
+    上一篇：Java--NIO之通道(文件通道)
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/22/Java-NIO之缓冲区进阶/" rel="next" title="Java--NIO之缓冲区进阶">
+    下一篇：Java--NIO之缓冲区进阶
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java--NIO之通道" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

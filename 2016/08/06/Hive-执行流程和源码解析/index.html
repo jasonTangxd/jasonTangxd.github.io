@@ -1,0 +1,724 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Hive--执行流程和源码解析 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Hive--执行流程和源码解析"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Hive--执行流程和源码解析</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-08-06T05:45:44.000Z"><a href="/2016/08/06/Hive-执行流程和源码解析/">2016-08-06</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hive/" class="chip red lighten-1">Hive</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#准备工作"><span class="section table-of-contents-text">准备工作</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#分析日志文件"><span class="section table-of-contents-text">分析日志文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#源码阅读"><span class="section table-of-contents-text">源码阅读</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<strong>Hive</strong>，在工作中使用相对较多，并且比较简单便捷，今天在家闲着没事，就写一遍博客来对hive的<strong>执行流程做一些分析</strong>，还有<strong>阅读一下它的源码</strong>，看看这个hive是怎么<strong>编译</strong>这个HiveQL，怎么去<strong>解析</strong>，怎么和我们<strong>hdfs上的数据关联</strong>，在<strong>mapreduce阶段</strong>怎么进行计算的。由于这个源码比较多，不是很好截图，有时候我会一部分一部分的截取。最主要的还是你们自己按照这个流程去看几遍，可以看看具体的细节。</p>
+<ul>
+<li>下面我们来看一张<strong>经典的图</strong>，本博客也是围绕这张图展开的讲解：</li>
+<li><strong>Hive与Hadoop的调用关系图：</strong><a id="more"></a>
+<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F201605290132537.png" alt="Hive与Hadoop的调用关系图"></li>
+</ul>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ol>
+<li><p>下载hive的源码，我是直接在maven中添加的maven依赖如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- hadoop依赖包 START --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-mapreduce-client-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- hadoop依赖包 END--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- hive依赖包 START--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hive<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hive-exec<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.14.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- hive依赖包 END--&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动hive 并删除日志文件，因为我们要获取新的日志文件进行分析</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########################1. 日志文件默认目录/tmp/当前用户目录/下###############</span></span><br><span class="line">[root@xxo07 root]<span class="comment"># pwd </span></span><br><span class="line">/tmp/root</span><br><span class="line"></span><br><span class="line"><span class="comment">########################2. 删除一下当天日志文件###############</span></span><br><span class="line">[root@xxo07 root]<span class="comment"># ll</span></span><br><span class="line">total 1832</span><br><span class="line">-rw-r--r--. 1 root root   67038 May 29 13:51 hive.log</span><br><span class="line">-rw-r--r--. 1 root root 1798483 May 28 20:58 hive.log.2016-05-28</span><br><span class="line">[root@xxo07 root]<span class="comment"># rm -rf hive.log</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行hive语句</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * from t_5 order by id ;</span><br><span class="line">Query ID = root_20160529142525_97b24c9c-a861-44d7-8fba-2c076c997c34</span><br><span class="line">Total <span class="built_in">jobs</span> = 1</span><br><span class="line">Launching Job 1 out of 1</span><br><span class="line">Number of reduce tasks determined at compile time: 1</span><br><span class="line">In order to change the average load <span class="keyword">for</span> a reducer (<span class="keyword">in</span> bytes):</span><br><span class="line">  <span class="built_in">set</span> hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">In order to <span class="built_in">limit</span> the maximum number of reducers:</span><br><span class="line">  <span class="built_in">set</span> hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">In order to <span class="built_in">set</span> a constant number of reducers:</span><br><span class="line">  <span class="built_in">set</span> mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1464498685344_0003, Tracking URL = http://xxo07:8088/proxy/application_1464498685344_0003/</span><br><span class="line">Kill Command = /usr/<span class="built_in">local</span>/hadoop-2.6.0/bin/hadoop job  -<span class="built_in">kill</span> job_1464498685344_0003</span><br><span class="line">Interrupting... Be patient, this might take some time.</span><br><span class="line">Press Ctrl+C again to <span class="built_in">kill</span> JVM</span><br><span class="line">killing job with: job_1464498685344_0003</span><br><span class="line">Hadoop job information <span class="keyword">for</span> Stage-1: number of mappers: 0; number of reducers: 0</span><br><span class="line">2016-05-29 14:25:57,132 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">Ended Job = job_1464498685344_0003 with errors</span><br><span class="line">Error during job, obtaining debugging information...</span><br><span class="line">FAILED: Execution Error, <span class="built_in">return</span> code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1:  HDFS Read: 0 HDFS Write: 0 FAIL</span><br><span class="line">Total MapReduce CPU Time Spent: 0 msec</span><br><span class="line">hive&gt; select * from t_5 order by id ;</span><br><span class="line">Query ID = root_20160529142626_a68f490b-4e9f-43c7-a3b8-d16210751de7</span><br><span class="line">Total <span class="built_in">jobs</span> = 1</span><br><span class="line">Launching Job 1 out of 1</span><br><span class="line">Number of reduce tasks determined at compile time: 1</span><br><span class="line">In order to change the average load <span class="keyword">for</span> a reducer (<span class="keyword">in</span> bytes):</span><br><span class="line">  <span class="built_in">set</span> hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">In order to <span class="built_in">limit</span> the maximum number of reducers:</span><br><span class="line">  <span class="built_in">set</span> hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">In order to <span class="built_in">set</span> a constant number of reducers:</span><br><span class="line">  <span class="built_in">set</span> mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1464498685344_0004, Tracking URL = http://xxo07:8088/proxy/application_1464498685344_0004/</span><br><span class="line">Kill Command = /usr/<span class="built_in">local</span>/hadoop-2.6.0/bin/hadoop job  -<span class="built_in">kill</span> job_1464498685344_0004</span><br><span class="line">Hadoop job information <span class="keyword">for</span> Stage-1: number of mappers: 2; number of reducers: 1</span><br><span class="line">2016-05-29 14:26:30,745 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2016-05-29 14:27:53,143 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.72 sec</span><br><span class="line">2016-05-29 14:28:20,569 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 8.3 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 8 seconds 300 msec</span><br><span class="line">Ended Job = job_1464498685344_0004</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 2  Reduce: 1   Cumulative CPU: 8.3 sec   HDFS Read: 1028 HDFS Write: 160 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 8 seconds 300 msec</span><br><span class="line">OK</span><br><span class="line">1	2016-05-28	cq</span><br><span class="line">1	2015-05-30	wz</span><br><span class="line">2	2016-05-28	cq</span><br><span class="line">2	2015-05-30	yy</span><br><span class="line">3	2016-05-28	cq</span><br><span class="line">4	2016-05-28	cq</span><br><span class="line">5	2016-05-28	cq</span><br><span class="line">5	2015-05-30	cq</span><br><span class="line">7	2015-05-30	bj</span><br><span class="line">9	2015-05-30	hz</span><br><span class="line">Time taken: 130.479 seconds, Fetched: 10 row(s)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="分析日志文件"><a href="#分析日志文件" class="headerlink" title="分析日志文件"></a>分析日志文件</h2><ol>
+<li><a href="https://github.com/jasonTangxd/Blog_Resources_20160508/tree/master/resources/hive/log" target="_blank" rel="noopener">下载日志文件</a>并做了一下整理，整理后日志文件的总体结构如下：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;run&gt;</span><br><span class="line">	&lt;TimeToSubmit&gt;</span><br><span class="line">		&lt;compile&gt;</span><br><span class="line">			&lt;parse&gt;&lt;/parse&gt;</span><br><span class="line">			&lt;semanticAnalyze&gt;</span><br><span class="line">				&lt;partition-retrieving&gt;&lt;/partition-retrieving&gt;</span><br><span class="line">			&lt;/semanticAnalyze&gt;</span><br><span class="line">		&lt;/compile&gt;</span><br><span class="line">		&lt;execute&gt;</span><br><span class="line">			&lt;runTasks&gt;</span><br><span class="line">				&lt;serializePlan&gt;&lt;/serializePlan&gt;</span><br><span class="line">				&lt;getSplits&gt;&lt;/getSplits&gt;</span><br><span class="line">			&lt;/runTasks&gt;</span><br><span class="line">		&lt;/execute&gt;</span><br><span class="line">	&lt;/TimeToSubmit&gt;</span><br><span class="line">&lt;/run&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">### 1. 程序开始于run方法，run方法下面有两个重要的方法compile和execute；</span></span><br><span class="line"><span class="comment">### 2. compile ： 方法下面有parse 和 semanticAnalyze；</span></span><br><span class="line"><span class="comment">### 2. execute ： 运行任务runTasks，做一些序列化、分割切片splite，计算 即mapreduce阶段</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li><p>第一阶段：运行run-TimeToSubmit-compile-parse</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">###################### 1. 程序开始于这个run方法 #######################################</span></span><br><span class="line">&lt;PERFLOG method=Driver.run from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">###################### 2. rum下面有TimeToSubmit方法 ##################################</span></span><br><span class="line">  &lt;PERFLOG method=TimeToSubmit from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">   Concurrency mode is disabled, not creating a lock manager</span><br><span class="line"></span><br><span class="line"><span class="comment">###################### 3. 运行compile ################################################</span></span><br><span class="line">    &lt;PERFLOG method=compile from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line"></span><br><span class="line">     <span class="comment">################ 3.1. 运行compile，下面的parse解析HiveQL #########################</span></span><br><span class="line">      &lt;PERFLOG method=parse from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">       Parsing <span class="built_in">command</span>: select * from t_5 order by id</span><br><span class="line">       Parse Completed</span><br><span class="line">      &lt;/PERFLOG method=parse start=1464503172611 end=1464503172613 duration=2 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">     <span class="comment">############### 3.1. 解析完成 ###################################################</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二阶段：运行semanticAnalyze语义分析阶段</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">#################### 3.1. 运行compile，下面的semanticAnalyze语义分析 ################</span></span><br><span class="line">  &lt;PERFLOG method=semanticAnalyze from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">   Starting Semantic Analysis      <span class="comment">#### 开始语义分析</span></span><br><span class="line">   Completed phase 1 of Semantic Analysis</span><br><span class="line">   Get metadata <span class="keyword">for</span> <span class="built_in">source</span> tables  <span class="comment">#### 通过derby或者mysql获取metadata信息</span></span><br><span class="line">   0: get_table : db=xxo tbl=t_5   <span class="comment">#### 获取数据库中的表t_5</span></span><br><span class="line">   ugi=root	ip=unknown-ip-addr	cmd=get_table : db=xxo tbl=t_5</span><br><span class="line">   Get metadata <span class="keyword">for</span> subqueries</span><br><span class="line">   Get metadata <span class="keyword">for</span> destination tables <span class="comment">###表的表述信息</span></span><br><span class="line">   New scratch dir is hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1</span><br><span class="line">   Completed getting MetaData <span class="keyword">in</span> Semantic Analysis</span><br><span class="line">   Set stats collection dir : hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1/-ext-10002</span><br><span class="line">   Processing <span class="keyword">for</span> FS(4)</span><br><span class="line">   Processing <span class="keyword">for</span> SEL(3)</span><br><span class="line">   Processing <span class="keyword">for</span> RS(2)</span><br><span class="line">   Processing <span class="keyword">for</span> SEL(1)</span><br><span class="line">   Processing <span class="keyword">for</span> TS(0)</span><br><span class="line">   RS 2 oldColExprMap: &#123;VALUE._col1=Column[_col2], VALUE._col0=Column[_col1], KEY.reducesinkkey0=Column[_col0]&#125;</span><br><span class="line">   RS 2 newColExprMap: &#123;VALUE._col1=Column[_col2], VALUE._col0=Column[_col1], KEY.reducesinkkey0=Column[_col0]&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">########### partition ###################</span></span><br><span class="line">	&lt;PERFLOG method=partition-retrieving from=org.apache.hadoop.hive.ql.optimizer.ppr.PartitionPruner&gt;</span><br><span class="line">	  0: get_partitions : db=xxo tbl=t_5</span><br><span class="line">      ugi=root	ip=unknown-ip-addr	cmd=get_partitions : db=xxo tbl=t_5</span><br><span class="line">	&lt;/PERFLOG method=partition-retrieving start=1464503172762 end=1464503172819 duration=57 from=org.apache.hadoop.hive.ql.optimizer.ppr.PartitionPruner&gt;</span><br><span class="line">   </span><br><span class="line">   Looking <span class="keyword">for</span> table scans <span class="built_in">where</span> optimization is applicable</span><br><span class="line">   Found 0 null table scans</span><br><span class="line">   Looking <span class="keyword">for</span> table scans <span class="built_in">where</span> optimization is applicable</span><br><span class="line">   Found 0 null table scans</span><br><span class="line">   Looking <span class="keyword">for</span> table scans <span class="built_in">where</span> optimization is applicable</span><br><span class="line">   Found 0 null table scans</span><br><span class="line">   Completed plan generation     <span class="comment">#####完成plan</span></span><br><span class="line">   Semantic Analysis Completed</span><br><span class="line">  &lt;/PERFLOG method=semanticAnalyze start=1464503172613 end=1464503172841 duration=228 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">	   Initializing Self OP[5]</span><br><span class="line">	   Operator 5 OP initialized</span><br><span class="line">	   Initialization Done 5 OP</span><br><span class="line">	   Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:t_5.id, <span class="built_in">type</span>:int, comment:null), FieldSchema(name:t_5.dt, <span class="built_in">type</span>:date, comment:null), FieldSchema(name:t_5.city, <span class="built_in">type</span>:string, comment:null)], properties:null)</span><br><span class="line">  <span class="comment">################ 3.1. semanticAnalyze完成 ################################</span></span><br><span class="line"></span><br><span class="line">&lt;/PERFLOG method=compile start=1464503172610 end=1464503172850 duration=240 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line"><span class="comment">################## 3. compile完成 ############################################</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三阶段：运行execute阶段，在execute中开启了线程,执行job任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">################## 4. execute开始执行 ############################################</span></span><br><span class="line">&lt;PERFLOG method=Driver.execute from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">   Starting <span class="built_in">command</span>: select * from t_5 order by id</span><br><span class="line">   Query ID = root_20160529142626_a68f490b-4e9f-43c7-a3b8-d16210751de7</span><br><span class="line">   Total <span class="built_in">jobs</span> = 1</span><br><span class="line"></span><br><span class="line"><span class="comment">################### 2. TimeToSubmit在这里结束，其实是因为开启了多线程###########</span></span><br><span class="line">&lt;/PERFLOG method=TimeToSubmit start=1464503172610 end=1464503172854 duration=244 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第四阶段：线程运行runTasks , 就是具体的MapReduce过程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;PERFLOG method=runTasks from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">&lt;PERFLOG method=task.MAPRED.Stage-1 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">   Launching Job 1 out of 1       <span class="comment">##########################执行 launchTask 方法</span></span><br><span class="line">   </span><br><span class="line">   <span class="comment">######### 调用Task.initialize方法 ##########################</span></span><br><span class="line">   <span class="comment">######### 实例化了一个TaskRunner ############################</span></span><br><span class="line">   <span class="comment">######### 执行 launchTask中的runSequential方法 返回TaskRunner</span></span><br><span class="line">   Starting task [Stage-1:MAPRED] <span class="keyword">in</span> serial mode </span><br><span class="line">   </span><br><span class="line">   <span class="comment">########################### 加载和设置一些配置文件######################</span></span><br><span class="line">   Number of reduce tasks determined at compile time: 1    </span><br><span class="line">   In order to change the average load <span class="keyword">for</span> a reducer (<span class="keyword">in</span> bytes):   <span class="comment">####加载参数</span></span><br><span class="line">   <span class="built_in">set</span> hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">   In order to <span class="built_in">limit</span> the maximum number of reducers:</span><br><span class="line">   <span class="built_in">set</span> hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">   In order to <span class="built_in">set</span> a constant number of reducers:</span><br><span class="line">   <span class="built_in">set</span> mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">   New scratch dir is hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1</span><br><span class="line">   Using org.apache.hadoop.hive.ql.io.CombineHiveInputFormat</span><br><span class="line">   Processing <span class="built_in">alias</span> t_5</span><br><span class="line"></span><br><span class="line">   <span class="comment">######################### Adding input file #########################################################</span></span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=bj</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=bj</span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=cq</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=cq</span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=hz</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=hz</span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=wz</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=wz</span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=yy</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=yy</span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2016-05-28/city=cq</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2016-05-28/city=cq</span><br><span class="line">   Adding input file hdfs://xxo07:9000/user/hive/warehouse/t_1/t_1.txt</span><br><span class="line">   Content Summary not cached <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/t_1/t_1.txt</span><br><span class="line">   Changed input file to hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1/-mr-10003/0</span><br><span class="line">   New scratch dir is hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>serializePlan</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">############################# serializePlan ###################################</span></span><br><span class="line">&lt;PERFLOG method=serializePlan from=org.apache.hadoop.hive.ql.exec.Utilities&gt;</span><br><span class="line">   Serializing MapWork via kryo</span><br><span class="line">&lt;/PERFLOG method=serializePlan start=1464503172964 end=1464503173007 duration=43 from=org.apache.hadoop.hive.ql.exec.Utilities&gt;</span><br><span class="line">&lt;PERFLOG method=serializePlan from=org.apache.hadoop.hive.ql.exec.Utilities&gt;</span><br><span class="line">   Serializing ReduceWork via kryo</span><br><span class="line">&lt;/PERFLOG method=serializePlan start=1464503173015 end=1464503173148 duration=133 from=org.apache.hadoop.hive.ql.exec.Utilities&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>连接ResourceManager</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Connecting to ResourceManager at xxo07/192.168.33.72:8032</span><br><span class="line">Connecting to ResourceManager at xxo07/192.168.33.72:8032</span><br><span class="line">Hadoop <span class="built_in">command</span>-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>getSplits 分割、切片</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;PERFLOG method=getSplits from=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat&gt;</span><br><span class="line">   <span class="comment">#################### CombineHiveInputSplit 合并hive Split文件</span></span><br><span class="line">   CombineHiveInputSplit creating pool <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=bj; using filter path hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=bj</span><br><span class="line">   CombineHiveInputSplit: pool is already created <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=cq; using filter path hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=cq</span><br><span class="line">   CombineHiveInputSplit: pool is already created <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=hz; using filter path hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=hz</span><br><span class="line">   CombineHiveInputSplit: pool is already created <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=wz; using filter path hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=wz</span><br><span class="line">   CombineHiveInputSplit: pool is already created <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=yy; using filter path hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2015-05-30/city=yy</span><br><span class="line">   CombineHiveInputSplit: pool is already created <span class="keyword">for</span> hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2016-05-28/city=cq; using filter path hdfs://xxo07:9000/user/hive/warehouse/xxo.db/t_5/dt=2016-05-28/city=cq</span><br><span class="line">   CombineHiveInputSplit: pool is already created <span class="keyword">for</span> hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1/-mr-10003/0; using filter path hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1/-mr-10003/0</span><br><span class="line">   Total input paths to process : 7</span><br><span class="line">   DEBUG: Terminated node allocation with : CompletedNodes: 1, size left: 0</span><br><span class="line">   number of splits 2</span><br><span class="line">&lt;/PERFLOG method=getSplits start=1464503174738 end=1464503174933 duration=195 from=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在hadoop中，提交并开始一个job任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">   Number of all splits 2</span><br><span class="line">   number of splits:2</span><br><span class="line">   Submitting tokens <span class="keyword">for</span> job: job_1464498685344_0004</span><br><span class="line">   Submitted application application_1464498685344_0004</span><br><span class="line">   The url to track the job: http://xxo07:8088/proxy/application_1464498685344_0004/</span><br><span class="line">   Starting Job = job_1464498685344_0004, Tracking URL = http://xxo07:8088/proxy/application_1464498685344_0004/</span><br><span class="line">   Kill Command = /usr/<span class="built_in">local</span>/hadoop-2.6.0/bin/hadoop job  -<span class="built_in">kill</span> job_1464498685344_0004</span><br><span class="line">   Hadoop job information <span class="keyword">for</span> Stage-1: number of mappers: 2; number of reducers: 1</span><br><span class="line">   Group org.apache.hadoop.mapred.Task<span class="variable">$Counter</span> is deprecated. Use org.apache.hadoop.mapreduce.TaskCounter instead</span><br><span class="line">   2016-05-29 14:26:30,745 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">   2016-05-29 14:27:53,143 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.72 sec</span><br><span class="line">   2016-05-29 14:28:20,569 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 8.3 sec <span class="comment">###任务结束</span></span><br><span class="line">   MapReduce Total cumulative CPU time: 8 seconds 300 msec</span><br><span class="line">   Ended Job = job_1464498685344_0004</span><br><span class="line">   Moving tmp dir: hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1/_tmp.-ext-10001 to: hdfs://xxo07:9000/tmp/hive/root/9d2c112b-118e-46a1-8a08-c60c5bbc6fe0/hive_2016-05-29_14-26-12_611_2648166283911131981-1/-ext-10001</span><br><span class="line"></span><br><span class="line"><span class="comment">#################runTasks阶段结束###############################</span></span><br><span class="line">&lt;/PERFLOG method=runTasks start=1464503172855 end=1464503303027 duration=130172 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">#################execute阶段结束###############################</span></span><br><span class="line">&lt;/PERFLOG method=Driver.execute start=1464503172850 end=1464503303049 duration=130199 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">   MapReduce Jobs Launched:</span><br><span class="line">   Stage-Stage-1: Map: 2  Reduce: 1   Cumulative CPU: 8.3 sec   HDFS Read: 1028 HDFS Write: 160 SUCCESS</span><br><span class="line">   Total MapReduce CPU Time Spent: 8 seconds 300 msec</span><br><span class="line">   OK</span><br><span class="line"></span><br><span class="line">&lt;PERFLOG method=releaseLocks from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">&lt;/PERFLOG method=releaseLocks start=1464503303086 end=1464503303087 duration=1 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">##################### run 结束######################################</span></span><br><span class="line">&lt;/PERFLOG method=Driver.run start=1464503172609 end=1464503303087 duration=130478 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">   mapred.input.dir is deprecated. Instead, use mapreduce.input.fileinputformat.inputdir</span><br><span class="line">   Total input paths to process : 1</span><br><span class="line">   5 finished. closing...</span><br><span class="line">   5 Close <span class="keyword">done</span></span><br><span class="line">   Time taken: 130.479 seconds, Fetched: 10 row(s)</span><br><span class="line"></span><br><span class="line">&lt;PERFLOG method=releaseLocks from=org.apache.hadoop.hive.ql.Driver&gt;</span><br><span class="line">&lt;/PERFLOG method=releaseLocks start=1464503304801 end=1464503304802 duration=1 from=org.apache.hadoop.hive.ql.Driver&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="源码阅读"><a href="#源码阅读" class="headerlink" title="源码阅读"></a>源码阅读</h2><ol>
+<li><p><strong>从 run() 方法到 runInternal() 方法</strong><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529174036.jpg" alt="从run()方法 到 runInternal()方法"></p>
+</li>
+<li><p><strong>runInternal() 方法里面有compileInternal编译和execute方法</strong><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529174843.jpg" alt="进入compileInternal()方法进行编译"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529175305.jpg" alt="进入execute()方法执行"></p>
+</li>
+<li><p>下面我们先来看一下<strong>compileInternal()方法</strong><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529175504.jpg" alt="调用compile()方法，做语法，语义，计划生成"></p>
+</li>
+<li><p><strong>compile方法中有parse方法和semanticAnalyze方法</strong>，语义分析完成后，会将语句中的相应信息放入到 <code>org.apache.hadoop.hive.ql.QueryPlan</code>中<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529180514.jpg" alt="compile方法中的解析parse"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529181323.jpg" alt="compile方法中的语义分析"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529182108.jpg" alt="解析parse方法"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529182636.jpg" alt="语义分析抽象类 BaseSemanticAnalyzer 有很多的子类"></p>
+</li>
+<li><p><strong>execute方法，从<code>QueryPlan</code>中获取信息，执行物理计划，就是提交 job 给 hadoop 进行执行</strong>。 通过调用<code>launchTask</code>方法，然后运行线程<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529184136.jpg" alt="execute方法 调用launchTask方法"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529184948.jpg" alt="launchTask方法，运行tast任务"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160529191319.jpg" alt="executeTask方法执行具体的物理计划"></p>
+</li>
+</ol>
+<ul>
+<li>本博客hive产生的日志：<br><a href="https://github.com/jasonTangxd/Blog_Resources_20160508/tree/master/resources/hive/log" target="_blank" rel="noopener">https://github.com/jasonTangxd/Blog_Resources_20160508/tree/master/resources/hive/log</a>
+　　
+　　
+　　</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/08/13/未知数/" rel="next" title="未知数">
+    上一篇：未知数
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/07/08/Hadoop-MapReduce源码分析/" rel="next" title="Hadoop--MapReduce源码分析">
+    下一篇：Hadoop--MapReduce源码分析
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Hive--执行流程和源码解析" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

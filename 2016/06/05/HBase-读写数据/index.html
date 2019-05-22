@@ -1,0 +1,766 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>HBase--读写数据 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="HBase--读写数据"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>HBase--读写数据</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-06-05T04:09:35.000Z"><a href="/2016/06/05/HBase-读写数据/">2016-06-05</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#体系结构"><span class="section table-of-contents-text">体系结构</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#读写数据"><span class="section table-of-contents-text">读写数据</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#写数据"><span class="section table-of-contents-text">写数据</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#读数据"><span class="section table-of-contents-text">读数据</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<strong>HBase</strong>（<em>Hadoop Database</em>），是一个<code>高可靠性</code>、<code>高性能</code>、<code>面向列</code>、<code>可伸缩</code>的<strong>分布式存储系统</strong>。HBase是<strong>基于hadoop分布式文件系统（HDFS）</strong>，模仿了Google文件系统<strong>BigTable</strong>数据库所有功能。</p>
+<p>　　本博客主要介绍HBase的体系结构，如<code>HMaster</code>、<code>HRegionServer</code>、<code>HRegion</code>、<code>Store</code>、<code>MemStore</code>、<code>StoreFile</code>、<code>HLog</code>、<code>HFile</code>、<code>KeyValue</code>等、HBase数据的读写流程，以及读写流程中所用到<code>LSM树</code>、<code>墓碑标记</code>、<code>布隆过滤器</code>等。</p>
+<a id="more"></a>
+<h2 id="体系结构"><a href="#体系结构" class="headerlink" title="体系结构"></a>体系结构</h2><p> HBASE的基本架构组成如下：</p>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160605123204.png" alt="HBase的基本架构"></p>
+<ul>
+<li><strong>Zookeeper 协调管理</strong></li>
+</ul>
+<ol>
+<li>保证每个时刻只有一个HMaster在运行，一旦Zookeeper感知不到HMaster就会重新选举出一个新的HMaster；</li>
+<li>实时监控Region Server的状态，将Region server的上线和下线信息实时通知给Master；</li>
+<li>存贮所有Region的寻址入口；</li>
+<li>存储Hbase的schema,包括有哪些table，每个table有哪些column family。</li>
+</ol>
+<ul>
+<li><strong>HMaster</strong></li>
+</ul>
+<ol>
+<li>负责维护表和元数据（包括region）；</li>
+<li>负责region切分、合并、负载均衡等；</li>
+<li>处理schema更新请求；</li>
+<li>如果HMaster挂掉,还可以进行正常的数据读写，提供服务。</li>
+</ol>
+<ul>
+<li><strong>HRegionServe</strong></li>
+</ul>
+<ol>
+<li>一个 HBase 实例包括多个HRegionServer ；</li>
+<li>HRegionServer包含了一个HLog部分和HRegion部分（多个HRegion，即内部管理了一系列HRegion对象）。</li>
+</ol>
+<ul>
+<li><strong>HRegion</strong></li>
+</ul>
+<ol>
+<li>每个HRegion对应了Table中的一个Region；</li>
+<li>HRegion中由多个HStore组成；</li>
+<li>每个HStore对应了Table中的一个Column Family的存储；<br><strong>注</strong>：可以看出每个Column Family其实就是一个集中的存储单元，因此最好将具备共同IO特性的column放在一个Column Family中，这样最高效。</li>
+</ol>
+<ul>
+<li><strong>HStore</strong></li>
+</ul>
+<ol>
+<li>HBase 存储的核心，包含两部分 memStore(内存)和多个StoreFile（HDFS文件）；</li>
+<li>MemStore：用户写入的数据首先会放入MemStore，当MemStore满了以后会Flush成一个StoreFile；</li>
+<li>StoreFiles：底层实现是HFile，当StoreFile文件数量增长到一定阈值，会触发Compact合并操作，将多个StoreFiles合并成一个StoreFile。</li>
+</ol>
+<h2 id="读写数据"><a href="#读写数据" class="headerlink" title="读写数据"></a>读写数据</h2><ul>
+<li>下面我们来看一下HBase具体的读写数据的流程：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160605123205.png" alt="HBase的数据流程"></li>
+</ul>
+<h3 id="写数据"><a href="#写数据" class="headerlink" title="写数据"></a>写数据</h3><ul>
+<li><strong>Hbase写数据流程</strong>：</li>
+</ul>
+<ol>
+<li><strong>Client</strong> 发起了一个 <strong>HTable.put(Put)</strong> 请求给 <strong>HRegionServer</strong>；</li>
+<li><strong>HRegionServer</strong> 会将请求定位到某个具体的<strong>HRegion</strong>上面；</li>
+<li>决定是否写<strong>WAL log</strong> ，即图中的 <strong>Hlog</strong>；</li>
+<li><strong>WAL结束后，Put数据保存到MemStore中</strong>，同时检查MemStore状态，如果满了，则触发<strong>Flush to Disk</strong>请求；</li>
+<li>每次<strong>flush</strong>就会将数据写成<strong>HFile</strong>文件并存到<strong>HDFS</strong>上，并且存储最后写入的数据序列号，这样就可以知道哪些数据已经存入了永久存储的<strong>HDFS</strong>中;</li>
+<li>当文件达到一定数量（默认<strong>3</strong>）就会触发<strong>Compact</strong>操作 -&gt; 多个<strong>HFile</strong>合并成一个的<strong>HFile</strong>文件，同时进行版本合并和数据删除；</li>
+<li>并保证文件的总数在可控范围之内，<strong>major合并</strong>最后将文件集中的合并成一个文件，此后刷写又会不断创建小文件。</li>
+<li>当<strong>HFile</strong>越来越大 -&gt; 单个<strong>HFile</strong>大小超过一定阈值（默认<strong>10G</strong>）后，触发<strong>Split</strong>操作，把当前<strong>Region Split</strong>成2个<strong>Region</strong>；</li>
+<li><strong>Region</strong>会下线，新<strong>Split</strong>出的2个孩子<strong>Region</strong>会被<strong>HMaster</strong>分配到相应的<strong>HRegionServer</strong> 上，使得原先1个<strong>Region</strong>的压力得以分流到2个<strong>Region</strong>上</li>
+<li>由此过程可知，<strong>HBase</strong>只是增加数据，有所得更新和删除操作，都是在<strong>Compact</strong>阶段做的，所以，用户写操作只需要进入到内存即可立即返回，从而保证<strong>I/O</strong>高性能。</li>
+</ol>
+<ul>
+<li><p><strong>当HRegionServer意外终止</strong>： HMaster会通过Zookeeper感知到，HMaster首先会处理遗留的 HLog文件，将其中不同Region的Log数据进行拆分，分别放到相应region的目录下，然后再将失效的region重新分配，领取 到这些region的HRegionServer在Load Region的过程中，会发现有历史HLog需要处理，因此会Replay HLog中的数据到MemStore中，然后flush到StoreFiles，完成数据恢复。</p>
+</li>
+<li><p><strong>WAL(Write Ahead Log)文件</strong>： 是一个标准的Hadoop SequenceFile，文件中存储了HLogKey，这些Keys包含了和实际数据对应的序列号，主要用于崩溃恢复。在每次用户操作写入MemStore的同时，也会写一份数据到HLog文件中，HLog文件定期会滚动出新的，并删除旧的文件（已持久化到StoreFile中的数据），因为HLog是顺序写入的所以非常高效。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160605123206.png?imageView2/1/w/400/h/250&amp;raw=true" alt="WAL(Write Ahead Log)"></p>
+</li>
+<li><p><strong>HFile文件</strong>： HFile文件是不定长的，长度固定的只有其中的两块：Trailer中有指针指向其他数据块的起始点，File Info中记录了文件的一些Meta信息，Data Index和Meta Index块记录了每个Data块和Meta块的起始点。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160605142627.jpg" alt="HFile文件内部结构"></p>
+</li>
+<li><p><strong>LSM树（log-structured merge-tree）</strong>： </p>
+</li>
+</ul>
+<ol>
+<li>数据<strong>首先被存储在日志文件</strong>，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会被先<strong>保存在内存中来加速查询</strong>；</li>
+<li>当多次修改，使内存空间被逐渐被占满后，<strong>LSM树会把有序的“键-记录”对写到磁盘中</strong>，同时创建一个新的数据存储文件。此时，因为最近的修改都被持久化了，内存中保存的最近更新就可以被丢弃了；</li>
+<li>所有节点都是满的并按页存储。修改数据文件的操作通过滚动合并完成；</li>
+<li>多次数据刷写之后会<strong>创建许多数据存储文件</strong>，后台线程就会自动将<strong>小文件聚合成大文件</strong>，这样磁盘查找就会被限制在少数几个数据存储文件中。磁盘上的树结构也可以拆分成独立的小单元，这样更新就可以被分散到多个数据存储文件中；</li>
+<li><strong>查询</strong>： 先查找内存中的存储，然后再查找磁盘上的文件。这样在客户端看来数据存储文件的位置是透明的；</li>
+<li><strong>删除</strong>： 是一种特殊的更改，当删除标记被存储之后，查找会跳过这些删除过的键。当页被重写时，有删除标记的键会被丢弃。此外，后台运维过程可以处理预先设定的删除请求。这些请求由TTL（time-to-live）触发，例如，当TTL设为20天后，合并进程会检查这些预设的时间戳，同时在重写数据块时丢弃过期的记录。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160605142628.jpg" alt="lSM+树中的多页数据块迭代合并的过程"></li>
+</ol>
+<h3 id="读数据"><a href="#读数据" class="headerlink" title="读数据"></a>读数据</h3><ul>
+<li><strong>Hbase读数据流程</strong>：</li>
+</ul>
+<ol>
+<li>Client会通过内部缓存的相关的-ROOT-中的信息和.META.中的信息直接连接与请求数据匹配的HRegionserver（0.98.8版本是在系统表meta中）； </li>
+<li>然后直接定位到该服务器上与客户请求对应的region，客户请求首先会查询该region在内存中的缓存——memstore(memstore是是一个按key排序的树形结构的缓冲区)；</li>
+<li>如果在memstore中查到结果则直接将结果返回给client； </li>
+<li>在memstore中没有查到匹配的数据，接下来会读已持久化的storefile文件（HFile）中的数据。storefile也是按key排序的树形结构的文件——并且是特别为范围查询或block查询优化过的；另外hbase读取磁盘文件是按其基本I/O单元(即 hbase block)读数据的；</li>
+<li>如果在BlockCache中能查到要造的数据则这届返回结果，否则就读去相应的storefile文件中读取一block的数据，如果还没有读到要查的数据，就将该数据block放到HRegion Server的blockcache中，然后接着读下一block块儿的数据，一直到这样循环的block数据直到找到要请求的数据并返回结果；如果将该region中的数据都没有查到要找的数据，最后接直接返回null，表示没有找的匹配的数据。当然blockcache会在其大小大于一的阀值（heapsize <em> hfile.block.cache.size </em> 0.85）后启动基于LRU算法的淘汰机制，将最老最不常用的block删除。</li>
+</ol>
+<ul>
+<li><p><strong>墓碑标记</strong>: 由于所有的存储文件都是不可变的，从这些文件中删除一个特定的值是做不到的，通过重写存储文件将已经被删除的单元格移除也是毫无意义的,墓碑标记就是用于此类情况的，它标记着”已删除”信息，这个标记可以是单独一个单元格、多个单元格或一整行。</p>
+</li>
+<li><p><strong>布隆过滤器</strong>： 提高随机读的性能，具体讲解可查看参考资料<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160605142630.jpg" alt="布隆过滤器"></p>
+</li>
+</ul>
+<ul>
+<li>参考资料</li>
+</ul>
+<ol>
+<li><a href="http://blog.csdn.net/xtwolf008/article/details/16974725" target="_blank" rel="noopener">http://blog.csdn.net/xtwolf008/article/details/16974725</a></li>
+<li><a href="http://www.epubit.com.cn/book/onlinechapter/26097" target="_blank" rel="noopener">《HBase-权威指南》</a></li>
+<li><a href="http://www.ithao123.cn/content-8008915.html" target="_blank" rel="noopener">http://www.ithao123.cn/content-8008915.html</a></li>
+<li><a href="http://www.bkjia.com/yjs/1015134.html" target="_blank" rel="noopener">http://www.bkjia.com/yjs/1015134.html（BloomFilter介绍）</a></li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2016/06/07/算法-Paxos深入理解/" rel="next" title="算法--Paxos深入理解">
+    上一篇：算法--Paxos深入理解
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/06/04/HBase-伪分布和集群模式/" rel="next" title="HBase--伪分布和集群模式">
+    下一篇：HBase--伪分布和集群模式
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="HBase--读写数据" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

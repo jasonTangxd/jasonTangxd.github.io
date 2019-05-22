@@ -1,0 +1,725 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Hadoop-HDFS架构和Shell | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Hadoop-HDFS架构和Shell"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Hadoop-HDFS架构和Shell</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-11T14:14:10.000Z"><a href="/2016/04/11/Hadoop-HDFS架构和Shell/">2016-04-11</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hadoop/" class="chip red lighten-1">Hadoop</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#HDFS架构和设计"><span class="section table-of-contents-text">HDFS架构和设计</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#FS-Shell"><span class="section table-of-contents-text">FS Shell</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Namenode"><span class="section table-of-contents-text">Namenode</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Datanode"><span class="section table-of-contents-text">Datanode</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#SecondaryNameNode"><span class="section table-of-contents-text">SecondaryNameNode</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<strong>Hadoop分布式文件系统(<code>HDFS</code>)</strong>，一个<strong>高度容错性</strong>的系统，适合部署在<strong>廉价的机器上</strong>。HDFS提供了高吞吐量的数据访问，适合大规模数据集的应用。<code>HDFS采用master/slave架构</code>，<strong>HDFS集群是由一个<a href="http://blog.xiaoxiaomo.com/2016/06/25/Hadoop-HDFS之NameNode/">NameNode</a>和一定数目的<a href="http://blog.xiaoxiaomo.com/2016/06/26/Hadoop-HDFS之DataNode/">DataNodes</a>组成</strong>。</p>
+<h2 id="HDFS架构和设计"><a href="#HDFS架构和设计" class="headerlink" title="HDFS架构和设计"></a>HDFS架构和设计</h2><p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412171211.png" alt="Hadoop HDFS架构图"></p>
+<a id="more"></a>
+<ol>
+<li><p><strong>硬件错误</strong>：<br><strong>硬件错误是常态而不是异常</strong>。<code>HDFS</code>可能由成百上千的服务器所构成，每个服务器上存储着文件系统的<strong>部分数据</strong>，面对成百上千的服务器，难免会出现某些主件出现异常现象。<code>对于Hadoop来说错误检测和快速、自动的恢复是它最核心的架构目标</code>。</p>
+</li>
+<li><p><strong>大规模数据集</strong>：<br>在HDFS上文件大小一般都在G字节至T字节，于是HDFS被调节以<code>支持大文件存储</code>。能在一个集群里扩展到数百个节点，具有很大的数据集。</p>
+</li>
+<li><p><strong>流式数据访问</strong>：<br>HDFS的设计中更多的考虑到了<code>数据批处理</code>，而不是用户交互处理。比之数据访问的低延迟问题，更关键的在于数据访问的高吞吐量。</p>
+</li>
+<li><p><strong>一致性模型</strong>：<br><code>一次写入多次读取</code>的文件访问模型。<strong>一个文件经过创建、写入和关闭之后就不需要改变</strong>。这一假设简化了数据一致性问题，并且使高吞吐量的数据访问成为可能。</p>
+</li>
+<li><p><strong>移动计算</strong>：<br><strong>一个应用请求的计算，离它操作的数据越近就越高效</strong>，在数据达到海量级别的时候更是如此。因为这样就能降低网络阻塞的影响，提高系统数据的吞吐量。<code>将计算移动到数据附近</code>，比之将数据移动到应用所在显然更好。</p>
+</li>
+<li><p><strong>平台移植</strong>：<br>HDFS在设计的时候就考虑到<code>平台可移植性</code>。这种特性方便了HDFS作为大规模数据应用平台的推广。</p>
+</li>
+</ol>
+<h2 id="FS-Shell"><a href="#FS-Shell" class="headerlink" title="FS Shell"></a>FS Shell</h2><p><code>(FS)Shell</code>命令应使用<code>bin/hadoop fs &lt;args&gt;</code>的形式。 所有的shell命令使用URI路径作为参数。eg：hadoop fs -ls hdfs://xiaoxiaomo01:9000/ </p>
+<blockquote>
+<ol>
+<li>所用(FS)Shell命令都是以<code>“hadoop fs”开头（1.0）</code>，2.0修改为<code>“hdfs dfs”开头</code>。</li>
+<li>-<em>ls 为命令选项</em>，记住和linux里面是有区别的，<code>这里每个命令前面有“-”</code>。</li>
+<li>xiaoxiaomo01是我hadoop的<strong>主机名</strong>。</li>
+<li>hdfs://xiaoxiaomo01:9000/可简写为“/”，&gt;<strong> hadoop fs -ls /</strong></li>
+</ol>
+</blockquote>
+<ul>
+<li><p>例如<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412184219.png" alt="hadoop fs -ls命令"></p>
+</li>
+<li><p><strong>(FS)Shell命令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">-<span class="built_in">help</span> [cmd]	//显示命令的帮助信息</span><br><span class="line">-ls(r) &lt;path&gt;	//显示当前目录下所有文件</span><br><span class="line">-du(s) &lt;path&gt;	//显示目录中所有文件大小</span><br><span class="line">-count[-q] &lt;path&gt;	//显示目录中文件数量</span><br><span class="line">-mv &lt;src&gt; &lt;dst&gt;	//移动多个文件到目标目录</span><br><span class="line">-cp &lt;src&gt; &lt;dst&gt;	//复制多个文件到目标目录</span><br><span class="line">-rm(r)		//删除文件(夹)</span><br><span class="line">-put &lt;localsrc&gt; &lt;dst&gt;	//本地文件复制到hdfs</span><br><span class="line">-copyFromLocal	//同put</span><br><span class="line">-moveFromLocal	//从本地文件移动到hdfs</span><br><span class="line">-get [-ignoreCrc] &lt;src&gt; &lt;localdst&gt;	//复制文件到本地，可以忽略crc校验</span><br><span class="line">-getmerge &lt;src&gt; &lt;localdst&gt;		//将源目录中的所有文件排序合并到一个文件中</span><br><span class="line">-cat &lt;src&gt;	//在终端显示文件内容</span><br><span class="line">-text &lt;src&gt;	//在终端显示文件内容</span><br><span class="line">-copyToLocal [-ignoreCrc] &lt;src&gt; &lt;localdst&gt;	//复制到本地</span><br><span class="line">-moveToLocal &lt;src&gt; &lt;localdst&gt;</span><br><span class="line">-mkdir &lt;path&gt;	//创建文件夹</span><br><span class="line">-touchz &lt;path&gt;	//创建一个空文件</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>上述的命令需要多去练习，下面据简单的举例一下上传下载，创建文件，移动复制，事例如下：</p>
+<ol>
+<li><p>创建文件夹<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412185551.png" alt="hadoop fs -ls和mkdir 查看和创建文件夹"><br>说明：我们首先递归查看了/test文件夹，下面只有一个文件，然后在该目录下创建了/momo目录</p>
+</li>
+<li><p>上传文件到指定目录（上传文件到momo目录）<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412190059.png" alt="hadoop fs -put 上传本地数据到hdfs"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412190116.png" alt="hadoop fs -lsr 查看命令,递归"></p>
+</li>
+<li><p>下载文件<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412190555.png" alt="hadoop fs -get 获取hdfs数据到本地"></p>
+</li>
+<li><p>移动文件夹<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412191356.png" alt="hadoop fs -mv 移动hdfs上的数据"></p>
+</li>
+<li><p>复制文件<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160412191111.png" alt="hadoop fs -cp 复制hdfs上的数据"></p>
+</li>
+</ol>
+<h2 id="Namenode"><a href="#Namenode" class="headerlink" title="Namenode"></a>Namenode</h2><ol>
+<li><code>Namenode，是整个文件系统的管理节点</code>;</li>
+<li>它维护着整个文件系统的<strong>文件目录树</strong>，文件/目录的<strong>元信息</strong>和每个文件对应的<strong>数据块列表</strong>，<strong>接收用户的操作请求</strong>;</li>
+<li>NameNode 只有三种交互。<br>3.1. client访问NameNode获取相关DataNode信息。<br>3.2. DataNode心跳汇报当前block情况。<br>3.3. SecondaryNameNode做checkpoint交互。</li>
+</ol>
+<h2 id="Datanode"><a href="#Datanode" class="headerlink" title="Datanode"></a>Datanode</h2><ul>
+<li>Datanode：提供真实文件数据的存储服务</li>
+</ul>
+<p><code>文件块（block）</code>：最基本的存储单位。<strong>HDFS默认Block大小是64MB(1.0版本),128(2.0版本)</strong>，如果一个文件小于一个数据块的大小，HDFS并不占用整个数据块存储空间。<br>Replication：多复本，默认是三个。</p>
+<h2 id="SecondaryNameNode"><a href="#SecondaryNameNode" class="headerlink" title="SecondaryNameNode"></a>SecondaryNameNode</h2><ul>
+<li>HA的一个解决方案。但不支持热备。配置即可</li>
+</ul>
+<p><code>执行过程</code>：<strong>从NameNode上下载元数据信息（fsimage,edits），然后把二者合并，生成新的fsimage</strong>，在<strong>本地保存</strong>，<strong>并将其推送到NameNode</strong>，<strong>同时重置NameNode的edits</strong>.（默认在安装在NameNode节点上，但这样…不安全！）</p>
+<ul>
+<li>参考资料</li>
+</ul>
+<ol>
+<li><a href="http://www.colabug.com/thread-1090990-1-1.html" target="_blank" rel="noopener">http://www.colabug.com/thread-1090990-1-1.html</a></li>
+<li><a href="http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_design.html" target="_blank" rel="noopener">http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_design.html</a></li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/12/Java-网络编程TCP和UDP/" rel="next" title="Java--网络编程TCP和UDP">
+    上一篇：Java--网络编程TCP和UDP
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/09/Hadoop-1-0伪分布式安装/" rel="next" title="Hadoop--1.0伪分布式安装">
+    下一篇：Hadoop--1.0伪分布式安装
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Hadoop-HDFS架构和Shell" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

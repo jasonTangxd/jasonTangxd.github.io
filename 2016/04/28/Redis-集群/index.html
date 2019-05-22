@@ -1,0 +1,729 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Redis--集群 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Redis--集群"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Redis--集群</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-28T14:14:24.000Z"><a href="/2016/04/28/Redis-集群/">2016-04-28</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#redis集群安装配置"><span class="section table-of-contents-text">redis集群安装配置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#redis集群操作"><span class="section table-of-contents-text">redis集群操作</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#添加节点"><span class="section table-of-contents-text">添加节点</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#删除节点"><span class="section table-of-contents-text">删除节点</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#java操作redis集群"><span class="section table-of-contents-text">java操作redis集群</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<code>redis集群</code>是一个<strong>无中心的分布式</strong>Redis存储架构，<strong>可以在多个节点之间进行数据共享</strong>，解决了Redis高可用、可扩展等问题。redis集群提供了以下两个好处：</p>
+<ol>
+<li><strong>将数据自动切分(split)到多个节点</strong></li>
+<li>当集群中的某一个节点故障时，redis还可以继续处理客户端的请求。</li>
+<li>一个 Redis 集群包含 <code>16384</code> 个哈希槽（hash slot），数据库中的每个数据都属于这16384个哈希槽中的一个。集群使用公式 CRC16(key) % 16384 来计算键 key 属于哪个槽。<strong>集群中的每一个节点负责处理一部分哈希槽</strong>。</li>
+</ol>
+<ul>
+<li><p><strong>集群中的主从复制：</strong><br><strong>集群中的每个节点都有1个至N个复制品，其中一个为主节点，其余的为从节点</strong>，<em>如果主节点下线了，集群就会把这个主节点的一个从节点设置为新的主节点，继续工作</em>。<strong>这样集群就不会因为一个主节点的下线而无法正常工作</strong>。</p>
+</li>
+<li><p><strong>注意：</strong><br><strong>如果某一个主节点和他所有的从节点都下线的话，redis集群就会停止工作了</strong>。<br><strong>redis集群不保证数据的强一致性</strong>，在<strong>特定的情况下</strong>，<em>redis集群会丢失已经被执行过的写命令使用异步复制（asynchronous replication）是 Redis 集群可能会丢失写命令的其中一个原因，有时候由于网络原因，如果网络断开时间太长，redis集群就会启用新的主节点，之前发给主节点的数据就会丢失</em>。</p>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="redis集群安装配置"><a href="#redis集群安装配置" class="headerlink" title="redis集群安装配置"></a>redis集群安装配置</h2><ol>
+<li><p>修改配置文件redis.conf </p>
+<blockquote>
+<ol>
+<li>daemonize yes</li>
+<li>port 7000</li>
+<li>cluster-enabled yes</li>
+<li>cluster-config-file nodes.conf</li>
+<li>cluster-node-timeout 5000<br>要让集群正常运作至少需要三个主节点</li>
+</ol>
+</blockquote>
+</li>
+<li><p>创建集群命令<br>./redis-trib.rb  create –replicas 1 192.168.1.160:7000 192.168.1.160:7001 192.168.1.160:7002 192.168.1.160:7003 192.168.1.160:7004 192.168.1.160:7005</p>
+</li>
+</ol>
+<ul>
+<li>示例代码 ： 这里我们在单机上模拟集群搭建<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########0. 准备服务器################################</span></span><br><span class="line">ip:  这里我们使用192.168.33.88搭建六个redis</span><br><span class="line">port:使用7000、7001、7002、7003、7004、7005</span><br><span class="line"></span><br><span class="line"><span class="comment">########1. 在/usr/local/创建一个cluster目录###########</span></span><br><span class="line"><span class="comment">########2. 复制配置文件到cluster/目录##################</span></span><br><span class="line"><span class="comment">########3. 创建7001-7005目录##########################</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># ll</span></span><br><span class="line">总用量 68</span><br><span class="line">drwxr-xr-x. 2 root root  4096 4月  29 01:27 7000</span><br><span class="line">drwxr-xr-x. 2 root root  4096 4月  29 01:30 7001</span><br><span class="line">drwxr-xr-x. 2 root root  4096 4月  29 01:29 7002</span><br><span class="line">drwxr-xr-x. 2 root root  4096 4月  29 01:28 7003</span><br><span class="line">drwxr-xr-x. 2 root root  4096 4月  29 01:28 7004</span><br><span class="line">drwxr-xr-x. 2 root root  4096 4月  29 01:28 7005</span><br><span class="line">-rw-r--r--. 1 root root 41550 4月  29 01:27 redis.conf</span><br><span class="line">	</span><br><span class="line"><span class="comment">########4. 复制redis.conf文件到每个目录################</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp ./redis.conf 7000</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp ./redis.conf 7001</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp ./redis.conf 7002</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp ./redis.conf 7003</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp ./redis.conf 7004</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp ./redis.conf 7005</span></span><br><span class="line"></span><br><span class="line"><span class="comment">########4. 修改配置文件端口号##########################</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># vim ./redis.conf ##查看行号</span></span><br><span class="line">49 <span class="comment"># If port 0 is specified Redis will not listen on a TCP socket.</span></span><br><span class="line">50 port 7000</span><br><span class="line">51 </span><br><span class="line">52 <span class="comment"># TCP listen() backlog.</span></span><br><span class="line"></span><br><span class="line">查看到端口号在50行于是使用sed命令修改</span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7001/" 7001/redis.conf</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7002/" 7002/redis.conf</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7003/" 7003/redis.conf</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7004/" 7004/redis.conf</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7005/" 7005/redis.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment">########5. 分别启动这6个redis实例######################</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cd 7000/</span></span><br><span class="line">[root@momo1 7000]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 7000]<span class="comment"># cd ../7001/</span></span><br><span class="line">[root@momo1 7001]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 7001]<span class="comment"># cd ../7002/</span></span><br><span class="line">[root@momo1 7002]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 7002]<span class="comment"># cd ../7003/</span></span><br><span class="line">[root@momo1 7003]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 7003]<span class="comment"># cd ../7004/</span></span><br><span class="line">[root@momo1 7004]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 7004]<span class="comment"># cd ../7005/</span></span><br><span class="line">[root@momo1 7005]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 7005]<span class="comment"># ps -ef|grep redis</span></span><br><span class="line">root       7694      1  0 06:30 ?        00:00:00 redis-server *:7000 [cluster]</span><br><span class="line">root       7698      1  0 06:31 ?        00:00:00 redis-server *:7001 [cluster]</span><br><span class="line">root       7702      1  0 06:31 ?        00:00:00 redis-server *:7002 [cluster]</span><br><span class="line">root       7712      1  0 06:31 ?        00:00:00 redis-server *:7003 [cluster]</span><br><span class="line">root       7716      1  0 06:31 ?        00:00:00 redis-server *:7004 [cluster]</span><br><span class="line">root       7720      1  0 06:31 ?        00:00:00 redis-server *:7005 [cluster]</span><br><span class="line">root       7726   5794  0 06:32 pts/2    00:00:00 grep redis</span><br><span class="line"></span><br><span class="line"><span class="comment">########6. 执行redis的创建集群命令创建集群################</span></span><br><span class="line">[root@momo1 src]<span class="comment"># ./redis-trib.rb create --replicas 1 192.168.33.88:7000 192.168.33.88:7001 192.168.33.88:7002 192.168.33.88:7003 192.168.33.88:7004 192.168.33.88:7005</span></span><br><span class="line"></span><br><span class="line">如报错：/usr/bin/env: ruby: 没有那个文件或目录 ，安装ruby:yum -y install ruby</span><br><span class="line">如报错：./redis-trib.rb:24:<span class="keyword">in</span> `require<span class="string">': no such file to load -- rubygems (LoadError)</span></span><br><span class="line"><span class="string">	from ./redis-trib.rb:24  安装ruby:yum -y install rubygems</span></span><br><span class="line"><span class="string">错误内容：</span></span><br><span class="line"><span class="string">/usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'</span>: no such file to load -- redis (LoadError)</span><br><span class="line">	from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:<span class="keyword">in</span> `require<span class="string">'</span></span><br><span class="line"><span class="string">	from ./redis-trib.rb:25  使用gem 安装:gem install redis</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">#####正常运行，输入yes</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; Creating cluster</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; Performing hash slots allocation on 6 nodes...</span></span><br><span class="line"><span class="string">Using 3 masters:</span></span><br><span class="line"><span class="string">192.168.33.88:7000</span></span><br><span class="line"><span class="string">192.168.33.88:7001</span></span><br><span class="line"><span class="string">192.168.33.88:7002</span></span><br><span class="line"><span class="string">Adding replica 192.168.33.88:7003 to 192.168.33.88:7000</span></span><br><span class="line"><span class="string">Adding replica 192.168.33.88:7004 to 192.168.33.88:7001</span></span><br><span class="line"><span class="string">Adding replica 192.168.33.88:7005 to 192.168.33.88:7002</span></span><br><span class="line"><span class="string">M: 7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000</span></span><br><span class="line"><span class="string">   slots:0-5460 (5461 slots) master</span></span><br><span class="line"><span class="string">M: 433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001</span></span><br><span class="line"><span class="string">   slots:5461-10922 (5462 slots) master</span></span><br><span class="line"><span class="string">M: c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002</span></span><br><span class="line"><span class="string">   slots:10923-16383 (5461 slots) master</span></span><br><span class="line"><span class="string">S: 054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003</span></span><br><span class="line"><span class="string">   replicates 7a869b7e7b55094949c060bd5f2f99174c79be59</span></span><br><span class="line"><span class="string">S: fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004</span></span><br><span class="line"><span class="string">   replicates 433d5052db72f7915bfe491f3afefcfd636da285</span></span><br><span class="line"><span class="string">S: 7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005</span></span><br><span class="line"><span class="string">   replicates c7820416485d4af315146266bb42abd171099934</span></span><br><span class="line"><span class="string">Can I set the above configuration? (type '</span>yes<span class="string">' to accept): yes</span></span><br><span class="line"><span class="string">//......</span></span><br><span class="line"><span class="string">[OK] All nodes agree about slots configuration.</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; Check for open slots...</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; Check slots coverage...</span></span><br><span class="line"><span class="string">[OK] All 16384 slots covered.</span></span><br><span class="line"><span class="string">[root@momo1 ~]# ps -ef|grep redis</span></span><br><span class="line"><span class="string">root       7694      1  0 06:30 ?        00:00:01 redis-server *:7000 [cluster]</span></span><br><span class="line"><span class="string">root       7698      1  0 06:31 ?        00:00:01 redis-server *:7001 [cluster]</span></span><br><span class="line"><span class="string">root       7702      1  0 06:31 ?        00:00:01 redis-server *:7002 [cluster]</span></span><br><span class="line"><span class="string">root       7712      1  0 06:31 ?        00:00:01 redis-server *:7003 [cluster]</span></span><br><span class="line"><span class="string">root       7716      1  0 06:31 ?        00:00:01 redis-server *:7004 [cluster]</span></span><br><span class="line"><span class="string">root       7720      1  0 06:31 ?        00:00:01 redis-server *:7005 [cluster]</span></span><br><span class="line"><span class="string">root       8377   8355  0 06:52 pts/1    00:00:00 grep redis</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">########7. redis-cli命令进入集群环境################</span></span><br><span class="line"><span class="string">redis-cli -c -p 7000 ##可任意进入其他节点</span></span><br><span class="line"><span class="string">redis-cli -c -p 7000 cluster nodes [| grep master] ##查看</span></span><br><span class="line"><span class="string">[root@momo1 src]# redis-cli -c -p 7000 cluster nodes</span></span><br><span class="line"><span class="string">fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004 slave 433d5052db72f7915bfe491f3afefcfd636da285 0 1461883595276 5 connected</span></span><br><span class="line"><span class="string">c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002 master - 0 1461883592754 3 connected 10923-16383</span></span><br><span class="line"><span class="string">7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005 slave c7820416485d4af315146266bb42abd171099934 0 1461883596285 6 connected</span></span><br><span class="line"><span class="string">054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003 slave 7a869b7e7b55094949c060bd5f2f99174c79be59 0 1461883593258 4 connected</span></span><br><span class="line"><span class="string">433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001 master - 0 1461883594266 2 connected 5461-10922</span></span><br><span class="line"><span class="string">7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000 myself,master - 0 0 1 connected 0-5460</span></span><br><span class="line"><span class="string">====&gt;可以看见id ip:端口 主/从 主id 哈希槽区域</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">127.0.0.1:7000&gt; set ab momo</span></span><br><span class="line"><span class="string">-&gt; Redirected to slot [13567] located at 192.168.33.88:7002</span></span><br><span class="line"><span class="string">OK</span></span><br><span class="line"><span class="string">192.168.33.88:7002&gt; get ab  ##key通过哈希槽分配到7002中</span></span><br><span class="line"><span class="string">"momo"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="redis集群操作"><a href="#redis集群操作" class="headerlink" title="redis集群操作"></a>redis集群操作</h2><h3 id="添加节点"><a href="#添加节点" class="headerlink" title="添加节点"></a>添加节点</h3><p>根据<strong>添加节点</strong>类型的不同，有<strong>两种方法</strong>来添加新节点</p>
+<ul>
+<li>主节点：如果添加的是主节点，那么我们需要创建一个空节点，然后将某些哈希槽移动到这个空节点里面</li>
+<li><p>从节点：如果添加的是从节点，我们也需要创建一个空节点，然后把这个新节点设置成集群中某个主节点的复制品。<br>命令</p>
+</li>
+<li><p><strong>添加节点到集群</strong>：redis-trib.rb add-node 192.168.33.88:7006 192.168.33.88:7000</p>
+</li>
+<li><p><strong>(添加主节点)重新分片</strong>：重新分片操作基本上就是将某些节点上的哈希槽移动到另外一些节点上面.</p>
+</li>
+</ul>
+<ol>
+<li>使用命令./redis-trib.rb reshard 192.168.1.160:7000</li>
+<li>执行 redis-trib 的第一步就是设定你打算移动的哈希槽的数量：</li>
+<li>第二部是输入接收solts的节点ID</li>
+<li>redis-trib 会向你询问重新分片的源节点（source node），也就是需要从哪个节点中转移哈希槽（可以使用all）最后输入 yes 并使用按下回车之后， redis-trib 就会正式开始执行重新分片操作</li>
+</ol>
+<ul>
+<li><strong>(添加从节点)把集群中的某个节点设置为从节点</strong>：</li>
+</ul>
+<ol>
+<li>redis-cli -c -p 7007 #进入7007为要修改为从节点的端口号</li>
+<li>cluster replicate 0b00721a509444db793d28448d8f02168b94bd38 #后面为主节点id</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">########一. 添加一个主节点########################</span></span><br><span class="line"><span class="comment">########1. 首先把需要添加的节点启动################</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># mkdir 7006</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp redis.conf 7006/</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7006/" 7006/redis.conf</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cd 7006/</span></span><br><span class="line">[root@momo1 7006]<span class="comment"># redis-server ./redis.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment">########2. 将这个新节点添加到集群中################</span></span><br><span class="line">[root@momo1 7007]<span class="comment"># cd /usr/local/redis/src/</span></span><br><span class="line">[root@momo1 src]<span class="comment"># redis-</span></span><br><span class="line">redis-benchmark   redis-check-dump  redis-sentinel    redis-trib.rb</span><br><span class="line">redis-check-aof   redis-cli         redis-server      </span><br><span class="line">[root@momo1 src]<span class="comment"># redis-trib.rb add-node 192.168.33.88:7006 192.168.33.88:7000 </span></span><br><span class="line"><span class="comment">#最后这个ip:port六选一都行</span></span><br><span class="line">&gt;&gt;&gt; Adding node 192.168.33.88:7006 to cluster 192.168.33.88:7000</span><br><span class="line">&gt;&gt;&gt; Performing Cluster Check (using node 192.168.33.88:7000)</span><br><span class="line">M: 7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000</span><br><span class="line">   slots:0-5460 (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 433d5052db72f7915bfe491f3afefcfd636da285</span><br><span class="line">M: c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002</span><br><span class="line">   slots:10923-16383 (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: 7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates c7820416485d4af315146266bb42abd171099934</span><br><span class="line">S: 054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 7a869b7e7b55094949c060bd5f2f99174c79be59</span><br><span class="line">M: 433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001</span><br><span class="line">   slots:5461-10922 (5462 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line">&gt;&gt;&gt; Check <span class="keyword">for</span> open slots...</span><br><span class="line">&gt;&gt;&gt; Check slots coverage...</span><br><span class="line">[OK] All 16384 slots covered.</span><br><span class="line">&gt;&gt;&gt; Send CLUSTER MEET to node 192.168.33.88:7006 to make it join the cluster.</span><br><span class="line">[OK] New node added correctly.</span><br><span class="line"></span><br><span class="line">[root@momo1 src]<span class="comment"># redis-cli -c -p 7000 cluster nodes #查看7006为master</span></span><br><span class="line">fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004 slave 433d5052db72f7915bfe491f3afefcfd636da285 0 1461884624785 5 connected</span><br><span class="line">c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002 master - 0 1461884620748 3 connected 10923-16383</span><br><span class="line">7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005 slave c7820416485d4af315146266bb42abd171099934 0 1461884625810 6 connected</span><br><span class="line">054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003 slave 7a869b7e7b55094949c060bd5f2f99174c79be59 0 1461884623775 4 connected</span><br><span class="line">ea2b724ca7603e0a2036cf97781553dec1b0fad2 192.168.33.88:7006 master - 0 1461884621758 0 connected</span><br><span class="line">433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001 master - 0 1461884622768 2 connected 5461-10922</span><br><span class="line">7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000 myself,master - 0 0 1 connected 0-5460</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">########3. 这个新的节点可以成为主节点或者是从节点################</span></span><br><span class="line">把这个节点变成主节点，使用redis-trib程序，将集群中的某些哈希槽移动到新节点里面，	这个新节点就成为真正的主节点了。</span><br><span class="line">执行下面的命令对集群中的哈希槽进行移动:</span><br><span class="line">[root@momo1 src]<span class="comment"># cd /usr/local/redis/src/</span></span><br><span class="line">[root@momo1 src]<span class="comment"># ./redis-trib.rb reshard 192.168.33.88:7006</span></span><br><span class="line">&gt;&gt;&gt; Performing Cluster Check (using node 192.168.33.88:7006)</span><br><span class="line">M: ea2b724ca7603e0a2036cf97781553dec1b0fad2 192.168.33.88:7006</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   0 additional replica(s)</span><br><span class="line">S: fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 433d5052db72f7915bfe491f3afefcfd636da285</span><br><span class="line">M: 7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000</span><br><span class="line">   slots:0-5460 (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: 7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates c7820416485d4af315146266bb42abd171099934</span><br><span class="line">M: c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002</span><br><span class="line">   slots:10923-16383 (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: 054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 7a869b7e7b55094949c060bd5f2f99174c79be59</span><br><span class="line">M: 433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001</span><br><span class="line">   slots:5461-10922 (5462 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line">&gt;&gt;&gt; Check <span class="keyword">for</span> open slots...</span><br><span class="line">&gt;&gt;&gt; Check slots coverage...</span><br><span class="line">[OK] All 16384 slots covered.</span><br><span class="line">How many slots <span class="keyword">do</span> you want to move (from 1 to 16384)? 2000 <span class="comment">#提示移动多少哈希槽，这移动2000</span></span><br><span class="line">What is the receiving node ID?ea2b724ca7603e0a203..........<span class="comment">#移到那个节点，这里为新增的</span></span><br><span class="line">Please enter all the <span class="built_in">source</span> node IDs.</span><br><span class="line">  Type <span class="string">'all'</span> to use all the nodes as <span class="built_in">source</span> nodes <span class="keyword">for</span> the <span class="built_in">hash</span> slots.</span><br><span class="line">  Type <span class="string">'done'</span> once you entered all the <span class="built_in">source</span> nodes IDs.</span><br><span class="line">Source node <span class="comment">#1:all #输入all 表示从所有的主节点中随机转移，凑够2000个哈希槽</span></span><br><span class="line"></span><br><span class="line">....然后输入：yes</span><br><span class="line"></span><br><span class="line">//<span class="comment">######这样我们就分配好了，然后查看一下</span></span><br><span class="line">[root@momo1 src]<span class="comment"># redis-cli -c -p 7000 cluster nodes</span></span><br><span class="line">fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004 slave 433d5052db72f7915bfe491f3afefcfd636da285 0 1461885154660 5 connected</span><br><span class="line">c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002 master - 0 1461885150120 3 connected 11589-16383</span><br><span class="line">7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005 slave c7820416485d4af315146266bb42abd171099934 0 1461885154157 6 connected</span><br><span class="line">054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003 slave 7a869b7e7b55094949c060bd5f2f99174c79be59 0 1461885155165 4 connected</span><br><span class="line">ea2b724ca7603e0a2036cf97781553dec1b0fad2 192.168.33.88:7006 master - 0 1461885156172 7 connected 0-665 5461-6127 10923-11588</span><br><span class="line">433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001 master - 0 1461885152140 2 connected 6128-10922</span><br><span class="line">7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000 myself,master - 0 0 1 connected 666-5460</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">########二. 添加一个从节点########################</span></span><br><span class="line"><span class="comment">########1. 首先把需要添加的节点启动################</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># mkdir 7007</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cp redis.conf 7007/</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># sed -i "50s/7000/7007/" 7007/redis.conf</span></span><br><span class="line">[root@momo1 cluster]<span class="comment"># cd 7007/</span></span><br><span class="line">[root@momo1 7007]<span class="comment"># redis-server ./redis.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment">########2. 将这个新节点添加到集群中################</span></span><br><span class="line">[root@momo1 7007]<span class="comment"># cd /usr/local/redis/src/</span></span><br><span class="line">[root@momo1 src]<span class="comment"># redis-trib.rb add-node 192.168.33.88:7007 192.168.33.88:7000  //添加</span></span><br><span class="line">[root@momo1 src]<span class="comment"># redis-cli -c -p 7000 cluster nodes</span></span><br><span class="line">fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004 slave 433d5052db72f7915bfe491f3afefcfd636da285 0 1461886668520 5 connected</span><br><span class="line">c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002 master - 0 1461886665997 3 connected 11589-16383</span><br><span class="line">7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005 slave c7820416485d4af315146266bb42abd171099934 0 1461886666503 6 connected</span><br><span class="line">08908d24194bcbeeb7a6bca3024eb20d2f43b6cb 192.168.33.88:7007 master - 0 1461886667511 0 connected</span><br><span class="line">054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003 slave 7a869b7e7b55094949c060bd5f2f99174c79be59 0 1461886665494 4 connected</span><br><span class="line">ea2b724ca7603e0a2036cf97781553dec1b0fad2 192.168.33.88:7006 master - 0 1461886667007 7 connected 0-665 5461-6127 10923-11588</span><br><span class="line">433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001 master - 0 1461886664487 2 connected 6128-10922</span><br><span class="line">7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000 myself,master - 0 0 1 connected 666-5460</span><br><span class="line"></span><br><span class="line">[root@momo1 ~]<span class="comment"># redis-cli -c -p 7007</span></span><br><span class="line">127.0.0.1:7007&gt; cluster replicate ea2b724ca7603e0a2036cf97781553dec1b0fad2</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<h3 id="删除节点"><a href="#删除节点" class="headerlink" title="删除节点"></a>删除节点</h3><ul>
+<li><p>如果是<strong>主节点</strong>，先把主节点中的哈希槽转移到其他节点中，然后删除这个节点。<br>redis-trib.rb reshard 192.168.33.88:7000<br>redis-trib.rb del-node 192.168.33.88:7000 08908d24194bcbeeb7a6bca3024eb20d2f43b6cb</p>
+</li>
+<li><p>如果是<strong>从节点</strong>，直接删除即可。<br>redis-trib.rb del-node 192.168.33.88:7000  7002e2b66b9d3b384981bcbe7d09954638ed82fb</p>
+</li>
+<li><p>示例代码：删除主从节点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##############这里演示删除主节点7006############################</span></span><br><span class="line">[root@momo1 src]<span class="comment">#redis-trib.rb reshard 192.168.33.88:7000  ##进入分配哈希槽</span></span><br><span class="line">[OK] All 16384 slots covered.</span><br><span class="line">How many slots <span class="keyword">do</span> you want to move (from 1 to 16384)? 4000 <span class="comment">##这里之前7006的4000哈希</span></span><br><span class="line">What is the receiving node ID? 433d5052db72f7915bfe491f3afefcfd636da285 <span class="comment">##这里一到7001指定它的id</span></span><br><span class="line">Please enter all the <span class="built_in">source</span> node IDs.</span><br><span class="line">  Type <span class="string">'all'</span> to use all the nodes as <span class="built_in">source</span> nodes <span class="keyword">for</span> the <span class="built_in">hash</span> slots.</span><br><span class="line">  Type <span class="string">'done'</span> once you entered all the <span class="built_in">source</span> nodes IDs.</span><br><span class="line">Source node <span class="comment">#1:ea2b724ca7603e0a2036cf97781553dec1b0fad2    ##我们要删除7006这里一定是7006</span></span><br><span class="line">Source node <span class="comment">#2:done</span></span><br><span class="line"></span><br><span class="line">//......yes</span><br><span class="line"><span class="comment">#####删除</span></span><br><span class="line">./redis-trib.rb del-node 192.168.33.88:7006 ea2b724ca7603e0a2036cf97781553dec1b0fad2 <span class="comment">#7006ID</span></span><br><span class="line"></span><br><span class="line">注意：分配哈希槽顺序，先是指定分给某节点，然后是被分配的节点id（博主顺序就错错过，所以上面为4000）</span><br><span class="line"></span><br><span class="line"><span class="comment">###############删除从节点，7007##################</span></span><br><span class="line">./redis-trib.rb del-node 192.168.33.88:7007 ea2b724ca7603e0a2036cf97781553dec1b0fad2 <span class="comment">#7007ID</span></span><br><span class="line"></span><br><span class="line">[root@momo1 src]<span class="comment"># redis-cli -c -p 7000 cluster nodes   ####查看</span></span><br><span class="line">fcd2e21a9bd0785a27f6c356d670f378df679547 192.168.33.88:7004 slave 433d5052db72f7915bfe491f3afefcfd636da285 0 1461888018505 8 connected</span><br><span class="line">c7820416485d4af315146266bb42abd171099934 192.168.33.88:7002 master - 0 1461888017497 3 connected 12589-16383</span><br><span class="line">7e1d4056265d38b9ce419bcd6017534356bfcec0 192.168.33.88:7005 slave c7820416485d4af315146266bb42abd171099934 0 1461888017497 6 connected</span><br><span class="line">054f970416643f34a5c9472348097ff186629230 192.168.33.88:7003 slave 7a869b7e7b55094949c060bd5f2f99174c79be59 0 1461888019513 4 connected</span><br><span class="line">433d5052db72f7915bfe491f3afefcfd636da285 192.168.33.88:7001 master - 0 1461888016486 8 connected 0-665 5461-12588</span><br><span class="line">7a869b7e7b55094949c060bd5f2f99174c79be59 192.168.33.88:7000 myself,master - 0 0 1 connected 666-5460</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="java操作redis集群"><a href="#java操作redis集群" class="headerlink" title="java操作redis集群"></a>java操作redis集群</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 集群操作</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cluster</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    JedisPoolConfig poolConfig = <span class="keyword">new</span> JedisPoolConfig();</span><br><span class="line">    <span class="comment">//TODO--</span></span><br><span class="line">    Set&lt;HostAndPort&gt; nodes = <span class="keyword">new</span> HashSet&lt;HostAndPort&gt;();</span><br><span class="line">    nodes.add(<span class="keyword">new</span> HostAndPort(<span class="string">"192.168.33.88"</span>, <span class="number">7000</span>));</span><br><span class="line">    nodes.add(<span class="keyword">new</span> HostAndPort(<span class="string">"192.168.33.88"</span>, <span class="number">7001</span>));</span><br><span class="line">    nodes.add(<span class="keyword">new</span> HostAndPort(<span class="string">"192.168.33.88"</span>, <span class="number">7002</span>));</span><br><span class="line">    nodes.add(<span class="keyword">new</span> HostAndPort(<span class="string">"192.168.33.88"</span>, <span class="number">7003</span>));</span><br><span class="line">    nodes.add(<span class="keyword">new</span> HostAndPort(<span class="string">"192.168.33.88"</span>, <span class="number">7004</span>));</span><br><span class="line">    nodes.add(<span class="keyword">new</span> HostAndPort(<span class="string">"192.168.33.88"</span>, <span class="number">7005</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//1. 创建JedisCluster对象</span></span><br><span class="line">    JedisCluster jedisCluster = <span class="keyword">new</span> JedisCluster(nodes , poolConfig );</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2. 直接可以操作reidsi了</span></span><br><span class="line">    jedisCluster.set(<span class="string">"blog"</span>, <span class="string">"blog.xiaoxiaomo.com"</span>);</span><br><span class="line">    System.out.println( jedisCluster.get(<span class="string">"blog"</span>) );</span><br><span class="line">    </span><br><span class="line">	<span class="comment">//3. 不需要关闭</span></span><br><span class="line">	<span class="comment">//这个close表示把jedisCluster给关闭了</span></span><br><span class="line">    <span class="comment">//jedisCluster.close();</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看结果 : </li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@momo1 home]<span class="comment"># redis-cli -c -p 7000</span></span><br><span class="line">127.0.0.1:7000&gt; get blog</span><br><span class="line">-&gt; Redirected to slot [7653] located at 192.168.33.88:7001</span><br><span class="line"><span class="string">"blog.xiaoxiaomo.com"</span></span><br></pre></td></tr></table></figure>
+
+                
+<p class="red-link-context">
+    <a href="/2016/05/02/Redis-优化详解/" rel="next" title="Redis--优化详解">
+    上一篇：Redis--优化详解
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/28/Redis-主从复制/" rel="next" title="Redis--主从复制">
+    下一篇：Redis--主从复制
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Redis--集群" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

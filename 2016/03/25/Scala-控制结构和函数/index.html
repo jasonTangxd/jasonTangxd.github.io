@@ -1,0 +1,766 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Scala--控制结构和函数 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Scala--控制结构和函数"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Scala--控制结构和函数</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-03-25T14:04:26.000Z"><a href="/2016/03/25/Scala-控制结构和函数/">2016-03-25</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Scala/" class="chip red lighten-1">Scala</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#条件表达式"><span class="section table-of-contents-text">条件表达式</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#块语句"><span class="section table-of-contents-text">块语句</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#while循环"><span class="section table-of-contents-text">while循环</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#for循环"><span class="section table-of-contents-text">for循环</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#for基础"><span class="section table-of-contents-text">for基础</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#for跳出语句"><span class="section table-of-contents-text">for跳出语句</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#for进阶"><span class="section table-of-contents-text">for进阶</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#函数"><span class="section table-of-contents-text">函数</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#基本语法"><span class="section table-of-contents-text">基本语法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#函数参数"><span class="section table-of-contents-text">函数参数</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#过程"><span class="section table-of-contents-text">过程</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本篇博客，将介绍scala的：</p>
+<ol>
+<li><code>条件表达式</code></li>
+<li><code>循环</code></li>
+<li><code>函数</code></li>
+</ol>
+<ul>
+<li>主要是对这些<strong>表达式</strong>和<strong>语句结构</strong>的熟悉，需要多练习。在scala中表达式（3+4）和语句（if语句）是不同的概念，<code>表达式有值，语句执行动作</code>。</li>
+<li><strong><code>记住</code></strong>，scala几乎所有构造出来的语法结构都有值。</li>
+</ul>
+<a id="more"></a>
+<h2 id="条件表达式"><a href="#条件表达式" class="headerlink" title="条件表达式"></a>条件表达式</h2><ul>
+<li><code>if/else</code>的表达式语法和java类似，只是需要注意的是：</li>
+</ul>
+<ol>
+<li>if/else有返回值</li>
+<li>scala代码结尾不需要“;”，除非一行要写多条语句，这个和<code>Python</code>类似。下例打印出了if的<strong>返回值</strong>1，这个小例子就充分说明了if语句是有返回值的。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> isTrue=<span class="literal">true</span></span><br><span class="line">isTrue: <span class="type">Boolean</span> = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">if</span>(isTrue) <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span>  ##返回值</span><br><span class="line">res0: <span class="type">Int</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">val</span> f = <span class="keyword">if</span>(isTrue) <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span>  ##返回值</span><br><span class="line">f: <span class="type">Int</span> = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li><code>if/else表达式的类型推断</code>，取两个类型的公共父类型，如下String和Int，则表达式的值是Any<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> f = <span class="keyword">if</span>(isTrue) <span class="string">"this reture true"</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">f: <span class="type">Any</span> = <span class="keyword">this</span> reture <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="块语句"><a href="#块语句" class="headerlink" title="块语句"></a>块语句</h2><ul>
+<li>在scala中“<code>{}</code>”包含的一系列表达式，叫做块语句，<code>块中最后一个表达式的值就是块的值</code>，即块的返回值。下面，定义一个块语句，执行后返回了变量ss的值，ss的值就是块语句中最后一个表达式的值。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> ss = &#123; <span class="keyword">val</span> s1=<span class="number">78</span>; <span class="keyword">val</span> s2=s1*<span class="number">0.8</span>; s1+s2 &#125;</span><br><span class="line">ss: <span class="type">Double</span> = <span class="number">140.4</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h2><ul>
+<li><p><code>while循环</code>，和java的while和do循环相同，这里就不过多讲解了，实例如下图所示。我们定义了一个var变量，然后通过while循环打印出结果，注意scala不支持<strong>n++</strong>,<strong>n- -</strong>。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; :paste</span><br><span class="line"><span class="comment">// Entering paste mode (ctrl-D to finish)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> n =<span class="number">3</span></span><br><span class="line"><span class="keyword">while</span>( n &gt; <span class="number">0</span> ) &#123;</span><br><span class="line">    n-=<span class="number">1</span></span><br><span class="line">    println(n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Exiting paste mode, now interpreting.</span></span><br><span class="line"></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line">n: <span class="type">Int</span> = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注：<strong>在”Repl”中写多行代码的时候</strong>，每写一行敲一下“回车键”然后它会自动去识别程序是否结束，直到你真正的写完代码，有时候不是很方便；<br>还有一种粘贴的方法，输入<code>:paste</code>然后就可以随意的写代码了，写完后<code>Ctrl+D</code>退出并运行代码，如上图所示。</p>
+</li>
+</ul>
+<h2 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h2><h3 id="for基础"><a href="#for基础" class="headerlink" title="for基础"></a>for基础</h3><ul>
+<li><p><code>语句结构</code>：</p>
+<blockquote>
+<p>for( i &lt;- 表达式 )  #让变量i遍历&lt;-右边的表达式的所有值，i具体执行取决于表达式<br>　　循环体</p>
+</blockquote>
+</li>
+<li><p>示例1，for循环中的to：<code>to</code>：包含上线区间。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">var</span> n = <span class="number">10</span>; <span class="keyword">for</span>(i &lt;- <span class="number">1</span> to n) println(i)</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line"><span class="number">9</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line">n: <span class="type">Int</span> = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例2，for循环中的<code>until</code>，<code>until</code>：返回一个并不包含上线的区间。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">var</span> n = <span class="number">10</span>; <span class="keyword">for</span>(i &lt;- <span class="number">1</span> until n) println(i)</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line"><span class="number">9</span></span><br><span class="line">n: <span class="type">Int</span> = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例3，不使用to和until</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">for</span>(s &lt;- <span class="string">"blog.xiaoxiaomo.com"</span>) print(s+<span class="string">" "</span>)</span><br><span class="line">b l o g . x i a o x i a o m o . c o m</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="for跳出语句"><a href="#for跳出语句" class="headerlink" title="for跳出语句"></a>for跳出语句</h3><ul>
+<li><p>scala中没有<strong>break</strong>和<strong>continue</strong>来退出循环，我们可以这样<strong>操作</strong>：</p>
+<blockquote>
+<ol>
+<li>使用Boolean的变量控制。</li>
+<li>使用嵌套函数，可以从函数当中return。</li>
+<li>使用Breaks对象的break方法。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>eg：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">breakable&#123;</span><br><span class="line">    <span class="keyword">for</span> (...) &#123;</span><br><span class="line">        <span class="keyword">if</span>（...) <span class="keyword">break</span> ;<span class="comment">//#退出breakable块</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="for进阶"><a href="#for进阶" class="headerlink" title="for进阶"></a>for进阶</h3><ol>
+<li>在for循环“（）”中可以使用<strong>多个生成器</strong>， 用“;”隔开；</li>
+<li>并且每一个生成器都可以带一个<strong><code>守卫</code></strong>（<code>if开头的Boolean表达式</code>）；</li>
+<li><strong>for推导式</strong>，如下示例：</li>
+</ol>
+<ul>
+<li><p>示例1，多个生成器，即多层循环</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; :paste</span><br><span class="line"><span class="comment">// Entering paste mode (ctrl-D to finish)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(i &lt;- <span class="number">1</span> to <span class="number">9</span>; j &lt;- <span class="number">1</span> to <span class="number">9</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(j == <span class="number">9</span>) &#123;</span><br><span class="line">        println(i * j)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        print(i * j + <span class="string">" "</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Exiting paste mode, now interpreting.</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span></span><br><span class="line"><span class="number">2</span> <span class="number">4</span> <span class="number">6</span> <span class="number">8</span> <span class="number">10</span> <span class="number">12</span> <span class="number">14</span> <span class="number">16</span> <span class="number">18</span></span><br><span class="line"><span class="number">3</span> <span class="number">6</span> <span class="number">9</span> <span class="number">12</span> <span class="number">15</span> <span class="number">18</span> <span class="number">21</span> <span class="number">24</span> <span class="number">27</span></span><br><span class="line"><span class="number">4</span> <span class="number">8</span> <span class="number">12</span> <span class="number">16</span> <span class="number">20</span> <span class="number">24</span> <span class="number">28</span> <span class="number">32</span> <span class="number">36</span></span><br><span class="line"><span class="number">5</span> <span class="number">10</span> <span class="number">15</span> <span class="number">20</span> <span class="number">25</span> <span class="number">30</span> <span class="number">35</span> <span class="number">40</span> <span class="number">45</span></span><br><span class="line"><span class="number">6</span> <span class="number">12</span> <span class="number">18</span> <span class="number">24</span> <span class="number">30</span> <span class="number">36</span> <span class="number">42</span> <span class="number">48</span> <span class="number">54</span></span><br><span class="line"><span class="number">7</span> <span class="number">14</span> <span class="number">21</span> <span class="number">28</span> <span class="number">35</span> <span class="number">42</span> <span class="number">49</span> <span class="number">56</span> <span class="number">63</span></span><br><span class="line"><span class="number">8</span> <span class="number">16</span> <span class="number">24</span> <span class="number">32</span> <span class="number">40</span> <span class="number">48</span> <span class="number">56</span> <span class="number">64</span> <span class="number">72</span></span><br><span class="line"><span class="number">9</span> <span class="number">18</span> <span class="number">27</span> <span class="number">36</span> <span class="number">45</span> <span class="number">54</span> <span class="number">63</span> <span class="number">72</span> <span class="number">81</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例2，for循环守卫</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">for</span>(i &lt;- <span class="number">1</span> to <span class="number">20</span> <span class="keyword">if</span> i % <span class="number">2</span> == <span class="number">0</span>) println(i)</span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="number">12</span></span><br><span class="line"><span class="number">14</span></span><br><span class="line"><span class="number">16</span></span><br><span class="line"><span class="number">18</span></span><br><span class="line"><span class="number">20</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>for推导式</strong>：如果for循环的循环体以yield开始，该循环就会构造出一个集合，每次迭代就生成一个集合的值。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">for</span>( i &lt;- <span class="number">2</span> to <span class="number">8</span> ) <span class="keyword">yield</span> i%<span class="number">2</span></span><br><span class="line">res7: scala.collection.immutable.<span class="type">IndexedSeq</span>[<span class="type">Int</span>] = <span class="type">Vector</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><ul>
+<li>语法如图：</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160325202143.png" alt="图来源于：《Scala编程》"></p>
+<ol>
+<li>函数必须指定<code>参数的类型</code>。</li>
+<li>函数只要不是递归的就不需要指定<code>返回值类型</code>（因为无法推断出递归函数的类型）。</li>
+<li>在函数中，不需要使用return。<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="function"><span class="keyword">def</span> <span class="title">max</span></span>( x:<span class="type">Int</span>, y:<span class="type">Int</span> ) : <span class="type">Int</span> =&#123;</span><br><span class="line">     | <span class="keyword">if</span>(x&gt;y) x</span><br><span class="line">     | <span class="keyword">else</span> y</span><br><span class="line">     | &#125;</span><br><span class="line">max: (x: <span class="type">Int</span>, y: <span class="type">Int</span>)<span class="type">Int</span></span><br><span class="line"></span><br><span class="line">scala&gt; max(<span class="number">78</span>,<span class="number">88</span>)</span><br><span class="line">res8: <span class="type">Int</span> = <span class="number">88</span></span><br><span class="line"></span><br><span class="line">scala&gt; max(<span class="number">18</span>,<span class="number">99</span>)</span><br><span class="line">res10: <span class="type">Int</span> = <span class="number">99</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><p>在函数中，我们可以使用<code>默认参数</code>。函数调用时：</p>
+<blockquote>
+<p>1、如果没用给出所有参数，函数会使用默认参数（后面不够的参数使用默认值）。<br>2、也可以指定参数名，参数名不需要按顺序排列。<br>3、如果混合使用（未名参数和带名参数），只要未名参数排在前面即可。<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="function"><span class="keyword">def</span> <span class="title">defStr</span></span>( left:<span class="type">String</span> = <span class="string">"["</span> , str:<span class="type">String</span> , right:<span class="type">String</span> = <span class="string">"]"</span> ) = &#123;</span><br><span class="line">     | print( left + str + right )</span><br><span class="line">     | &#125;</span><br><span class="line">defStr: (left: <span class="type">String</span>, str: <span class="type">String</span>, right: <span class="type">String</span>)<span class="type">Unit</span></span><br><span class="line"></span><br><span class="line">scala&gt; defStr(<span class="string">"["</span>,<span class="string">"Hi"</span>)</span><br><span class="line">[<span class="type">Hi</span>]</span><br><span class="line">scala&gt; defStr(left=<span class="string">"&lt;"</span>,right=<span class="string">"&gt;"</span>,str=<span class="string">"xiaoxiaomo"</span>)</span><br><span class="line">&lt;xiaoxiaomo&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>4、<strong>变长参数</strong>，可以接受多个参数</p>
+</blockquote>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(args:<span class="type">Int</span>*) = &#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="number">0</span> ;</span><br><span class="line">    <span class="keyword">for</span>(arg &lt;- args) result+=arg</span><br><span class="line">    result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用函数，sum(3,4,6,23,3),函数得到的是一个Seq类型的参数，注意调用函数是传入的参数不能是一个区间，eg：<br>sum(2 to 9)是不可以的，应该为sum(2 to 9:_*);</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><ul>
+<li><p>在scala中，如果函数没有返回值，那么该返回值类型我们可以用<code>Unit</code>来表示，这种<code>没有返回值的函数我们称之为过程</code>。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="function"><span class="keyword">def</span> <span class="title">pr</span></span>(s:<span class="type">String</span>)&#123;</span><br><span class="line">     | print(s)</span><br><span class="line">     | &#125;</span><br><span class="line">pr: (s: <span class="type">String</span>)<span class="type">Unit</span></span><br><span class="line"></span><br><span class="line">scala&gt; pr(<span class="string">"小小默"</span>)</span><br><span class="line">小小默</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上面<strong>省略了Unit</strong>,由于没有返回值也可以<strong>省略“=”号</strong>，下面语句相同：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="function"><span class="keyword">def</span> <span class="title">pr</span></span>(s:<span class="type">String</span>) : <span class="type">Unit</span> = &#123;</span><br><span class="line">     | print(s)</span><br><span class="line">     | &#125;</span><br><span class="line">pr: (s: <span class="type">String</span>)<span class="type">Unit</span></span><br><span class="line"></span><br><span class="line">scala&gt; pr(<span class="string">"小小默"</span>)</span><br><span class="line">小小默</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/03/26/Scala-数组/" rel="next" title="Scala--数组">
+    上一篇：Scala--数组
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/03/25/Scala-基础入门/" rel="next" title="Scala--基础入门">
+    下一篇：Scala--基础入门
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Scala--控制结构和函数" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

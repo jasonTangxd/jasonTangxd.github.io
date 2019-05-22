@@ -1,0 +1,780 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java--线程安全与不安全&amp;同步异步和锁 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java--线程安全与不安全&amp;同步异步和锁"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java--线程安全与不安全&amp;同步异步和锁</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2019-03-13T14:39:37.000Z"><a href="/2019/03/13/Java-线程安全与不安全&同步异步和锁/">2019-03-13</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#一、-基本概念"><span class="section table-of-contents-text">一、 基本概念</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#二、同步与阻塞的区别"><span class="section table-of-contents-text">二、同步与阻塞的区别</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#三、什么会引发线程不安全？"><span class="section table-of-contents-text">三、什么会引发线程不安全？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#四、Java中常见的线程安全与不安全的集合？"><span class="section table-of-contents-text">四、Java中常见的线程安全与不安全的集合？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#五、有哪些方法能解决线程不安全？"><span class="section table-of-contents-text">五、有哪些方法能解决线程不安全？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#六、Synchronized和ReentrantLock有什么区别？"><span class="section table-of-contents-text">六、Synchronized和ReentrantLock有什么区别？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#七、synchronized底层如何实现？什么是锁的升级、降级？"><span class="section table-of-contents-text">七、synchronized底层如何实现？什么是锁的升级、降级？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#八、锁的分类（名词的解释）"><span class="section table-of-contents-text">八、锁的分类（名词的解释）</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#九、死锁，解决和避免"><span class="section table-of-contents-text">九、死锁，解决和避免</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p><img src="https://img.xiaoxiaomo.com/blog/img/synchronized01.png" alt="线程"><br>　　<strong>线程不安全？</strong>首先看看线程的工作原理，jvm有一个main memory，而每个线程有自己的working memory，一个线程对一个变量进行操作时，都要在自己的working   memory里面建立一个copy，操作完之后再写入main memory。多个线程同时操作同一个变量(variable)，就可能会出现不可预知的结果，即线程不安全。</p>
+<p>　　而用synchronized（同步）的关键是建立一个monitor，这个monitor可以是要修改的变量，也可以是其他你认为合适的object比如method，然后通过给这个monitor加锁来实现线程安全，每个线程在获得这个锁之后，要执行完 <strong>load到working memory -&gt; use&amp;assign -&gt; store到main memory的过程</strong>，才会释放它得到的锁。这样就实现了所谓的线程安全。<br>　　<strong>总结：synchronized 使一段代码同时只能有一个线程来操作，其实就是给对象加了锁，来实现线程安全。</strong></p>
+<a id="more"></a>
+<h2 id="一、-基本概念"><a href="#一、-基本概念" class="headerlink" title="一、 基本概念"></a>一、 基本概念</h2><p><strong>线程安全</strong>：当多个线程访问某一个类（对象或方法）时，这个类始终都能表现出正确的行为，那么这个类（对象或方法）就是线程安全的。</p>
+<p><strong>线程不安全</strong>：当多个线程对同一个对象中的同一个实例变量进行操作时会出现值被更改、值不同步的情况，进而影响程序的执行流程。</p>
+<p><strong>同步</strong>：发送一个请求，等待返回，然后再发送下一个请求<br><strong>异步</strong>：发送一个请求，不等待返回，随时可以再发送下一个请求   </p>
+<p><strong>阻塞</strong>：是指调用结果返回之前，当前线程会被挂起。函数只有在得到结果之后才会返回。<br><strong>非阻塞</strong>：在不能立刻得到结果之前，该函数不会阻塞当前线程，而会立刻返回。</p>
+<h2 id="二、同步与阻塞的区别"><a href="#二、同步与阻塞的区别" class="headerlink" title="二、同步与阻塞的区别"></a>二、同步与阻塞的区别</h2><p>阻塞有一个很明显的特征就是Blocking，有了这个特征才叫做阻塞。在java程序中的<strong>阻塞线程通常处于Blocking状态</strong>。</p>
+<p>同步通常是指步骤需要一步步来完成，就按常规的代码一条条的执行下去。相对于阻塞状态，<strong>同步的线程应当处于Running状态</strong>。</p>
+<p><strong>即</strong>：线程处于Blocking状态就差不多可以看成是休眠了，就是什么也没法做，只有等待信号将他唤醒而Running状态的线程是活跃的。在这种状态下可以去做很多的事情。</p>
+<h2 id="三、什么会引发线程不安全？"><a href="#三、什么会引发线程不安全？" class="headerlink" title="三、什么会引发线程不安全？"></a>三、什么会引发线程不安全？</h2><ul>
+<li>引发线程不安全必须满足三个条件：</li>
+</ul>
+<blockquote>
+<ol>
+<li>有共享变量</li>
+<li>处在多线程环境下</li>
+<li>共享变量有修改操作。</li>
+</ol>
+</blockquote>
+<p><strong>即</strong>：若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。<br><strong>总结：线程安全问题都是由全局变量及静态变量引起的。</strong></p>
+<h2 id="四、Java中常见的线程安全与不安全的集合？"><a href="#四、Java中常见的线程安全与不安全的集合？" class="headerlink" title="四、Java中常见的线程安全与不安全的集合？"></a>四、Java中常见的线程安全与不安全的集合？</h2><p><code>ArrayList</code>、<code>LinkedList</code> <strong>线程不安全</strong>，<code>Vector</code>        <strong>线程安全</strong></p>
+<p><code>HashMap</code>                  <strong>线程不安全</strong>，<code>HashTable</code>   <strong>线程安全</strong> </p>
+<p><code>StringBuilder</code>              <strong>线程不安全</strong>，<code>StringBuffer</code> <strong>线程安全</strong></p>
+<h2 id="五、有哪些方法能解决线程不安全？"><a href="#五、有哪些方法能解决线程不安全？" class="headerlink" title="五、有哪些方法能解决线程不安全？"></a>五、有哪些方法能解决线程不安全？</h2><ul>
+<li>所谓解决线程安全问题无非就是<strong>将操作原子化</strong>，<strong>原子化</strong>可以使用原子类，加sychronized，或者加lock，只要将操作原子化就能避免线程安全的问题。<strong>即解决线程不安全的方法</strong>：<blockquote>
+<ol>
+<li>使用局部变量：优先考虑能否不用共享，<strong>优先使用局部变量代替共享的全局变量</strong>。</li>
+<li>使用原子类：只能用共享变量的时候优先使用原子类，诸如AtomicInteger等等。 <strong>没有原子类，可以自己创造自己的原子类。</strong></li>
+<li>使用sychronized或锁：<strong>上面方法都不行，再考虑使用sychronized，lock之等等</strong>，别一上来就加sychronize，锁会有性能问题。</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<p>5.1. 【使用局部变量（略）】<br>5.2. 【使用原子类】<br>volatile对于单个的共享变量的读/写具有原子性，但是像num++（<code>1.读取 2.加一 3.写入 三步组成</code>）这种复合操作，volatile无法保证其原子性。在并发环境下，如果不做任何同步处理，就会有线程安全问题。最直接的处理方式就是加锁。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">synchronized</span>(<span class="keyword">this</span>）&#123;</span><br><span class="line">    num++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>a</strong>. 但是使用这种独占锁机制来解决，<strong>是一种悲观的并发策略</strong>（<code>每次操作数据的时候都认为别的线程会参与竞争修改，所以悲观</code>）。这种直接加锁，同一刻只能有一个线程持有锁，那其他线程就会阻塞。线程的挂起恢复会带来很大的性能开销，尽管jvm对于非竞争性的锁的获取和释放做了很多优化，但是一旦有多个线程竞争锁，频繁的阻塞唤醒，还是会有很大的性能开销的。所以，使用synchronized或其他重量级锁来处理显然不够合理。<br><strong>b</strong>. <strong>针对num++这类复合类的操作，可以使用java并发包中的原子操作类原子操作类。相比锁机制，使用原子类更精巧轻量，性能开销更小</strong>。这属于<strong>乐观的解决方案</strong>(<code>非阻塞；认为别的线程不会参与竞争修改，所以乐观</code>)，也不加锁。如果操作成功了那最好；如果失败了，比如中途确有别的线程进入并修改了数据（依赖于冲突检测），也不会阻塞，可以采取一些补偿机制，一般的策略就是反复重试。很显然，这种思想相比简单粗暴利用锁来保证同步要合理的多。</p>
+<pre><code>- **引发思考**
+    - `volatile为什么不能保证符合操作其原子性？`
+    - `针对num++这类复合类的操作，为什么能使用java并发包中的原子类？（提到的一般策略）原理是什么？`
+    - 【回答问题一】：
+    volatile是一种轻量级的同步机制，具有可见性，上面提到每个线程都有它自己私有内存(working memory)。**所谓可见性，是指当一条线程修改了共享变量的值，新值对于其他线程来说是可以立即得知的**。即：1`.当写一个volatile变量时，JMM会把该线程对应的私有内存中的变量强制刷新到主内存中去`；`2.这个写操作会导致其他线程中之前的缓存无效，感知到更改。num++`（1.读取 2.加一 3.写入 三步组成）在多线程环境下，有可能线程A将num读取到本地内存中，此时其他线程可能已经将num增大了很多，线程A依然对过期的num进行自加(A线程认为是最新的num)，重新写到主存中，最终导致了num的结果不合预期。因此volatile不适合符合操作。volatile详情以及另一个特性**禁止指令重排序优化**。参考：http://www.cnblogs.com/chengxiao/p/6528109.html
+    - 【回答问题二】：
+    **java并发包中的原子类其原子性操作的实现是基于CAS**（compare-and-swap）技术。CAS，表征的是一些列操作的集合，CAS算法是由硬件直接支持来保证原子性的。看一下`AtomicInteger`的源码：
+    ![原子类](https://img.xiaoxiaomo.com/blog/img/synchronized02.png)
+
+**我们可以看见volatile保证了可见性，有序性，而unsafe保证了原子性**（线程安全几个基本特征，可见性、原子性、有序性）。
+
+- 在jdk7中incrementAndGet源码：
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">incrementAndGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> current = get(); <span class="comment">//获取当前值</span></span><br><span class="line">        <span class="keyword">int</span> next = current + <span class="number">1</span>; <span class="comment">//对当前值+1</span></span><br><span class="line">        <span class="keyword">if</span> (compareAndSet(current, next)) <span class="comment">//调用compareAndSet传入当前值和更新后的值进行原子操作</span></span><br><span class="line">            <span class="keyword">return</span> next;</span><br><span class="line">    &#125; <span class="comment">//重试</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>=&gt; 1.先获取当前的value值; 2.对value+1; 3.调用compareAndSet方法来来进行原子更新操作,底层细节即：先检查当前value是否等于current，<br>如果相等，则意味着value没被其他线程修改过，更新并返回true。如果不相等，compareAndSet则会返回false，然后循环继续尝试更新。<br>下面是jdk8类似功能的源码，其实类似<br><img src="https://img.xiaoxiaomo.com/blog/img/synchronized03.png" alt="jdk8类似功能的源码"></p>
+<p><strong>CAS的ABA问题</strong>，著名的<code>ABA</code>问题，这是通常只在lock-free算法下暴露的问题。我前面说过CAS是在更新时比较前值，如果对方只是恰好相同，例如期间发生了 A -&gt; B -&gt; A的更新，仅仅判断数值是A，可能导致不合理的修改操作。针对这种情况，Java提供了AtomicStampedReference工具类，通过为引用建立类似版本号（stamp）的方式，来保证CAS的正确性，具体用法请参考:<a href="http://tutorials.jenkov.com/java-util-concurrent/atomicstampedreference.html。" target="_blank" rel="noopener">http://tutorials.jenkov.com/java-util-concurrent/atomicstampedreference.html。</a></p>
+<p>参考：<a href="https://www.cnblogs.com/chengxiao/p/6789109.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengxiao/p/6789109.html</a></p>
+<p>5.3.  【使用sychronized或锁】</p>
+<pre><code>- `有三种方式：分别是同步代码块 、同步方法和锁机制(Lock)`
+(1) 同步方法：给多线程访问的成员方法加上synchronized修饰符
+![同步方法](https://img.xiaoxiaomo.com/blog/img/synchronized04.png)
+(2) 同步的代码块：
+![同步的代码块](https://img.xiaoxiaomo.com/blog/img/synchronized05.png)
+(3) 锁机制(Lock)
+Java提供的同步代码块的另一种机制，比synchronized关键字更强大也更加灵活。**这种机制基于Lock接口及其实现类（例如：ReentrantLock）**
+它比synchronized关键字好的地方：
+1、`提供了更多的功能。tryLock()方法的实现，这个方法试图获取锁，如果锁已经被其他线程占用，它将返回false并继续往下执行代码。`
+2、`Lock接口允许分离读和写操作，允许多个线程读和只有一个写线程。`
+3、`具有更好的性能`
+![锁机制(Lock)](https://img.xiaoxiaomo.com/blog/img/synchronized06.png)
+参考：https://blog.csdn.net/qq_39396275/article/details/74937110
+</code></pre><h2 id="六、Synchronized和ReentrantLock有什么区别？"><a href="#六、Synchronized和ReentrantLock有什么区别？" class="headerlink" title="六、Synchronized和ReentrantLock有什么区别？"></a>六、Synchronized和ReentrantLock有什么区别？</h2><ol>
+<li><p><strong>Synchronized</strong>，是Java内建的同步机制，所以也有人称其为Intrinsic Locking，它提供了互斥的语义和可见性，当一个线程已经获取当前锁时，其他试图获取的线程只能等待或者阻塞在那里。<br>在Java 5以前，synchronized是仅有的同步手段，在代码中， synchronized可以用来修饰方法，也可以使用在特定的代码块儿上，本质上synchronized方法等同于把方法全部语句用synchronized块包起来。</p>
+</li>
+<li><p><strong>ReentrantLock</strong>，通常翻译为再入锁，是Java 5提供的锁实现，它的语义和synchronized基本相同。再入锁通过代码直接调用lock()方法获取，代码书写也更加灵活。与此同时，<code>ReentrantLock提供了很多实用的方法，能够实现很多synchronized无法做到的细节控制，比如可以控制fairness，也就是公平性，或者利用定义条件等</code>。<strong>注意</strong>：<strong>编码必须要明确调用unlock()方法释放，不然就会一直持有该锁</strong>。</p>
+</li>
+</ol>
+<ul>
+<li><strong>synchronized和ReentrantLock的性能不能一概而论，早期版本synchronized在很多场景下性能相差较大，在后续版本进行了较多改进，在低竞争场景中表现可能优于ReentrantLock。</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/synchronized07.png" alt="ReentrantLock"></li>
+</ul>
+<h2 id="七、synchronized底层如何实现？什么是锁的升级、降级？"><a href="#七、synchronized底层如何实现？什么是锁的升级、降级？" class="headerlink" title="七、synchronized底层如何实现？什么是锁的升级、降级？"></a>七、synchronized底层如何实现？什么是锁的升级、降级？</h2><ol>
+<li><p>synchronized代码块是由一对儿monitorenter/monitorexit指令实现的，Monitor对象是同步的基本实现单元。</p>
+</li>
+<li><p>在Java 6之前，Monitor的实现完全是依靠操作系统内部的互斥锁，因为需要进行用户态到内核态的切换，所以同步操作是一个无差别的重量级操作。</p>
+</li>
+<li><p>现代的（Oracle）JDK中，JVM对此进行了大刀阔斧地改进，提供了三种不同的Monitor实现，也就是常说的三种不同的锁，大大改进了其性能：<br><code>偏斜锁（Biased Locking）、轻量级锁、重量级锁。</code><br><code>锁的升级、降级：就是JVM优化synchronized运行的机制，当JVM检测到不同的竞争状况时，会自动切换到适合的锁实现，这种切换就是锁的升级、降级。</code></p>
+</li>
+<li><p><strong>当没有竞争出现时，默认会使用偏斜锁</strong>。JVM会利用CAS操作（compare and swap），在对象头上的Mark Word部分设置线程ID，以表示这个对象偏向于当前线程，所以并不涉及真正的互斥锁。这样做的假设是基于在很多应用场景中，大部分对象生命周期中最多会被一个线程锁定，使用偏斜锁可以降低无竞争开销。</p>
+</li>
+<li><p><strong>如果有另外的线程试图锁定某个已经被偏斜过的对象，JVM就需要撤销（revoke）偏斜锁，并切换到轻量级锁实现</strong>。轻量级锁依赖CAS操作Mark Word来试图获取锁，如果重试成功，就使用普通的轻量级锁；<strong>否则，进一步升级为重量级锁</strong>。</p>
+</li>
+</ol>
+<ul>
+<li><strong>有的观点认为Java不会进行锁降级。实际上，锁降级确实是会发生的，当JVM进入安全点（SafePoint）的时候，会检查是否有闲置的Monitor，然后试图进行降级。</strong></li>
+</ul>
+<h2 id="八、锁的分类（名词的解释）"><a href="#八、锁的分类（名词的解释）" class="headerlink" title="八、锁的分类（名词的解释）"></a>八、锁的分类（名词的解释）</h2><blockquote>
+<p>乐观锁/悲观锁<br>独享锁/共享锁<br>互斥锁/读写锁<br>可重入锁<br>公平锁/非公平锁<br>分段锁<br>偏向锁/轻量级锁/重量级锁<br>自旋锁</p>
+</blockquote>
+<ol>
+<li><p>乐观锁/悲观锁<br>这两个名词上面有提到，是一个概念或思想，主要是指看待并发同步的角度。下面再总结一下：<br><strong>乐观锁</strong>：每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量，在Java中java.util.concurrent.atomic包下面的原子类就是使用了乐观锁的一种实现方式CAS(Compare and Swap 比较并交换)实现的。<br><strong>悲观锁</strong>：总是假设最坏的情况，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁(排他锁)，这样别人想拿这个数据就会阻塞直到它拿到锁，适合写操作非常多的场景。比如Java里面的synchronized关键字的实现就是悲观锁。</p>
+</li>
+<li><p>独享锁/共享锁<br><strong>独享锁</strong>：是指该锁一次只能被一个线程所持有。例如：ReentrantLock、Synchronized<br><strong>共享锁</strong>：是指该锁可被多个线程所持有。对于Lock的另一个实现类ReadWriteLock，其读锁是共享锁，其写锁是独享锁。读锁的共享锁可保证并发读是非常高效的，读写，写读，写写的过程是互斥的。<br><strong>独享锁与共享锁都是通过AQS来实现的，只是实现了不同的方法，来实现独享或者共享。</strong></p>
+</li>
+<li><p>互斥锁/读写锁<br>上面讲的独享锁/共享锁就是一种广义的说法，互斥锁/读写锁就是具体的实现。<br><strong>互斥锁</strong>：在Java中的具体实现就是ReentrantLock。<br><strong>读写锁</strong>：在Java中的具体实现就是ReadWriteLock。</p>
+</li>
+<li><p>可重入锁<br><strong>可重入锁又名递归锁</strong>，<strong>是指在同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁</strong>。synchronized和ReentrantLock都是可重入锁。<br>举个例子：<br>当一个线程执行到某个synchronized方法时，比如说method1，而在method1中会调用另外一个synchronized方法method2，此时线程不必重新去申请锁，而是可以直接执行方法method2。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        method2();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果线程A执行到了method1，此时线程A获取了这个对象的锁，而由于method2也是synchronized方法，假如synchronized不具备可重入性，此时线程A需要重新申请锁。但问题是，因为线程A已经持有了该对象的锁，而又在申请获取该对象的锁，这样线程A一直去尝试获取锁，就会造成死锁。</p>
+<ol start="5">
+<li><p>公平锁/非公平锁<br><strong>公平锁</strong>：是指多个线程按照申请锁的顺序来获取锁。否则就是非公平锁。<br><code>ReetrantLock</code>，默认是非公平锁，可以设置为公平锁。非公平锁的优点在于吞吐量比公平锁大。<br><code>Synchronized</code>，非公平锁。</p>
+</li>
+<li><p>分段锁<br><strong>分段锁</strong>：也叫分离锁其实是一种锁的设计，并不是具体的一种锁，对于ConcurrentHashMap而言，其并发的实现就是通过分段锁的形式来实现高效的并发操作。<br>ConcurrentHashMap中的分段锁称为Segment（Segment继承了ReentrantLock），内部拥有一个Entry数组，数组中的每个元素又是一个链表；同时又是一个。<br><strong>当需要put元素的时候，并不是对整个hashmap进行加锁，而是先通过hashcode来知道他要放在哪一个分段中，然后对这个分段进行加锁，所以当多线程put的时候，只要不是放在一个分段中，就实现了真正的并行的插入。</strong><br><strong>注意</strong>：在统计size的时候，可就是获取hashmap全局信息的时候，就需要获取所有的分段锁才能统计。<br><code>分段锁的设计目的是细化锁的粒度，当操作不需要更新整个数组的时候，就仅仅针对数组中的一项进行加锁操作。</code></p>
+</li>
+<li><p>偏向锁/轻量级锁/重量级锁<br>这三种锁是指锁的状态，并且是针对Synchronized。上面已经提到（略）</p>
+</li>
+<li><p>自旋锁<br><strong>自旋锁</strong>（spinlock）：是指当一个线程在获取锁的时候，如果锁已经被其它线程获取，那么该线程将循环等待，然后不断的判断锁是否能够被成功获取，直到获取到锁才会退出循环。<br><img src="https://img.xiaoxiaomo.com/blog/img/synchronized08.png" alt="自旋锁"><br><strong>lock()方法利用的CAS，当第一个线程A获取锁的时候，能够成功获取到，不会进入while循环，如果此时线程A没有释放锁，另一个线程B又来获取锁，此时由于不满足CAS，所以就会进入while循环，不断判断是否满足CAS，直到A线程调用unlock方法释放了该锁。</strong><br><strong>自旋锁的缺点：</strong><br>8.1. 如果某个线程持有锁的时间过长，就会导致其它等待获取锁的线程进入循环等待，消耗CPU。使用不当会造成CPU使用率极高。<br>8.2. 上面Java实现的自旋锁不是公平的，不公平的锁就会存在“线程饥饿”问题。<br><strong>自旋锁的优点：</strong><br><em><strong>自旋锁</strong>不会使线程状态发生切换，一直处于用户态，即线程一直都是active的；不会使线程进入阻塞状态，减少了不必要的上下文切换，执行速度快</em><br><em><strong>非自旋锁</strong>在获取不到锁的时候会进入阻塞状态，从而进入内核态，当获取到锁的时候需要从内核态恢复，需要线程上下文切换。</em> （线程被阻塞后便进入内核（Linux）调度状态，这个会导致系统在用户态与内核态之间来回切换，严重影响锁的性能）<br>自旋锁参考：<a href="https://blog.csdn.net/fuyuwei2015/article/details/83387536" target="_blank" rel="noopener">https://blog.csdn.net/fuyuwei2015/article/details/83387536</a><br>更多锁分类细节参考： <a href="https://www.cnblogs.com/hustzzl/p/9343797.html" target="_blank" rel="noopener">https://www.cnblogs.com/hustzzl/p/9343797.html</a></p>
+</li>
+</ol>
+<h2 id="九、死锁，解决和避免"><a href="#九、死锁，解决和避免" class="headerlink" title="九、死锁，解决和避免"></a>九、死锁，解决和避免</h2><p><strong>死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/synchronized09.png" alt="死锁"><br>常见死锁的检测工具：<code>Jstack</code>、<code>JConsole</code><br><strong>避免</strong>：</p>
+<ol>
+<li>尽量避免使用多个锁，并且只有需要时才持有锁。</li>
+<li>设计好锁的获取顺序，</li>
+<li>超时放弃</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2019/03/15/Java-ConcurrentHashMap笔记整理/" rel="next" title="Java--ConcurrentHashMap笔记整理">
+    上一篇：Java--ConcurrentHashMap笔记整理
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2019/03/12/Java-HashMap笔记整理/" rel="next" title="Java--HashMap笔记整理">
+    下一篇：Java--HashMap笔记整理
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java--线程安全与不安全&amp;同步异步和锁" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Hive--数据类型与表 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Hive--数据类型与表"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Hive--数据类型与表</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-05-28T07:49:38.000Z"><a href="/2016/05/28/Hive-数据类型与表/">2016-05-28</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hive/" class="chip red lighten-1">Hive</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据类型"><span class="section table-of-contents-text">数据类型</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据的映射"><span class="section table-of-contents-text">数据的映射</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#表"><span class="section table-of-contents-text">表</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#表的创建"><span class="section table-of-contents-text">表的创建</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#受控表"><span class="section table-of-contents-text">受控表</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#外部表"><span class="section table-of-contents-text">外部表</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#分区表"><span class="section table-of-contents-text">分区表</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#静态分"><span class="section table-of-contents-text">静态分</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#动态分区"><span class="section table-of-contents-text">动态分区</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#桶表"><span class="section table-of-contents-text">桶表</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#视图"><span class="section table-of-contents-text">视图</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本片博客介绍了<strong>数据类型</strong>以及<strong>数据的映射</strong>，主要讲解<strong>表</strong>，表的<strong>创建</strong>，表的<strong>两种类型</strong>（受控表、外部表）。还有<strong>分区</strong>、<strong>桶表</strong>和<strong>视图</strong>。</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Hive支持的数据类型如下:</p>
+<ul>
+<li><strong>基本类型</strong><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tinyint smallint <span class="keyword">int</span> bigint</span><br><span class="line">boolean</span><br><span class="line"><span class="keyword">float</span> <span class="keyword">double</span></span><br><span class="line"><span class="built_in">string</span></span><br><span class="line">binary 字节数组(Hive <span class="number">0.8</span><span class="number">.0</span> 以上才可用)</span><br><span class="line">timestamp (Hive <span class="number">0.8</span><span class="number">.0</span> 以上才可用)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><strong>复合类型</strong><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>: <span class="built_in">array</span>&lt;data_type&gt;</span><br><span class="line"><span class="built_in">map</span>: <span class="built_in">map</span>&lt;primitive_type, data_type&gt;</span><br><span class="line"><span class="class"><span class="keyword">struct</span>:</span> <span class="class"><span class="keyword">struct</span>&lt;col_name : data_type [COMMENT col_comment], ...&gt;</span></span><br><span class="line"><span class="class"><span class="title">union</span>:</span> uniontype&lt;data_type, data_type, ...&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="数据的映射"><a href="#数据的映射" class="headerlink" title="数据的映射"></a>数据的映射</h2><p>在<a href="http://blog.xiaoxiaomo.com/2016/05/27/Hive-概述与使用/">上篇博客</a>中，我们提到：<strong>hive将结构化的数据文件映射为一张数据库表，并提供类SQL查询功能。</strong>那么hive到底是怎么去映射的呢？</p>
+<ul>
+<li>其实就是：</li>
+</ul>
+<ol>
+<li>当我们创建一张表时，就生成了metadata到数据库中，表信息保存在一张叫SDS表中，location字段指定了表数据的位置。</li>
+<li>local默认路径为<code>/user/hive/warehouse/db</code>数据库/表名相同的文件下/目录下面（即使我们直接上传文件到该目录表也能加载）。</li>
+<li>加载后解析数据，通过默认的分隔符进行解析，行的默认分隔符为“\n”。</li>
+</ol>
+<ul>
+<li>示例：</li>
+</ul>
+<ol>
+<li><p>创建一张表<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528171810.jpg" alt="创建一张表，并查看详细metadata信息"></p>
+</li>
+<li><p>vim写入数据，并上传到hdfs中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo07 data]<span class="comment"># momore t_1.txt </span></span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">[root@xxo07 data]<span class="comment"># hdfs dfs -put t_1.txt /user/hive/warehouse/t_1/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看hdfs<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528173824.jpg" alt="查看hdfs"></p>
+</li>
+<li><p>查看我们的表</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * from t_1;</span><br><span class="line">OK</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line">Time taken: <span class="number">0.917</span> seconds, Fetched: <span class="number">5</span> row(s)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="表"><a href="#表" class="headerlink" title="表"></a>表</h2><h3 id="表的创建"><a href="#表的创建" class="headerlink" title="表的创建"></a>表的创建</h3><ul>
+<li>分隔符</li>
+</ul>
+<ol>
+<li>通过上面的例子我们知道，数据的映射，并且默认的<code>行</code>分隔符为“\n”；</li>
+<li><code>列</code>默认分割符为“\001”,<code>collection items</code>默认为“\002”,<code>map keys</code>默认为“\003”,</li>
+<li>创建表时我们可以自定义分隔符。</li>
+<li>hive是<strong>读模式</strong>，<strong>数据库加载数据的时候不进行数据的合法性校验，在查询数据的时候将不合法的数据显示为NULL</strong>。这样加载速度快，适合大数据的加载。</li>
+</ol>
+<ul>
+<li><p>示例：下面我们来创建一个学生表的表，有字段 <code>id</code>,<code>name</code>,<code>tel</code>,<code>scores</code>,<code>addrs</code> 如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create database xxo;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.246 seconds</span><br><span class="line">hive&gt; use xxo;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.029 seconds</span><br><span class="line">hive&gt; create table t_student(                                                           </span><br><span class="line">    &gt; id int,</span><br><span class="line">    &gt; name string,</span><br><span class="line">    &gt; tel array&lt;string&gt;,        </span><br><span class="line">    &gt; scores map&lt;string,int&gt;,</span><br><span class="line">    &gt; addrs struct&lt;home:string,post:int&gt;</span><br><span class="line">    &gt; ) row format delimited</span><br><span class="line">    &gt; fields terminated by <span class="string">'\t'</span></span><br><span class="line">    &gt; collection items terminated by <span class="string">','</span></span><br><span class="line">    &gt; map keys terminated by <span class="string">':'</span>;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.404 seconds</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>注</strong>：上面已经指定了，列分隔符为“\t”，数组的items分隔符为“，”，map 的分隔符为“：”。</p>
+</li>
+<li><p>创建数据</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo07 data]<span class="meta"># more t_2.txt </span></span><br><span class="line"><span class="number">1</span>	张三	<span class="number">15826008600</span>,<span class="number">02358888</span>	math:<span class="number">99</span>,en:<span class="number">100</span>	重庆,<span class="number">500000</span></span><br><span class="line"><span class="number">2</span>	李四	<span class="number">15826008601</span>,<span class="number">02358818</span>	math:<span class="number">97</span>,en:<span class="number">10</span>	重庆,<span class="number">500000</span></span><br><span class="line"><span class="number">3</span>	王五	<span class="number">15826008602</span>,<span class="number">02358828</span>	math:<span class="number">89</span>,en:<span class="number">100</span>	云阳,<span class="number">500600</span></span><br><span class="line"><span class="number">4</span>	赵六	<span class="number">15826008603</span>,<span class="number">02358838</span>	math:<span class="number">100</span>,en:<span class="number">30</span>	万州,<span class="number">500500</span></span><br><span class="line"><span class="number">5</span>	田七	<span class="number">15826008604</span>,<span class="number">02358848</span>	math:<span class="number">90</span>,en:<span class="number">80</span>	北京,<span class="number">100000</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###########没有通过hdfs直接上传而是通过hive加载数据#################################</span></span><br><span class="line">hive&gt; load data <span class="built_in">local</span> inpath <span class="string">'t_2.txt'</span> overwrite into table t_student;</span><br><span class="line">Loading data to table xxo.t_student</span><br><span class="line">Table xxo.t_student stats: [numFiles=1, numRows=0, totalSize=293, rawDataSize=0]</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.363 seconds</span><br><span class="line">hive&gt; select * from t_student;                                        </span><br><span class="line">OK</span><br><span class="line">1	张三	[<span class="string">"15826008600"</span>,<span class="string">"02358888"</span>]	&#123;<span class="string">"math"</span>:99,<span class="string">"en"</span>:100&#125;	&#123;<span class="string">"home"</span>:<span class="string">"重庆"</span>,<span class="string">"post"</span>:500000&#125;</span><br><span class="line">2	李四	[<span class="string">"15826008601"</span>,<span class="string">"02358818"</span>]	&#123;<span class="string">"math"</span>:97,<span class="string">"en"</span>:10&#125;	&#123;<span class="string">"home"</span>:<span class="string">"重庆"</span>,<span class="string">"post"</span>:500000&#125;</span><br><span class="line">3	王五	[<span class="string">"15826008602"</span>,<span class="string">"02358828"</span>]	&#123;<span class="string">"math"</span>:89,<span class="string">"en"</span>:100&#125;	&#123;<span class="string">"home"</span>:<span class="string">"云阳"</span>,<span class="string">"post"</span>:500600&#125;</span><br><span class="line">4	赵六	[<span class="string">"15826008603"</span>,<span class="string">"02358838"</span>]	&#123;<span class="string">"math"</span>:100,<span class="string">"en"</span>:30&#125;	&#123;<span class="string">"home"</span>:<span class="string">"万州"</span>,<span class="string">"post"</span>:500500&#125;</span><br><span class="line">5	田七	[<span class="string">"15826008604"</span>,<span class="string">"02358848"</span>]	&#123;<span class="string">"math"</span>:90,<span class="string">"en"</span>:80&#125;	&#123;<span class="string">"home"</span>:<span class="string">"北京"</span>,<span class="string">"post"</span>:100000&#125;</span><br><span class="line">Time taken: 0.178 seconds, Fetched: 5 row(s)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="受控表"><a href="#受控表" class="headerlink" title="受控表"></a>受控表</h3><ul>
+<li>默认我们创建的表为<code>NAMAGED_TABLE</code>类型，叫做<strong>受控表（内部表）</strong>。</li>
+<li>受控表中的数据生命周期受到了表定义的影响，即表删除数据也会同时删除。</li>
+</ul>
+<h3 id="外部表"><a href="#外部表" class="headerlink" title="外部表"></a>外部表</h3><ul>
+<li>表类型为<code>EXTERNAL_TABLE</code>数据不受表定义的影响，即删除外部表数据并不会被删除，只会删除，metadata中的数据;</li>
+<li><p>数据加载，就是对外部hdfs上数据的引用。</p>
+</li>
+<li><p><strong>示例：</strong></p>
+</li>
+</ul>
+<ol>
+<li><p>创建外部表t_2<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528183426.jpg" alt="创建 外部表"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528184710.jpg" alt="查看mysql记录的metadata信息"></p>
+</li>
+<li><p>加载外部hdfs上的数据<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528183545.jpg" alt="创建 外部表"></p>
+</li>
+<li><p>再次查看外部表，发现外部表的location已经改变为我们指定的数据目录<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528183754.jpg" alt="外部表 location已经改变"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528184758.jpg" alt="查看metadata mysql表中location信息"></p>
+</li>
+<li><p>删除t_2表，数据任然在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; drop table t_2;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.135 seconds</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528185253.jpg" alt="删除t_2表后，数据任然在"></p>
+<ul>
+<li>表类型转换<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528185751.jpg" alt="把t_3表转为外部表，如果value是false则转为内部表"></li>
+</ul>
+<h3 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h3><p><strong>分区表</strong>：包含动态分区与静态分区。<strong>注意</strong>：分区列不是表中的一个实际的字段，而是一个或者多个伪列。<strong>分区表就是将表中的数据按需指定分区字段进行划分，使用分区很方便对数据进行部分查询</strong>。</p>
+<h4 id="静态分"><a href="#静态分" class="headerlink" title="静态分"></a>静态分</h4><ul>
+<li><p>创建分区表<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528193234.jpg" alt="创建分区表"></p>
+</li>
+<li><p>加载数据<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528193338.jpg" alt="创建需要加载的测试数据"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528195615.jpg" alt="分区表，加载数据"></p>
+</li>
+<li><p>查看hdfs上的数据<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528195741.jpg" alt="查看hdfs上的数据"></p>
+</li>
+</ul>
+<ul>
+<li>查看表的partions<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; show partitions t_5;</span><br><span class="line">OK</span><br><span class="line">dt=2016-05-28/city=cq</span><br><span class="line">dt=2016-05-29/city=bj</span><br><span class="line">Time taken: 0.109 seconds, Fetched: 2 row(s)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="动态分区"><a href="#动态分区" class="headerlink" title="动态分区"></a>动态分区</h4><ul>
+<li><strong>示例：</strong></li>
+</ul>
+<ol>
+<li><p>创建临时表，并加载数据到临时表<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528203622.jpg" alt="加载数据"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528203811.jpg" alt="加载数据"></p>
+</li>
+<li><p>动态分区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; insert overwrite table t_5 partition(dt,city) select t.id,t.dt,t.city from tmp t;</span><br><span class="line">Query ID = root_20160528201717_4d5a2424-ad99-43bb-a480-c0c6c1df3517</span><br><span class="line">Total <span class="built_in">jobs</span> = 3</span><br><span class="line">Launching Job 1 out of 3</span><br><span class="line">Number of reduce tasks is <span class="built_in">set</span> to 0 since there<span class="string">'s no reduce operator</span></span><br><span class="line"><span class="string">Starting Job = job_1464437918991_0001, Tracking URL = http://xxo07:8088/proxy/application_1464437918991_0001/</span></span><br><span class="line"><span class="string">Kill Command = /usr/local/hadoop-2.6.0/bin/hadoop job  -kill job_1464437918991_0001</span></span><br><span class="line"><span class="string">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0</span></span><br><span class="line"><span class="string">2016-05-28 20:19:16,822 Stage-1 map = 0%,  reduce = 0%</span></span><br><span class="line"><span class="string">2016-05-28 20:19:38,275 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.26 sec</span></span><br><span class="line"><span class="string">MapReduce Total cumulative CPU time: 2 seconds 260 msec</span></span><br><span class="line"><span class="string">Ended Job = job_1464437918991_0001</span></span><br><span class="line"><span class="string">Stage-4 is selected by condition resolver.</span></span><br><span class="line"><span class="string">Stage-3 is filtered out by condition resolver.</span></span><br><span class="line"><span class="string">Stage-5 is filtered out by condition resolver.</span></span><br><span class="line"><span class="string">Moving data to: hdfs://xxo07:9000/tmp/hive/root/7157795c-3864-480e-b89b-abaaacc4740e/hive_2016-05-28_20-17-54_291_6680117664647621540-1/-ext-10000</span></span><br><span class="line"><span class="string">Loading data to table xxo.t_5 partition (dt=null, city=null)</span></span><br><span class="line"><span class="string">	 Time taken for load dynamic partitions : 1023</span></span><br><span class="line"><span class="string">	Loading partition &#123;dt=2015-05-30, city=wz&#125;</span></span><br><span class="line"><span class="string">	Loading partition &#123;dt=2015-05-30, city=hz&#125;</span></span><br><span class="line"><span class="string">	Loading partition &#123;dt=2015-05-30, city=bj&#125;</span></span><br><span class="line"><span class="string">	Loading partition &#123;dt=2015-05-30, city=yy&#125;</span></span><br><span class="line"><span class="string">	Loading partition &#123;dt=2015-05-30, city=cq&#125;</span></span><br><span class="line"><span class="string">	 Time taken for adding to write entity : 12</span></span><br><span class="line"><span class="string">Partition xxo.t_5&#123;dt=2015-05-30, city=bj&#125; stats: [numFiles=1, numRows=1, totalSize=2, rawDataSize=1]</span></span><br><span class="line"><span class="string">Partition xxo.t_5&#123;dt=2015-05-30, city=cq&#125; stats: [numFiles=1, numRows=1, totalSize=2, rawDataSize=1]</span></span><br><span class="line"><span class="string">Partition xxo.t_5&#123;dt=2015-05-30, city=hz&#125; stats: [numFiles=1, numRows=1, totalSize=2, rawDataSize=1]</span></span><br><span class="line"><span class="string">Partition xxo.t_5&#123;dt=2015-05-30, city=wz&#125; stats: [numFiles=1, numRows=1, totalSize=2, rawDataSize=1]</span></span><br><span class="line"><span class="string">Partition xxo.t_5&#123;dt=2015-05-30, city=yy&#125; stats: [numFiles=1, numRows=1, totalSize=2, rawDataSize=1]</span></span><br><span class="line"><span class="string">MapReduce Jobs Launched: </span></span><br><span class="line"><span class="string">Stage-Stage-1: Map: 1   Cumulative CPU: 2.26 sec   HDFS Read: 290 HDFS Write: 287 SUCCESS</span></span><br><span class="line"><span class="string">Total MapReduce CPU Time Spent: 2 seconds 260 msec</span></span><br><span class="line"><span class="string">OK</span></span><br><span class="line"><span class="string">Time taken: 109.86 seconds</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">#####################查询数据########################################</span></span><br><span class="line"><span class="string">hive&gt; select * from t_5 where dt='</span>2015-05-30<span class="string">';</span></span><br><span class="line"><span class="string">OK</span></span><br><span class="line"><span class="string">7	2015-05-30	bj</span></span><br><span class="line"><span class="string">5	2015-05-30	cq</span></span><br><span class="line"><span class="string">9	2015-05-30	hz</span></span><br><span class="line"><span class="string">1	2015-05-30	wz</span></span><br><span class="line"><span class="string">2	2015-05-30	yy</span></span><br><span class="line"><span class="string">Time taken: 0.094 seconds, Fetched: 5 row(s)</span></span><br><span class="line"><span class="string">hive&gt; select * from t_5 where city='</span>yy<span class="string">';      </span></span><br><span class="line"><span class="string">OK</span></span><br><span class="line"><span class="string">2	2015-05-30	yy</span></span><br><span class="line"><span class="string">Time taken: 0.075 seconds, Fetched: 1 row(s)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>直观浏览一下<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528204306.jpg" alt="浏览分区"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528204234.jpg" alt="浏览分区中的数据"></p>
+</li>
+</ol>
+<h3 id="桶表"><a href="#桶表" class="headerlink" title="桶表"></a>桶表</h3><p><strong>桶表 ： </strong> 就是相对均匀的存放数据，每张表查询起来效率都差不多。</p>
+<ol>
+<li>桶表是对数据进行哈希取值，然后放到不同文件中存储；</li>
+<li>数据都来源于现有的表中；</li>
+</ol>
+<ul>
+<li><strong>用途 ： </strong> 在做多表关联时，为了提高查询效率；或做抽样。</li>
+<li><strong>示例：</strong><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">bashhive&gt; create table t_bucket(id int) clustered by (id) into 3 buckets;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.377 seconds</span><br><span class="line">hive&gt; set hive.enforce.bucketing = true; ##设置支持桶表</span><br><span class="line"></span><br><span class="line">############################导入数据############################################</span><br><span class="line">hive&gt; insert into table t_bucket select id from t_4;</span><br><span class="line">Automatically selecting local only mode for query</span><br><span class="line">Query ID = root_20160528205252_4ba59e97-c11b-45ad-bdd0-11fb8d2bebd8</span><br><span class="line">Total jobs = 3</span><br><span class="line">Launching Job 1 out of 3</span><br><span class="line">Number of reduce tasks is set to 0 since there&apos;s no reduce operator</span><br><span class="line">Job running in-process (local Hadoop)</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 0; number of reducers: 0</span><br><span class="line">2016-05-28 20:52:36,063 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2016-05-28 20:52:37,130 Stage-1 map = 100%,  reduce = 0%</span><br><span class="line">Ended Job = job_local98714577_0001</span><br><span class="line">Stage-4 is selected by condition resolver.</span><br><span class="line">Stage-3 is filtered out by condition resolver.</span><br><span class="line">Stage-5 is filtered out by condition resolver.</span><br><span class="line">Moving data to: hdfs://xxo07:9000/tmp/hive/root/9b9b6fa1-9f00-4635-be4d-ac4ac635d546/hive_2016-05-28_20-52-30_591_4317152904230482106-1/-ext-10000</span><br><span class="line">Loading data to table xxo.t_bucket</span><br><span class="line">Table xxo.t_bucket stats: [numFiles=4, numRows=10, totalSize=24, rawDataSize=14]</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1:  HDFS Read: 24 HDFS Write: 92 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 0 msec</span><br><span class="line">OK</span><br><span class="line">Time taken: 7.225 seconds</span><br><span class="line"></span><br><span class="line">##########################查询###########################################</span><br><span class="line">hive&gt; select * from t_bucket;</span><br><span class="line">OK</span><br><span class="line">1</span><br><span class="line">5</span><br><span class="line">9</span><br><span class="line">12</span><br><span class="line">18</span><br><span class="line">1</span><br><span class="line">5</span><br><span class="line">9</span><br><span class="line">12</span><br><span class="line">18</span><br><span class="line">Time taken: 0.171 seconds, Fetched: 10 row(s)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h3><ul>
+<li>Hive 中，也有视图的概念，那我们都知道视图实际上是一张虚拟的表，是对数据的逻辑表示，只是一种显示的方式，主要的作用呢：</li>
+</ul>
+<ol>
+<li>视图能够简化用户的操作</li>
+<li>视图使用户能以多钟角度看待同一数据</li>
+<li>视图对重构数据库提供了一定程度的逻辑独立性</li>
+<li>视图能够对机密数据提供安全保护</li>
+<li>适当的利用视图可以更清晰的表达查询</li>
+</ol>
+<ul>
+<li><strong>示例：</strong></li>
+</ul>
+<ol>
+<li><p>创建视图</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">################创建视图###############################</span></span><br><span class="line">hive&gt; create view t5_view as select * from t_5;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.184 seconds</span><br><span class="line"></span><br><span class="line"><span class="comment">################查看数据##############################</span></span><br><span class="line">hive&gt; select * from t5_view;                   </span><br><span class="line">OK</span><br><span class="line">7	2015-05-30	bj</span><br><span class="line">5	2015-05-30	cq</span><br><span class="line">9	2015-05-30	hz</span><br><span class="line">1	2015-05-30	wz</span><br><span class="line">2	2015-05-30	yy</span><br><span class="line">1	2016-05-28	cq</span><br><span class="line">2	2016-05-28	cq</span><br><span class="line">3	2016-05-28	cq</span><br><span class="line">4	2016-05-28	cq</span><br><span class="line">5	2016-05-28	cq</span><br><span class="line">Time taken: 0.228 seconds, Fetched: 10 row(s)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看hdfs<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528211356.jpg" alt="发现并没视图的数据"></p>
+</li>
+<li><p>查看元数据<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160528211632.jpg" alt="元数据存有该视图信息"></p>
+</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2016/06/02/HBase-PleaseHoldException和TableNotDisabledException/" rel="next" title="HBase--PleaseHoldException和TableNotDisabledException">
+    上一篇：HBase--PleaseHoldException和TableNotDisabledException
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/05/27/Hive-概述与使用/" rel="next" title="Hive--概述与使用">
+    下一篇：Hive--概述与使用
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Hive--数据类型与表" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

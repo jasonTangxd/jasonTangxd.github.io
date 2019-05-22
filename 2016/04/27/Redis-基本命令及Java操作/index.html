@@ -1,0 +1,763 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Redis--基本命令及Java操作 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Redis--基本命令及Java操作"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Redis--基本命令及Java操作</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-27T11:37:21.000Z"><a href="/2016/04/27/Redis-基本命令及Java操作/">2016-04-27</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#redis基础命令"><span class="section table-of-contents-text">redis基础命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#redis的help命令"><span class="section table-of-contents-text">redis的help命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数据类型"><span class="section table-of-contents-text">数据类型</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#string"><span class="section table-of-contents-text">string</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#hash"><span class="section table-of-contents-text">hash</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#list"><span class="section table-of-contents-text">list</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#set"><span class="section table-of-contents-text">set</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#sorted-set"><span class="section table-of-contents-text">sorted set</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#java操作redis"><span class="section table-of-contents-text">java操作redis</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#附录相关redis命令"><span class="section table-of-contents-text">附录相关redis命令</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本篇博文主要讲解，Redis的<strong>基本使用</strong>、<strong>基本命令</strong>、<strong>数据类型</strong>以及<strong>通过java操作Redis数据库（Jredis）</strong>。内容命令过多，不会一一演示，建议读者联想记忆。如果还没有搭建好环境请参考上篇博文：<a href="http://blog.xiaoxiaomo.com/2016/02/23/Linux-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B9%8BRedis/">http://blog.xiaoxiaomo.com/2016/02/23/Linux-软件安装之Redis/</a>。</p>
+<h2 id="redis基础命令"><a href="#redis基础命令" class="headerlink" title="redis基础命令"></a>redis基础命令</h2><ol>
+<li><p><strong>获得符合规则的键名称</strong><br>keys 表达式<code>（?,* ,[],\?）</code></p>
+</li>
+<li><p><strong>判断一个键是否存在</strong><br>exists key</p>
+</li>
+<li><p><strong>删除键</strong><br>del key<br>del key1 key2</p>
+</li>
+<li><p><strong>获得键值的数据类型type</strong><br>返回值可能是这五种类型<em>（string,hash,list,set,zset）</em>。</p>
+</li>
+</ol>
+<p><strong>注意：redis的命令不区分大小写</strong></p>
+<a id="more"></a>
+<ul>
+<li>实例代码：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; exists blog</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; exists blogs</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> blogs momo</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) <span class="string">"blogs"</span></span><br><span class="line">2) <span class="string">"blog"</span></span><br><span class="line">127.0.0.1:6379&gt; del blogs</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) <span class="string">"blog"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="redis的help命令"><a href="#redis的help命令" class="headerlink" title="redis的help命令"></a>redis的help命令</h2><ul>
+<li>help command<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; <span class="built_in">help</span></span><br><span class="line">redis-cli 3.0.6</span><br><span class="line">Type: <span class="string">"help @&lt;group&gt;"</span> to get a list of commands <span class="keyword">in</span> &lt;group&gt;</span><br><span class="line">      <span class="string">"help &lt;command&gt;"</span> <span class="keyword">for</span> <span class="built_in">help</span> on &lt;<span class="built_in">command</span>&gt;</span><br><span class="line">      <span class="string">"help &lt;tab&gt;"</span> to get a list of possible <span class="built_in">help</span> topics</span><br><span class="line">      <span class="string">"quit"</span> to <span class="built_in">exit</span></span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">help</span> del</span><br><span class="line"></span><br><span class="line">  DEL key [key ...]</span><br><span class="line">  summary: Delete a key</span><br><span class="line">  since: 1.0.0</span><br><span class="line">  group: generic</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p><strong>字符串类型是redis中最基本的数据类型</strong>，它能存储任何形式的内容，包含二进制数据，甚至是一张图片(二进制内容)。<strong>在实际生产环境中我们存放json字符串比较常用</strong>，<em>一个字符串类型的值存储的最大容量是1GB</em>。</p>
+<ul>
+<li>命令<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>/get(setnx)</span><br><span class="line">mset/mget   <span class="comment">##返回/设置(一个或多个)给定 key 的值。</span></span><br><span class="line">incr/decr/incrby/decrby/incrbyfloat</span><br><span class="line">append <span class="comment">##append key value，将 value 追加到 key 原来的值的末尾，如果 key 不存在,key 设为 value</span></span><br><span class="line">strlen <span class="comment">##字符串长度</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h3><p><strong>hash类型的值存储了字段和字段值的映射</strong>，字段和字段值只能是<strong>字符串</strong>，<em>不支持其他数据类型</em>。hash类型的键至多可以存储       （<em>2的32次方-1</em>）个字段。<strong>hash类型适合存储对象</strong>，redis可以为任何键增减字段而不影响其他键。</p>
+<ul>
+<li><p>命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hset/hget/hmset/hmget/hgetall(hsetnx)</span><br><span class="line">hexists  <span class="comment">##判断键中的属性是否存在</span></span><br><span class="line">hincrby  <span class="comment">##为哈希表 key 中的域 field 的值加上增量</span></span><br><span class="line">hdel     <span class="comment">##删除</span></span><br><span class="line">hkeys/hvals  <span class="comment">##返回哈希表 key 中的所有键/值</span></span><br><span class="line">hlen     <span class="comment">##返回哈希表 key 中域的数量</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实例代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">redis&gt; HGET counter page_view</span><br><span class="line"><span class="string">"200"</span></span><br><span class="line"></span><br><span class="line">redis&gt; HINCRBY counter page_view -50</span><br><span class="line">(<span class="built_in">integer</span>) 150</span><br><span class="line"></span><br><span class="line">redis&gt; HGET counter page_view</span><br><span class="line"><span class="string">"150"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 尝试对字符串值的域执行HINCRBY命令</span></span><br><span class="line"></span><br><span class="line">redis&gt; HSET myhash string hello,world       <span class="comment"># 设定一个字符串值</span></span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line"></span><br><span class="line">redis&gt; HGET myhash string</span><br><span class="line"><span class="string">"hello,world"</span></span><br><span class="line"></span><br><span class="line">redis&gt; HINCRBY myhash string 1              <span class="comment"># 命令执行失败，错误。</span></span><br><span class="line">(error) ERR <span class="built_in">hash</span> value is not an <span class="built_in">integer</span></span><br><span class="line"></span><br><span class="line">redis&gt; HGET myhash string                   <span class="comment"># 原值不变</span></span><br><span class="line"><span class="string">"hello,world"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><p>list是一个有序的字符串列表，列表内部实现是使用双向链表(linked list)实现的。list还可以作为队列使用，一个列表类型的键最多能容纳（<em>2的32次方-1</em>）个元素。</p>
+<ul>
+<li>命令<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lpush/rpush/lpop/rpop</span><br><span class="line">llen/lrange(-1表示最后一个元素的位置)</span><br><span class="line">lindex(查询指定角标数据)</span><br><span class="line">lset(修改)</span><br><span class="line">ltrim(截取，保留指定数据)</span><br><span class="line">rpoplpush:将元素从一个列表转到另一个列表</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p><strong>set集合中的元素都是不重复的，无序的</strong>，一个集合类型键可以存储至多（<em>2的32次方-1</em>）个元素 set集合类型和list列表类型的相似之处。</p>
+<ul>
+<li><p>命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sadd/smembers/srem/sismember</span><br><span class="line">sdiff/sinter(交集)/sunion(并集)</span><br><span class="line">sdiffstore/sinterstore/sunionstore</span><br><span class="line">scard(获取集合长度)/spop(随机从集合中取出并删除一个元素)</span><br><span class="line">srandmember key [count]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注 ： </p>
+</li>
+</ul>
+<ol>
+<li>如果 count 为正数，且小于集合基数，那么命令返回一个包含 count 个元素的数组，数组中的元素各不相同。如果 count 大于等于集合基数，那么返回整个集合。</li>
+<li>如果 count 为负数，那么命令返回一个数组，数组中的元素可能会重复出现多次，而数组的长度为 count 的绝对值。</li>
+</ol>
+<h3 id="sorted-set"><a href="#sorted-set" class="headerlink" title="sorted set"></a>sorted set</h3><p><strong>有序集合，在集合类型的基础上为集合中的每个元素都关联了一个分数，这样可以很方便的获得分数最高的N个元素(topN)</strong>。</p>
+<ul>
+<li><p>命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zadd/zscore/zrange/zrevrange/</span><br><span class="line">zrangebyscore        <span class="comment">##默认是闭区间,可使用"("使用开区间</span></span><br><span class="line">zincrby/zcard/zcount <span class="comment">##获取指定分数范围的元素个数</span></span><br><span class="line">zrem                 </span><br><span class="line"><span class="comment">##扩展：+inf(正无穷)	-inf(负无穷)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更多命令请查看：<a href="http://doc.redisfans.com/" target="_blank" rel="noopener">http://doc.redisfans.com/</a></p>
+</li>
+</ul>
+<h2 id="java操作redis"><a href="#java操作redis" class="headerlink" title="java操作redis"></a>java操作redis</h2><ul>
+<li><p>使用jedis第三方jar包操作redis , mvn依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>			   				</span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实例代码一 ： 通过Jedis操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestRedis</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Jedis jedis = <span class="keyword">new</span> Jedis( <span class="string">"192.168.3.56"</span> , <span class="number">6379</span> ) ;</span><br><span class="line">    jedis.set(<span class="string">"user:info:xxo"</span>,<span class="string">"23"</span>);</span><br><span class="line">    System.out.println(jedis.get(<span class="string">"user:info:xxo"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实例代码二 ： redis连接池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestRedisPool</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//1. 连接池配置</span></span><br><span class="line">    JedisPoolConfig config = <span class="keyword">new</span> JedisPoolConfig() ;</span><br><span class="line">    config.setMaxIdle(<span class="number">50</span>);         <span class="comment">//最大空闲连接</span></span><br><span class="line">    config.setMaxTotal(<span class="number">100</span>);       <span class="comment">//最大连接数</span></span><br><span class="line">    config.setMaxWaitMillis(<span class="number">2000</span>); <span class="comment">//最长连接时间</span></span><br><span class="line">    config.setTestOnBorrow(<span class="keyword">true</span>);  <span class="comment">//校验</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//2. 通过连接池获取Jedis</span></span><br><span class="line">    JedisPool pool = <span class="keyword">new</span> JedisPool(config, <span class="string">"192.168.3.56"</span>, <span class="number">6379</span>);</span><br><span class="line">    Jedis jedis = pool.getResource(); <span class="comment">//获取Jedis</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//3. 通过Jedis操作数据</span></span><br><span class="line">    jedis.set(<span class="string">"user:info:xxo:age"</span>, String.valueOf(<span class="number">23</span>)) ;</span><br><span class="line">    System.out.println(jedis.get(<span class="string">"user:info:xxo:age"</span>));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实例代码三 ： 模拟一个限制非法访问连接</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">userVisit</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">15</span>; i++) &#123;</span><br><span class="line">        System.out.println(checkIP(<span class="string">"192.168.3.59"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">checkIP</span><span class="params">(String ip)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//1. 创建一个对象</span></span><br><span class="line">    Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">"192.168.3.56"</span>, <span class="number">6379</span>) ;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2. 查看ip,如果不存在</span></span><br><span class="line">    String key = jedis.get(ip);</span><br><span class="line">    <span class="keyword">if</span>( key == <span class="keyword">null</span> )&#123;</span><br><span class="line">        jedis.set( ip , <span class="string">"1"</span> );</span><br><span class="line">        jedis.expire( ip , <span class="number">5</span> ) ; <span class="comment">//有效时间</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3.是否在5s之类超过限制，这里限制为10次</span></span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">int</span> count = Integer.valueOf( key ) ;</span><br><span class="line">        <span class="keyword">if</span>( count &gt;= <span class="number">10</span> )&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//jedis.set( ip , (++count)+"" ) ;</span></span><br><span class="line">            jedis.incr(ip) ;<span class="comment">//自动增加1，等于incrBy(ip,1);</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span> ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>expire</strong>设置一个键的生存时间，到时间后redis会自动删除它。指定时间点<strong>expireAt</strong>（expireAt [key] unix时间戳）</p>
+</li>
+</ul>
+<p>应用场景：</p>
+<blockquote>
+<p>限时的优惠活动信息<br>网站数据缓存（对于一些需要定时更新的数据，例如：积分排行榜）<br>手机验证码（短信验证码）<br>限制网站访客访问频率（例如：1分钟最多访问10次）</p>
+</blockquote>
+<h2 id="附录相关redis命令"><a href="#附录相关redis命令" class="headerlink" title="附录相关redis命令"></a>附录相关redis命令</h2><ul>
+<li><p><strong>连接操作相关的命令</strong><br>quit：关闭连接（connection）<br>auth：简单密码认证</p>
+</li>
+<li><p><strong>持久化</strong><br>save：将数据同步保存到磁盘<br>bgsave：将数据异步保存到磁盘<br>lastsave：返回上次成功将数据保存到磁盘的Unix时戳<br>shundown：将数据同步保存到磁盘，然后关闭服务</p>
+</li>
+<li><p><strong>远程服务控制</strong><br>info：提供服务器的信息和统计<br>monitor：实时转储收到的请求<br>slaveof：改变复制策略设置<br>config：在运行时配置Redis服务器</p>
+</li>
+<li><p><strong>对value操作的命令</strong><br>exists(key)：确认一个key是否存在<br>del(key)：删除一个key<br>type(key)：返回值的类型<br>keys(pattern)：返回满足给定pattern的所有key<br>randomkey：随机返回key空间的一个<br>keyrename(oldname, newname)：重命名key<br>dbsize：返回当前数据库中key的数目<br>expire：设定一个key的活动时间（s）<br>ttl：获得一个key的活动时间<br>select(index)：按索引查询<br>move(key, dbindex)：移动当前数据库中的key到dbindex数据库<br>flushdb：删除当前选择数据库中的所有key<br>flushall：删除所有数据库中的所有key</p>
+</li>
+<li><p><strong>对String操作的命令</strong><br>set(key, value)：给数据库中名称为key的string赋予值value<br>get(key)：返回数据库中名称为key的string的value<br>getset(key, value)：给名称为key的string赋予上一次的value<br>mget(key1, key2,…, key N)：返回库中多个string的value<br>setnx(key, value)：添加string，名称为key，值为value<br>setex(key, time, value)：向库中添加string，设定过期时间time<br>mset(key N, value N)：批量设置多个string的值<br>msetnx(key N, value N)：如果所有名称为key i的string都不存在<br>incr(key)：名称为key的string增1操作<br>incrby(key, integer)：名称为key的string增加integer<br>decr(key)：名称为key的string减1操作<br>decrby(key, integer)：名称为key的string减少integer<br>append(key, value)：名称为key的string的值附加value<br>substr(key, start, end)：返回名称为key的string的value的子串</p>
+</li>
+<li><p><strong>对List操作的命令</strong><br>rpush(key, value)：在名称为key的list尾添加一个值为value的元素<br>lpush(key, value)：在名称为key的list头添加一个值为value的 元素<br>llen(key)：返回名称为key的list的长度<br>lrange(key, start, end)：返回名称为key的list中start至end之间的元素<br>ltrim(key, start, end)：截取名称为key的list<br>lindex(key, index)：返回名称为key的list中index位置的元素<br>lset(key, index, value)：给名称为key的list中index位置的元素赋值<br>lrem(key, count, value)：删除count个key的list中值为value的元素<br>lpop(key)：返回并删除名称为key的list中的首元素<br>rpop(key)：返回并删除名称为key的list中的尾元素<br>blpop(key1, key2,… key N, timeout)：lpop命令的block版本。<br>brpop(key1, key2,… key N, timeout)：rpop的block版本。<br>rpoplpush(srckey, dstkey)：返回并删除名称为srckey的list的尾元素，并将该元素添加到名称为dstkey的list的头部</p>
+</li>
+<li><p><strong>对Set操作的命令</strong><br>sadd(key, member)：向名称为key的set中添加元素member<br>srem(key, member) ：删除名称为key的set中的元素member<br>spop(key) ：随机返回并删除名称为key的set中一个元素<br>smove(srckey, dstkey, member) ：移到集合元素<br>scard(key) ：返回名称为key的set的基数<br>sismember(key, member) ：member是否是名称为key的set的元素<br>sinter(key1, key2,…key N) ：求交集<br>sinterstore(dstkey, (keys)) ：求交集并将交集保存到dstkey的集合<br>sunion(key1, (keys)) ：求并集<br>sunionstore(dstkey, (keys)) ：求并集并将并集保存到dstkey的集合<br>sdiff(key1, (keys)) ：求差集<br>sdiffstore(dstkey, (keys)) ：求差集并将差集保存到dstkey的集合<br>smembers(key) ：返回名称为key的set的所有元素<br>srandmember(key) ：随机返回名称为key的set的一个元素</p>
+</li>
+<li><p><strong>对Hash操作的命令</strong><br>hset(key, field, value)：向名称为key的hash中添加元素field<br>hget(key, field)：返回名称为key的hash中field对应的value<br>hmget(key, (fields))：返回名称为key的hash中field i对应的value<br>hmset(key, (fields))：向名称为key的hash中添加元素field<br>hincrby(key, field, integer)：将名称为key的hash中field的value增加integer<br>hexists(key, field)：名称为key的hash中是否存在键为field的域<br>hdel(key, field)：删除名称为key的hash中键为field的域<br>hlen(key)：返回名称为key的hash中元素个数<br>hkeys(key)：返回名称为key的hash中所有键<br>hvals(key)：返回名称为key的hash中所有键对应的value<br>hgetall(key)：返回名称为key的hash中所有的键（field）及其对应的value</p>
+</li>
+<li><p>参考资料<br><a href="http://my.oschina.net/davehe/blog/129082?fromerr=6dre9pGK" title="附录来源于该网站" target="_blank" rel="noopener">http://my.oschina.net/davehe/blog/129082?fromerr=6dre9pGK</a></p>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/28/Redis-持久化方案及备份/" rel="next" title="Redis--持久化方案及备份">
+    上一篇：Redis--持久化方案及备份
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/26/Java-数据库连接池/" rel="next" title="Java--数据库连接池">
+    下一篇：Java--数据库连接池
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Redis--基本命令及Java操作" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

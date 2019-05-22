@@ -1,0 +1,762 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Kafka--Consumer消费者 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Kafka--Consumer消费者"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Kafka--Consumer消费者</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-05-14T10:21:01.000Z"><a href="/2016/05/14/Kafka-Consumer消费者/">2016-05-14</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Parts在消费者中的分配"><span class="section table-of-contents-text">Parts在消费者中的分配</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#消费者顺序"><span class="section table-of-contents-text">消费者顺序</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Kafka底层结构"><span class="section table-of-contents-text">Kafka底层结构</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Broker元数据"><span class="section table-of-contents-text">Broker元数据</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#topics"><span class="section table-of-contents-text">topics</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#ids"><span class="section table-of-contents-text">ids</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Consumer元数据"><span class="section table-of-contents-text">Consumer元数据</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#offset"><span class="section table-of-contents-text">offset</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#owners"><span class="section table-of-contents-text">owners</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#ids-1"><span class="section table-of-contents-text">ids</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Kafka数据读取-存储"><span class="section table-of-contents-text">Kafka数据读取/存储</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#存储策略"><span class="section table-of-contents-text">存储策略</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#高效读取"><span class="section table-of-contents-text">高效读取</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　Kafka 的 consumer 是以<strong>pull</strong>的形式获取消息数据的。 <strong>producer push消息到kafka cluster ，consumer从集群中pull消息</strong>，如下图。该博客主要讲解. Parts在消费者中的<strong>分配</strong>、以及相关的<strong>消费者顺序</strong>、<strong>底层结构元数据信息</strong>、<strong>Kafka数据读取和存储等</strong>。<br>　　　<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514200520.png" alt="kafka消息生产/消费"></p>
+<h2 id="Parts在消费者中的分配"><a href="#Parts在消费者中的分配" class="headerlink" title="Parts在消费者中的分配"></a>Parts在消费者中的分配</h2><ul>
+<li><strong>首先partition和consumer都会字典排序</strong></li>
+</ul>
+<ol>
+<li><strong>分区Partition从小到大排序</strong>：分区顺序是0,1,2,3,4,5,6,7,8,9</li>
+<li><strong>消费者Consumer id按照字典顺序排序</strong>：f0b87809-0, f1b87809-0, f1b87809-1</li>
+</ol>
+<a id="more"></a>
+<ul>
+<li><strong>如何计算分区</strong></li>
+</ul>
+<ol>
+<li><strong>首先确认最少分区数</strong>： partition/consumer</li>
+<li><strong>再确定额外分配数</strong>： partition%consumer</li>
+</ol>
+<ul>
+<li><p><strong>源码算法</strong>：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514184131.png" alt="Partition的"><br>比如：有4个partition,3个consumer,这第一个就会分配2个，其他会分配一个。</p>
+</li>
+<li><p><strong>下面我们来演示一下Kafka强大的平衡机制吧(就是看看怎麼自動分配partition，同一topic)</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#######################下面是我们有4个Partition###################################</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic world</span></span><br><span class="line">Topic:world	PartitionCount:4	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: world	Partition: 0	Leader: 1	Replicas: 1,2,0	Isr: 1,2,0</span><br><span class="line">	Topic: world	Partition: 1	Leader: 2	Replicas: 2,0,1	Isr: 2,0,1</span><br><span class="line">	Topic: world	Partition: 2	Leader: 0	Replicas: 0,1,2	Isr: 0,1,2</span><br><span class="line">	Topic: world	Partition: 3	Leader: 1	Replicas: 1,0,2	Isr: 1,0,2</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol>
+<li><p>当我们只有1个consumer时：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514193419.png" alt="1个consumer分配了4个partition"></p>
+</li>
+<li><p>我们接着再启动一个consumer<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514194256.png" alt="新启动的consumer分配了2个partition"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514194716.png" alt="原来的的consumer从新分配为2个partition"></p>
+</li>
+<li><p>大家明白了吧，我就不再继续启动了。<strong>增加或减少，consumer都会触发分区，重新分区。</strong></p>
+</li>
+</ol>
+<h2 id="消费者顺序"><a href="#消费者顺序" class="headerlink" title="消费者顺序"></a>消费者顺序</h2><ul>
+<li><strong>消费顺序对于组来说</strong>：</li>
+</ul>
+<ol>
+<li>每一个消费者之间是<strong>无序的</strong>。</li>
+<li>同一个消费者对应一个Partition是<strong>offset有序的</strong>。</li>
+<li>同一个消费者对应多个Partition是<strong>顺序消费至最新状态</strong>。</li>
+</ol>
+<ul>
+<li><strong>演示1</strong>：同一个消费者对应一个Partition是<strong>offset有序的</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#######################创建1个partition###################################</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --create --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --replication-factor 3 --partitions 1  --topic hello</span></span><br><span class="line">Created topic <span class="string">"hello"</span>.</span><br><span class="line"></span><br><span class="line"><span class="comment">#######################查看 partition ###################################</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic hello</span></span><br><span class="line">Topic:hello	PartitionCount:1	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: hello	Partition: 0	Leader: 0	Replicas: 0,1,2	Isr: 0,1,2</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514205257.png" alt="对应一个Partition消费者有序消费数据"></p>
+<ul>
+<li><strong>演示2</strong>：同一个消费者对应多个Partition是<strong>顺序消费至最新状态</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#######################继续增加2个partition################################</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --alter --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 -partitions 3 --topic hello</span></span><br><span class="line">WARNING: If partitions are increased <span class="keyword">for</span> a topic that has a key, the partition logic or ordering of the messages will be affected</span><br><span class="line">Adding partitions succeeded!</span><br><span class="line"></span><br><span class="line"><span class="comment">#######################查看 partition ###################################</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic hello</span></span><br><span class="line">Topic:hello	PartitionCount:3	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: hello	Partition: 0	Leader: 0	Replicas: 0,1,2	Isr: 0,1,2</span><br><span class="line">	Topic: hello	Partition: 1	Leader: 1	Replicas: 1,2,0	Isr: 1,2,0</span><br><span class="line">	Topic: hello	Partition: 2	Leader: 2	Replicas: 2,0,1	Isr: 2,0,1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514211044.png" alt="对应多个Partition消费者顺序消费至最新状态"></p>
+<h2 id="Kafka底层结构"><a href="#Kafka底层结构" class="headerlink" title="Kafka底层结构"></a>Kafka底层结构</h2><ul>
+<li>分爲兩個部分<ol>
+<li>broker   ：简单理解为topic的元数据信息（topics,ids），包含topic的分区情况、leader、状态、数据大小、地址端口、版本</li>
+<li>consumer ：消费者的元数据信息，重点就是offset了。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514215445.png" alt="Kafka元数据结构图"></li>
+</ol>
+</li>
+</ul>
+<h3 id="Broker元数据"><a href="#Broker元数据" class="headerlink" title="Broker元数据"></a>Broker元数据</h3><h4 id="topics"><a href="#topics" class="headerlink" title="topics"></a>topics</h4><p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514223520.png" alt="Broker topics"></p>
+<h4 id="ids"><a href="#ids" class="headerlink" title="ids"></a>ids</h4><p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514224801.png" alt="Broker ids"></p>
+<h3 id="Consumer元数据"><a href="#Consumer元数据" class="headerlink" title="Consumer元数据"></a>Consumer元数据</h3><p>Partition：为了实现扩展性，一个非常大的topic可以分布到多个 broker 上，一个topic可以分为多个partition，每个partition是一个有序的队列。partition中的每条消息 都会被分配一个有序的id（offset）。从上面示例我们也可以看出<strong>kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体 （多个partition间）的顺序。</strong></p>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514212150.png" alt="Partition写入状态"></p>
+<p><strong>分区就是一个有序的,不可变的消息队列.新来的commit log持续往后面加数据.这些消息被分配了一个下标(或者偏移),就是offset,用来定位这一条消息。</strong></p>
+<h4 id="offset"><a href="#offset" class="headerlink" title="offset"></a>offset</h4><ul>
+<li><p>从上面得知，partition自己维护了一个offset，我们知道zk中保留了kafka的元数据信息。下面我们来看一下底层结构运行<strong>/opt/zookeeper/bin/zkCli.sh</strong> ：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514214722.png" alt="zookeeper元数据查看"></p>
+</li>
+<li><p><strong>注意</strong>：上图中offset=18不是即使更新到zk中的，默认是一分钟，可以设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#########true时，Consumer会在消费消息后将offset同步到zookeeper################</span></span><br><span class="line"><span class="comment">#########当Consumer失败后，新的consumer就能从zookeeper获取最新的offset#########</span></span><br><span class="line">auto.commit.enable = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#########自动提交的时间间隔(默认如下60秒)#####################################</span></span><br><span class="line">auto.commit.interval.ms = 60 * 1000</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="owners"><a href="#owners" class="headerlink" title="owners"></a>owners</h4><ul>
+<li>里面存放了消费者ID<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514221850.png" alt="消费者进程ID"></li>
+</ul>
+<h4 id="ids-1"><a href="#ids-1" class="headerlink" title="ids"></a>ids</h4><p>ids： Consumer进程id，每一个consumer进程就有一个id（<em>每一个进程可以设置多个consumer线程</em>）。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514222441.png" alt="再启动一个consumer来看一下效果"></p>
+<ul>
+<li>我们再来查看一下ids:<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514223404.png" alt="消费者ids"></li>
+</ul>
+<h2 id="Kafka数据读取-存储"><a href="#Kafka数据读取-存储" class="headerlink" title="Kafka数据读取/存储"></a>Kafka数据读取/存储</h2><ul>
+<li>先看一下本地log目录的分区文件夹，如下（<em>我的kafka存储的数据比较小，对应的partition都为0。该segment可以设置：<strong>log.segment.bytes</strong>，制日志segment文件的大小，超出该大小则追加到一个新的日志segment文件中（-1表示没有限制）</em>）：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo08 kafka]<span class="comment"># tree ../kafka-logs/</span></span><br><span class="line">../kafka-logs/</span><br><span class="line">├── hello-0</span><br><span class="line">│   ├── 00000000000000000000.index     <span class="comment">##索引文件</span></span><br><span class="line">│   └── 00000000000000000000.log       <span class="comment">##日志文件</span></span><br><span class="line">├── hello-1</span><br><span class="line">│   ├── 00000000000000000000.index</span><br><span class="line">│   └── 00000000000000000000.log</span><br><span class="line">├── hello-2</span><br><span class="line">│   ├── 00000000000000000000.index</span><br><span class="line">│   └── 00000000000000000000.log</span><br><span class="line">├── recovery-point-offset-checkpoint</span><br><span class="line">├── replication-offset-checkpoint</span><br><span class="line">├── world-0</span><br><span class="line">│   ├── 00000000000000000000.index</span><br><span class="line">│   └── 00000000000000000000.log</span><br><span class="line">├── world-1</span><br><span class="line">│   ├── 00000000000000000000.index</span><br><span class="line">│   └── 00000000000000000000.log</span><br><span class="line">├── world-2</span><br><span class="line">│   ├── 00000000000000000000.index</span><br><span class="line">│   └── 00000000000000000000.log</span><br><span class="line">└── world-3</span><br><span class="line">    ├── 00000000000000000000.index</span><br><span class="line">    └── 00000000000000000000.log</span><br><span class="line">7 directories, 16 files</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="存储策略"><a href="#存储策略" class="headerlink" title="存储策略"></a>存储策略</h3><p><strong>partition存储的时候,分成了多个segment(段),然后通过一个index,索引,来标识第几段.</strong></p>
+<ul>
+<li><strong>具体的流程</strong>：<br>发布者发到某个topic的 消息会被分布到多个partition上（<em>随机或根据用户指定的函数进行分布</em>），broker收到发布消息往对应partition的最后一个segment上添加 该消息，segment达到一定的大小后将不会再往该segment写数据，broker会创建新的segment。</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514231935.png" alt="kafka 存储策略"></p>
+<h3 id="高效读取"><a href="#高效读取" class="headerlink" title="高效读取"></a>高效读取</h3><ul>
+<li><strong>kafka高效读取有两个重要的东西，分段和索引</strong>。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514232049.png" alt="kafka 高效读取"></li>
+</ul>
+<ol>
+<li><p>每个片段一个文件并且此文件以该片段中最小的offset命名，<strong>查找指定offset的Message的时候，用二分查找就可以定位到该Message在哪个段中。</strong></p>
+</li>
+<li><p><strong>为每个分段后的数据文件建立了索引文件(index)</strong>，存储了【<strong>offset和message在文件中的position</strong>】。index中采用了<strong>稀疏存储</strong>。</p>
+</li>
+</ol>
+<ul>
+<li><strong>具体查找方法： </strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###############比如我们有文件,需要查找2016的文件##################</span></span><br><span class="line">00000000000000000000.index</span><br><span class="line">00000000000000000000.log</span><br><span class="line">00000000000000002000.index</span><br><span class="line">00000000000000002000.log</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol>
+<li>首先通过<strong>zk的元数据</strong>信息找到（position、broker、topic）然后我们就能在<strong>Partition的内存索引</strong>中根据<strong>offset </strong>2016找到到相应topic的文件位置和index文件。</li>
+<li>把<strong>index文件加载到内容中，然后开始读取</strong>。</li>
+<li>由于是稀疏索引所以相对来说节约空间，跳跃式的查找然后进一步找到2016，读取到<strong>对应的posistion</strong>。</li>
+<li>最后通过posistion去找到<strong>message数据</strong>。</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2016/05/16/游记-晴空万里的阳台山/" rel="next" title="游记--晴空万里的阳台山">
+    上一篇：游记--晴空万里的阳台山
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/05/14/Kafka-数据迁移/" rel="next" title="Kafka--集群及API操作">
+    下一篇：Kafka--集群及API操作
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Kafka--Consumer消费者" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

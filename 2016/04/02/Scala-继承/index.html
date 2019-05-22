@@ -1,0 +1,745 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Scala--继承 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Scala--继承"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Scala--继承</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-02T11:43:10.000Z"><a href="/2016/04/02/Scala-继承/">2016-04-02</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Scala/" class="chip red lighten-1">Scala</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#重写"><span class="section table-of-contents-text">重写</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#超类构造器"><span class="section table-of-contents-text">超类构造器</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#抽象类"><span class="section table-of-contents-text">抽象类</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Scala继承层级"><span class="section table-of-contents-text">Scala继承层级</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　关于<code>scala继承</code>，其实很简单，基本思想和java都是相同的。主要不同在于，一些小小的细节，比如重写是需要用override,只有主构造器可以调用超类的主构造器等。</p>
+<a id="more"></a>
+<h2 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h2><p><code>继承</code>就是从已有的类中通过<code>extends关键字</code>派生出新的类，已有的类叫<code>父类</code>，新派生出的类叫<code>子类</code>。子类就拥有父类非私有的属性和行为，并能扩展新的属性和行为。<code>重写</code>（override）就是子类去重新定义父类的属性和行为。</p>
+<ol>
+<li><code>继承父类使用extends关键字</code></li>
+<li><code>重写父类非私有属性和行为（非抽象方法）时必须使用override</code></li>
+<li>调用父类的方法时使用<code>super</code>关键字,字段不需要</li>
+<li><code>私有（private）</code>方法和属性子类无法获取和重写</li>
+<li><code>受保护（protected）</code>方法或属性只有子类能获取和重写</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/4.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</span><br><span class="line">    <span class="comment">//父类</span></span><br><span class="line">    <span class="keyword">val</span> name = <span class="string">"xiaomo"</span>;<span class="comment">//通过val重写</span></span><br><span class="line">    <span class="keyword">val</span> age = <span class="number">25</span> ; <span class="comment">//通过val重写</span></span><br><span class="line">    <span class="keyword">var</span> height = <span class="number">175.0</span> ;<span class="comment">//子类没有重写</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> six = <span class="number">0</span> ;<span class="comment">//私有字段</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">val</span> money = <span class="number">9999999</span>;<span class="comment">//protected</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//无参方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">supSex</span> </span>= six ;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//say方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">say</span></span>(info:<span class="type">String</span>)&#123;</span><br><span class="line">        println(<span class="string">"Parent say ,"</span>+ info)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">Parent</span></span>&#123; <span class="comment">//子类</span></span><br><span class="line">    <span class="comment">//val重写父类val参数</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> name = <span class="string">"xiaoxiaomo"</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> age  = <span class="number">24</span> ;</span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> money =  <span class="number">99999</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//val重写不带参数的def</span></span><br><span class="line">    <span class="comment">//调用父类方法使用super关键字</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> supSex: <span class="type">Int</span> = &#123;</span><br><span class="line">        <span class="keyword">if</span>( <span class="keyword">super</span>.supSex == <span class="number">0</span> )</span><br><span class="line">            <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//def只能重写一个def方法</span></span><br><span class="line">    <span class="comment">//访问父类字段不需要使用supper，直接访问即可</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">say</span></span>(info : <span class="type">String</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">        println(<span class="string">"SubClass say ,"</span>+ info + <span class="string">" age:"</span>+age +<span class="string">" name:"</span>+name )</span><br><span class="line">        println(<span class="string">"height:"</span>+height + <span class="string">" money:"</span>+money)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Test</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Test2</span> <span class="keyword">extends</span> <span class="title">App</span></span>&#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="type">SubClass</span>().say(<span class="string">"Hello!"</span>)</span><br><span class="line">    print(<span class="keyword">new</span> <span class="type">SubClass</span>().supSex)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行结果</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SubClass say ,Hello! age:<span class="number">24</span> name:xiaoxiaomo</span><br><span class="line">height:<span class="number">175.0</span> money:<span class="number">99999</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在每一个对象中，我们<code>隐式继承java.lang.Object</code>的一些方法。这些方法我们同样可以去重写，常见的是去重写<strong>toString()方法</strong>、<strong>equals()方法</strong>，如下图所示：</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160404120452.png" alt=""></p>
+<ul>
+<li><code>注意</code>（重写的限制） ：</li>
+</ul>
+<ol>
+<li>def只能重写另一个def</li>
+<li>val只能重写另一个val或不带参数的def</li>
+<li>var只能重写另一个抽象的var（下面抽象类中会讲到）</li>
+</ol>
+<h2 id="超类构造器"><a href="#超类构造器" class="headerlink" title="超类构造器"></a>超类构造器</h2><p>对于构造器，在前面<a href="http://blog.xiaoxiaomo.com/2016/03/28/Scala-%E7%B1%BB/">Scala–类</a>的博文中已经讲解，它和java的构造器是有一定区别的。</p>
+<ol>
+<li>因为子类辅助构造器必须调用子类主构造器，所以子类辅助构造器就无法调用父类的构造器</li>
+<li>所以就必须得子类主构造器去调用超类的构造器</li>
+<li>由于主构造器和类交织在一起，所以<code>调用父类构造器也会和类交织在一起</code></li>
+</ol>
+<ul>
+<li>来看一下下面的<strong>事例</strong>，1、首先<strong>定义一个父类</strong>，父类的主构造器数(有参数age),一个辅助构造器(有参数name和age)</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.xiaoxiaomo.demo.ch08</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承-构造器</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/4.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConstructorPartDemo</span>(<span class="params">val age :<span class="type">Int</span></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> name  = <span class="string">"xiaoxiaomo"</span></span><br><span class="line">    <span class="keyword">val</span> height = <span class="number">178</span> ;</span><br><span class="line">    println(<span class="string">"父类主构造器"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//辅助构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">this</span></span>( name : <span class="type">String</span>, age : <span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">this</span>(age)<span class="comment">//必须在构造函数首行</span></span><br><span class="line">        println(<span class="string">"父类，辅助构造器，name:"</span>+name+<span class="string">" age:"</span>+age+<span class="string">" height:"</span>+height)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>定义<strong>三个子类</strong>，第一个继承超类的主主构造器，第二个继承超类的辅助构造器，第三个想继承父类的无参构造器，但由于超类没有无参的构造器，所以不会通过编译，下面来看一看代码：</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 第一个子类</span></span><br><span class="line"><span class="comment"> * 继承超类的主构造器</span></span><br><span class="line"><span class="comment"> * @param age 传递给父类</span></span><br><span class="line"><span class="comment"> * @param name</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConstructorSub1</span>(<span class="params">age:<span class="type">Int</span>,override val name:<span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">ConstructorPartDemo</span>(<span class="params">age</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">    println(<span class="string">"子类1，主构造器"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//主构造器重已经重写了字段name，下面就不能再次重写</span></span><br><span class="line">    <span class="comment">//override val name  = "xiaoxiaomo"</span></span><br><span class="line">    <span class="comment">//辅助构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">this</span></span>( name : <span class="type">String</span>, age : <span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">this</span>(age,name)</span><br><span class="line">        println(<span class="string">"子类1，辅助构造器，name:"</span>+name+<span class="string">" age:"</span>+age+<span class="string">" height:"</span>+height)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 第二个子类</span></span><br><span class="line"><span class="comment"> * 继承超类的辅助构造器</span></span><br><span class="line"><span class="comment"> * @param age 传递给父类</span></span><br><span class="line"><span class="comment"> * @param name 传递给父类</span></span><br><span class="line"><span class="comment"> * @param height</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConstructorSub2</span>(<span class="params">age:<span class="type">Int</span>,override val name:<span class="type">String</span>,height:<span class="type">Double</span></span>) <span class="keyword">extends</span> <span class="title">ConstructorPartDemo</span>(<span class="params">name,age</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    println(<span class="string">"子类2，主构造器"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//辅助构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">this</span></span>( name : <span class="type">String</span>, age : <span class="type">Int</span>)&#123;</span><br><span class="line">        <span class="keyword">this</span>( age , name , <span class="number">175</span> )</span><br><span class="line">        println(<span class="string">"子类2，辅助构造器，name:"</span>+name+<span class="string">" age:"</span>+age + <span class="string">" height:"</span>+height)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 第三个子类，无法编译</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//下面写法是不会通过编译的</span></span><br><span class="line"><span class="comment">//因为没有ConstructorPartDemo()的无参构造器</span></span><br><span class="line"><span class="comment">//class ConstructorSub3(age:Int,override val name:String) extends ConstructorPartDemo()&#123;</span></span><br><span class="line"><span class="comment">//&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//TEST</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">App</span></span>&#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="type">ConstructorSub1</span>(<span class="string">"one-snail"</span>,<span class="number">11</span>)</span><br><span class="line">    println(<span class="string">"----------------"</span>)</span><br><span class="line">    <span class="keyword">new</span> <span class="type">ConstructorSub2</span>(<span class="string">"two-snail"</span>,<span class="number">22</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过调用Test，运行结果：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">父类主构造器</span><br><span class="line">子类<span class="number">1</span>，主构造器</span><br><span class="line">子类<span class="number">1</span>，辅助构造器，name:one-snail age:<span class="number">11</span> height:<span class="number">178</span></span><br><span class="line">----------------</span><br><span class="line">父类主构造器</span><br><span class="line">父类，辅助构造器，name:two-snail age:<span class="number">22</span> height:<span class="number">178</span></span><br><span class="line">子类<span class="number">2</span>，主构造器</span><br><span class="line">子类<span class="number">2</span>，辅助构造器，name:two-snail age:<span class="number">22</span> height:<span class="number">175.0</span></span><br></pre></td></tr></table></figure>
+<h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><p><code>抽象类</code>，往往用来描述一个事物的抽象概念，不能具体指定为某一实体（<code>不能实例化</code>）。比如，我们所看到的食物苹果和梨，我们也可以统称为水果，苹果和梨就是具体的东西，水果（<strong>不能具体指某一实物</strong>）就是一个苹果和梨的抽象的概念。<br>申明抽象类使用<code>abstract</code>，在scala中，抽象类和类中的方法、字段和类型都可以是抽象。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 抽象类</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/4.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//没有初始化值，这是一个带有get方法的抽象字段</span></span><br><span class="line">    <span class="keyword">val</span> id:<span class="type">Int</span></span><br><span class="line">    <span class="comment">//没有初始化值，这是一个带有get/set方法的抽象字段</span></span><br><span class="line">    <span class="keyword">var</span> age:<span class="type">Int</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//不需要使用override</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">name</span></span>:<span class="type">Unit</span> ; <span class="comment">//没有方法体</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//不需要使用override</span></span><br><span class="line">    <span class="comment">//带参数的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sayHi</span></span>( who:<span class="type">String</span> ) ; <span class="comment">//没有方法体</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//不需要使用override</span></span><br><span class="line">    <span class="comment">//带参数和返回值(Int)的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>( a:<span class="type">Int</span> ,b:<span class="type">Int</span> ) : <span class="type">Int</span>; <span class="comment">//没有方法体</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//这不是一个抽象方法而是一个普通方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getOther</span></span>(): <span class="type">Unit</span> =&#123;</span><br><span class="line">        println(<span class="string">"这个方法自己有方法体"</span>)<span class="comment">//有方法体</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>实现和测试</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实现抽象类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractImp</span> <span class="keyword">extends</span> <span class="title">AbstractDemo</span></span>&#123;</span><br><span class="line">    <span class="keyword">val</span> id: <span class="type">Int</span> = <span class="number">17</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//不需要使用override</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(a: <span class="type">Int</span>, b: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">        a + b</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//不需要使用override</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">name</span> </span>= println(<span class="string">"xiaomo"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//不需要使用override</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sayHi</span></span>(who: <span class="type">String</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">        println(<span class="string">"Hello everyone! My name is "</span>+who + <span class="string">" And "</span>+ age + <span class="string">" years old！"</span>)</span><br><span class="line">        getOther() ;<span class="comment">//调用自己的方法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> age: <span class="type">Int</span> = <span class="number">25</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//这不是一个抽象方法而是一个普通方法</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getOther</span></span>(): <span class="type">Unit</span> = <span class="keyword">super</span>.getOther()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//TEST</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Test3</span> <span class="keyword">extends</span> <span class="title">App</span></span>&#123;</span><br><span class="line">    <span class="keyword">val</span> abs = <span class="keyword">new</span> <span class="type">AbstractImp</span>()</span><br><span class="line">    abs.name</span><br><span class="line">    println(abs.sum(<span class="number">7</span>,<span class="number">8</span>)) <span class="comment">//调用求和方法</span></span><br><span class="line">    abs.sayHi(<span class="string">"xiaoxiaomo"</span>)<span class="comment">//sayHi方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行结果</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xiaomo</span><br><span class="line"><span class="number">15</span></span><br><span class="line">Hello everyone! My name is xiaoxiaomo And <span class="number">25</span> years old！</span><br><span class="line">这个方法自己有方法体</span><br></pre></td></tr></table></figure>
+<ul>
+<li>抽象字段：<code>具体类中给字段申明的时候不给字段赋值，该字段变为抽象字段</code></li>
+<li>抽象方法：<strong>抽象方法不需要（也不允许）有abstract修饰符</strong>，<code>一个方法只要是没有实现（没有等号或没有方法体），它就是抽象的</code>，<strong>在子类中覆写或者覆写接口中的非抽象方法（方法有具体实现）要使用override关键字</strong>。</li>
+<li>抽象类型：<code>scala中的类型成员也可以是抽象的</code>。抽象字段和抽象方法都是只有字段或者方法的定义，而没有字段或者方法的具体实现</li>
+</ul>
+<h2 id="Scala继承层级"><a href="#Scala继承层级" class="headerlink" title="Scala继承层级"></a>Scala继承层级</h2><p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160404161713.png" alt="">(图片来源于网络)</p>
+<ol>
+<li><code>Any类</code>：是整个继承层级的跟，下面有AnyVal和AnyRef</li>
+<li><code>AnyVal</code>：包含了所用值类型以及Unit，</li>
+<li><code>AnyRef</code>：相当于java的Object,所用的其他都是AnyRef的子类</li>
+</ol>
+<ul>
+<li><strong>AnyVal</strong></li>
+</ul>
+<p>AnyVal并没有追加任何方法，它只是所有值类型的一个标记</p>
+<ul>
+<li><strong>AnyRef</strong></li>
+</ul>
+<p>AnyRef，追加了来之Object类的监视方法wait和notify/notifyAll，同时还提供了一个带函数参数的方法synchronized。</p>
+<ul>
+<li><strong>ScalaObject</strong></li>
+</ul>
+<p>所用的Scala类都实现ScalaObject这个标记接口，这个接口没有定义任何方法</p>
+<ul>
+<li><strong>Nothing/Null</strong></li>
+</ul>
+<ol>
+<li>在继承的另一端是Nothing和Null类型</li>
+<li>Null类型的唯一实例是null值，可以将null赋值给任何引用类型，但不能赋值给值类型的变量。</li>
+<li>Nothing类型没有实例，他对于泛型结构时常用，空列表Nil的类型是List[Nothing]，它是List[T]的子类型。</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/05/Scala-IO操作/" rel="next" title="Scala--IO操作">
+    上一篇：Scala--IO操作
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/01/Java-字节码指令/" rel="next" title="Java-字节码指令">
+    下一篇：Java-字节码指令
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Scala--继承" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

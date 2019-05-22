@@ -1,0 +1,766 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java--网络编程TCP和UDP | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java--网络编程TCP和UDP"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java--网络编程TCP和UDP</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-12T01:36:45.000Z"><a href="/2016/04/12/Java-网络编程TCP和UDP/">2016-04-12</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/网络编程/" class="chip red lighten-1">网络编程</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#基础术语"><span class="section table-of-contents-text">基础术语</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#ISO七层模型"><span class="section table-of-contents-text">ISO七层模型</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#TCP-UDP"><span class="section table-of-contents-text">TCP/UDP</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#UDP"><span class="section table-of-contents-text">UDP</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#TCP"><span class="section table-of-contents-text">TCP</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#TCP-IP模型"><span class="section table-of-contents-text">TCP/IP模型</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<code>计算机网络</code>，就是把分布在不同区域的计算机用通信线路连接在一起、可以方便地互相传递信息，共享资源。<code>网络编程</code>，就是<code>直接或间接地通过网络协议与其他计算机进行通讯</code>。</p>
+<a id="more"></a>
+<blockquote>
+<p>网络编程中有两个重要问题：</p>
+</blockquote>
+<ol>
+<li>如何<strong>准确地定位</strong>网络上一台或多台主机。</li>
+<li>找到主机后如何<strong>可靠高效</strong>地进行数据传输。</li>
+</ol>
+<h2 id="基础术语"><a href="#基础术语" class="headerlink" title="基础术语"></a>基础术语</h2><ul>
+<li>IP地址</li>
+</ul>
+<blockquote>
+<p>网络中每台主机都必须有一个<code>唯一的IP地址</code>，IP地址是一个逻辑地址。<br>英特网上的IP地址具有全球唯一性。<br>32位，四个字节，常用点分十进制的格式表示。例如：113.45.153.190</p>
+</blockquote>
+<ul>
+<li>协议</li>
+</ul>
+<blockquote>
+<p>为进行网络中的数据交换（通信）而建立的<strong>规则、标准或约定</strong>。（=语义+语法+规则）。<br>不同层具有各自不同的协议。</p>
+</blockquote>
+<ul>
+<li>端口
+　　<blockquote>
+<p>在互联网上传输的数据都包含有用来<strong>识别目的地的IP地址和端口号</strong>。<br>IP地址用来标识网络上的计算机，而<strong>端口号</strong>用来指明该计算机上的<strong>应用程序</strong>。<br>端口用一个整数型标识符来表示，即端口号。<br>端口使用一个16位的数字来表示，它的<strong>范围是0~65535</strong>，<strong>1024以下的为保留端口</strong>。</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>数据封装</li>
+</ul>
+<blockquote>
+<p>一台计算机要发送数据到另一台计算机，数据首先必须打包，打包的过程称为<strong>封装</strong>。<br>封装就是在数据前面加上<strong>特定的协议头部</strong>。<br>在每一层传递信息的过程中都会进行一次<strong>封装</strong>，服务端收到信息后然后进行一层一层的<strong>解封装</strong>最终得到数据。</p>
+</blockquote>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160413105038.png" alt=""></p>
+<h2 id="ISO七层模型"><a href="#ISO七层模型" class="headerlink" title="ISO七层模型"></a>ISO七层模型</h2><p>网络体系结构解决异质性问题采用的是分层的方法——把复杂的网络互联问题划分为若干个较小的、单一的问题，在不同层上予以解决，各层之间是严格的单向依赖。</p>
+<ul>
+<li>OSI(<em>Open System Interconnection</em>)参考模型7层：</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160413105608.png" alt=""></p>
+<ul>
+<li>OSI各层所使用的协议：</li>
+</ul>
+<blockquote>
+<p>应用层：Telnet、FTP、HTTP、DNS、SMTP、POP3<br>传输层：TCP、UDP<br>网络层：IP、ICMP、IGMP</p>
+</blockquote>
+<p>详细讲解可查看博客：<a href="http://blog.csdn.net/yaopeng_2005/article/details/7064869" target="_blank" rel="noopener">http://blog.csdn.net/yaopeng_2005/article/details/7064869</a></p>
+<h2 id="TCP-UDP"><a href="#TCP-UDP" class="headerlink" title="TCP/UDP"></a>TCP/UDP</h2><p><code>套接字Socket</code>，是连接运行在网络上的两个程序间的双向通讯的端点。<strong>网络通信其实就是Socket间的通信</strong>。即，数据在两个Socket间通过<strong>IO传输</strong>。</p>
+<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><ul>
+<li>UDP支持更简单的、快速的、点对点的数据报模式</li>
+</ul>
+<blockquote>
+<p>将数据及源和目的封装成数据包中 <code>不需要建立连接</code>。<br>无连接，即是<strong>不可靠协议</strong>、<strong>速度快</strong>。<br>协议并不保证数据报<strong>是否能正确地到达目的地</strong>。<br>每个数据报的大小在限制在<strong>64KB内</strong>。</p>
+</blockquote>
+<ul>
+<li>实例一 、简单的接收和发送数据DEMO</li>
+</ul>
+<ol>
+<li><p>发送数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.DatagramPacket;</span><br><span class="line"><span class="keyword">import</span> java.net.DatagramSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.InetAddress;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过udp协议发送数据</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/12.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UdpSendSimpleDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 1：获取socket对象</span></span><br><span class="line"><span class="comment">	 * 2：对数据进行封包</span></span><br><span class="line"><span class="comment">	 * 3：通过socket对象把数据包发送出去</span></span><br><span class="line"><span class="comment">	 * 4：把连接关闭</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//1. 获取socket对象</span></span><br><span class="line">		DatagramSocket ds = <span class="keyword">new</span> DatagramSocket();</span><br><span class="line"></span><br><span class="line">		<span class="comment">//2. 封包数据</span></span><br><span class="line">		String sendMsg = <span class="string">"UDP ......你好！"</span> ;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * <span class="doctag">@param</span> buf 字节流数据包</span></span><br><span class="line"><span class="comment">		 * <span class="doctag">@param</span> length 流数据包长度 eg,InetAddress.getByName("192.168.3.102")</span></span><br><span class="line"><span class="comment">		 * <span class="doctag">@param</span> address  发送地址</span></span><br><span class="line"><span class="comment">		 * <span class="doctag">@param</span> port 端口号</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		DatagramPacket p =</span><br><span class="line">				<span class="keyword">new</span> DatagramPacket(sendMsg.getBytes(),sendMsg.getBytes().length,InetAddress.getLocalHost(),<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//3. 发送数据包</span></span><br><span class="line">		ds.send(p);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//4. 关闭连接</span></span><br><span class="line">		ds.close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接送数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.DatagramPacket;</span><br><span class="line"><span class="keyword">import</span> java.net.DatagramSocket;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * UDP接收端代码</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/12.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UdpReceiveSimpleDemo</span> </span>&#123;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 1：获取socket连接(需要指定监听的端口)</span></span><br><span class="line"><span class="comment">	 * 2：通过receive方法接收数据包</span></span><br><span class="line"><span class="comment">	 * 3：解包，获取数据包中的内容</span></span><br><span class="line"><span class="comment">	 * 4：关闭连接</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		<span class="comment">//1:获取连接</span></span><br><span class="line">		DatagramSocket ds = <span class="keyword">new</span> DatagramSocket(<span class="number">3000</span>);;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//2：接收数据</span></span><br><span class="line">		<span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">		DatagramPacket p = <span class="keyword">new</span> DatagramPacket(buf, <span class="number">0</span>, buf.length);</span><br><span class="line">		ds.receive(p);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//3:获取数据</span></span><br><span class="line">		System.out.println( <span class="string">"信息来源："</span>+p.getAddress().getHostAddress() );</span><br><span class="line">		System.out.println( <span class="string">"收到数据："</span> + <span class="keyword">new</span> String( p.getData(),<span class="number">0</span>,p.getLength()) );</span><br><span class="line"></span><br><span class="line">		<span class="comment">//4：关闭连接</span></span><br><span class="line">		ds.close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">如果先运行UdpSendSimpleDemo没有任何信息</span><br><span class="line">如果先运行UdpReceiveSimpleDemo会输出：</span><br><span class="line">信息来源：<span class="number">192.168</span>.3.102</span><br><span class="line">收到数据：UDP ......你好！</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>实例二 、相对复杂的实例</li>
+</ul>
+<p>发送数据后，如果不成功会继续发送4次，都不成功则表示失败。<br>接收端收到信息后，会返回消息告诉发送者已成功，发送者收到数据会进行相应的校验。</p>
+<ol>
+<li><p>发送数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InterruptedIOException;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过udp协议发送数据</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/12.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UdpSendDemo</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TIMEOUT = <span class="number">3000</span>;  <span class="comment">//设置接收数据的超时时间</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXNUM = <span class="number">5</span>;      <span class="comment">//设置重发数据的最多次数</span></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 1：获取socket对象</span></span><br><span class="line"><span class="comment">	 * 2：对数据进行封包</span></span><br><span class="line"><span class="comment">	 * 3：通过socket对象把数据包发送出去</span></span><br><span class="line"><span class="comment">	 * 4：把连接关闭</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//1. 获取socket对象</span></span><br><span class="line">		DatagramSocket ds = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			ds = <span class="keyword">new</span> DatagramSocket(<span class="number">9000</span>); <span class="comment">//如果只是用于发送不填写端口</span></span><br><span class="line">		&#125; <span class="keyword">catch</span> (SocketException e) &#123;</span><br><span class="line">			System.out.println(<span class="string">"创建一个socket对象失败！"</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//2. 封包数据</span></span><br><span class="line">		String sendMsg = <span class="string">"UDP ......你好！"</span> ;</span><br><span class="line"></span><br><span class="line">		DatagramPacket p = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			p = <span class="keyword">new</span> DatagramPacket(sendMsg.getBytes(),sendMsg.getBytes().length,InetAddress.getLocalHost(),<span class="number">3000</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (UnknownHostException e) &#123;</span><br><span class="line">			System.out.println(<span class="string">"找不到该hosts所对应的地址！"</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//3. 发送数据包</span></span><br><span class="line">		<span class="keyword">boolean</span> isReceived = <span class="keyword">false</span>; <span class="comment">//是否接收到数据的标志位</span></span><br><span class="line">		<span class="keyword">int</span> tries = <span class="number">0</span>;  <span class="comment">//重发数据的次数</span></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			ds.setSoTimeout(TIMEOUT); <span class="comment">//设置超时时间</span></span><br><span class="line">			<span class="comment">//直到接收到数据，或者重发次数达到预定值，则退出循环</span></span><br><span class="line">			<span class="keyword">while</span>(!isReceived &amp;&amp; tries&lt;MAXNUM) &#123;</span><br><span class="line"></span><br><span class="line">				ds.send(p); <span class="comment">//发送数据</span></span><br><span class="line"></span><br><span class="line">				<span class="keyword">try</span>&#123;</span><br><span class="line">					<span class="comment">//定义用来接收数据的DatagramPacket实例</span></span><br><span class="line">					DatagramPacket dp_receive = <span class="keyword">new</span> DatagramPacket(<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>], <span class="number">1024</span>);</span><br><span class="line">					<span class="comment">//接收从服务端发送回来的数据</span></span><br><span class="line">					ds.receive(dp_receive);</span><br><span class="line">					<span class="comment">//如果接收到的数据不是来自目标地址，则抛出异常</span></span><br><span class="line">					<span class="keyword">if</span>(!dp_receive.getAddress().equals( InetAddress.getLocalHost() ))&#123;</span><br><span class="line">						<span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"地址出错"</span>);</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="comment">//如果接收到数据。则将receivedResponse标志位改为true，从而退出循环</span></span><br><span class="line">					isReceived = <span class="keyword">true</span>;</span><br><span class="line">				&#125;<span class="keyword">catch</span>(InterruptedIOException e)&#123;</span><br><span class="line">					<span class="comment">//如果接收数据时阻塞超时，重发并减少一次重发的次数</span></span><br><span class="line">					tries += <span class="number">1</span>;</span><br><span class="line">					System.out.println(<span class="string">"Time out,次数："</span> + tries );</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			System.out.println(<span class="string">"发送数据失败！"</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(isReceived)&#123;</span><br><span class="line">			<span class="comment">//成功</span></span><br><span class="line">			System.out.println(<span class="string">"发送成功！"</span>);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="comment">//失败</span></span><br><span class="line">			System.out.println(<span class="string">"重发信息"</span>+tries+<span class="string">"次后，失败！"</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="comment">//4. 关闭连接</span></span><br><span class="line">		<span class="keyword">if</span>( ds != <span class="keyword">null</span> )&#123;</span><br><span class="line">			ds.close();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接收数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.DatagramPacket;</span><br><span class="line"><span class="keyword">import</span> java.net.DatagramSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.SocketException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * UDP接收端代码</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/12.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UdpReceiveDemo</span> </span>&#123;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 1：获取socket连接(需要指定监听的端口)</span></span><br><span class="line"><span class="comment">	 * 2：通过receive方法接收数据包</span></span><br><span class="line"><span class="comment">	 * 3：解包，获取数据包中的内容</span></span><br><span class="line"><span class="comment">	 * 4：关闭连接</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//1:获取连接</span></span><br><span class="line">		DatagramSocket ds = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">//在3000端口监听接收到的数据</span></span><br><span class="line">			ds = <span class="keyword">new</span> DatagramSocket(<span class="number">3000</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (SocketException e) &#123;</span><br><span class="line">			<span class="comment">//例如，该端口已被占用</span></span><br><span class="line">			<span class="comment">//java.net.BindException: Address already in use: Cannot bind</span></span><br><span class="line">			System.out.println(<span class="string">"创建一个socket对象失败！"</span>+e.getMessage());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//这些让它一直接收数据</span></span><br><span class="line">		<span class="keyword">while</span>( ds != <span class="keyword">null</span> )&#123;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//2：接收数据</span></span><br><span class="line">			<span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">			DatagramPacket p = <span class="keyword">new</span> DatagramPacket(buf, <span class="number">0</span>, buf.length);</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				ds.receive(p);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">				<span class="comment">//例如，ds为空等</span></span><br><span class="line">				System.out.println(<span class="string">"接收数据失败！"</span>);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//3:获取数据</span></span><br><span class="line">			System.out.println( <span class="string">"信息来源："</span>+p.getAddress().getHostAddress() );</span><br><span class="line">			System.out.println( <span class="string">"收到数据："</span> + <span class="keyword">new</span> String( p.getData(),<span class="number">0</span>,p.getLength()) );</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			<span class="comment">//通知9000端口的客户端数据接收成功</span></span><br><span class="line">			<span class="comment">//数据发动到客户端的</span></span><br><span class="line">			DatagramPacket dp_reply= <span class="keyword">new</span> DatagramPacket(p.getData() ,p.getData().length,p.getAddress(),<span class="number">9000</span>);</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				ds.send(dp_reply);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//由于dp_reply在接收了数据之后，其内部消息长度值会变为实际接收的消息的字节数，</span></span><br><span class="line">			<span class="comment">//所以这里要将dp_reply的内部消息长度重新置为1024</span></span><br><span class="line">			dp_reply.setLength(<span class="number">1024</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//4：关闭连接</span></span><br><span class="line">		<span class="comment">//ds.close();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>运行结果     </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">UdpSendDemo先运行，如中途UdpReceiveDemo还未启动则运行结果：</span><br><span class="line">Time out,次数：<span class="number">1</span></span><br><span class="line">Time out,次数：<span class="number">2</span></span><br><span class="line">Time out,次数：<span class="number">3</span></span><br><span class="line">Time out,次数：<span class="number">4</span></span><br><span class="line">Time out,次数：<span class="number">5</span></span><br><span class="line">重发信息<span class="number">5</span>次后，失败！</span><br><span class="line">UdpReceiveDemo先运行,UdpSendDemo会收到发送成功！接收者</span><br><span class="line">信息来源：<span class="number">192.168</span>.3.102</span><br><span class="line">收到数据：UDP ......你好！</span><br></pre></td></tr></table></figure>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><ul>
+<li>TCP用于网络的可靠的流式输入/输出，HTTP、FTP、Telnet等应用都需要这种可靠的通信通道。、</li>
+</ul>
+<blockquote>
+<p>两个socket之间<code>必须建立连接</code>，<code>形成传输数据的通道</code><br>在连接中进行大数据量传输<br>通过三次握手完成连接 是<strong>可靠协议</strong>、<strong>效率会稍低</strong></p>
+</blockquote>
+<ul>
+<li>事例一、简单的TCP实例</li>
+</ul>
+<ol>
+<li><p>TCP发送端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.OutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * TCP发送端</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/12.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TcpSendSimpleDemo</span> </span>&#123;	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 1：创建socker客户端，需要连接到接收端</span></span><br><span class="line"><span class="comment">	 * 2：获取这个socket的输出流</span></span><br><span class="line"><span class="comment">	 * 3：通过输出流给其他服务器发送数据</span></span><br><span class="line"><span class="comment">	 * 4：关键连接</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="comment">//1：获取socker对象</span></span><br><span class="line">		Socket socket = <span class="keyword">new</span> Socket(<span class="string">"192.168.3.102"</span>,<span class="number">6000</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//2:获取输出流</span></span><br><span class="line">		OutputStream outputStream = socket.getOutputStream();</span><br><span class="line"></span><br><span class="line">		<span class="comment">//3:通过输出流写数据</span></span><br><span class="line">		outputStream.write(<span class="string">"TCP ... 你好!"</span>.getBytes());</span><br><span class="line"></span><br><span class="line">		<span class="comment">//4：关闭连接</span></span><br><span class="line">		socket.close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>TCP接收端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * TCP接收端</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/12.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TcpReceiveSimpleDemo</span> </span>&#123;	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 1：创建一个socket服务端，需要监听指定端口</span></span><br><span class="line"><span class="comment">	 * 2：通过这个服务端对象可以获取到给指定端口发送数据的socket客户端对象</span></span><br><span class="line"><span class="comment">	 * 3：通过socket对象获取具体的读取流</span></span><br><span class="line"><span class="comment">	 * 4：通过读取流获取数据</span></span><br><span class="line"><span class="comment">	 * 5：关闭连接</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="comment">//1:获取ServerSocket</span></span><br><span class="line">		ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(<span class="number">6000</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//2:获取客户端的socket对象</span></span><br><span class="line">		<span class="comment">//是一个阻塞方法，获取socket客户端对象</span></span><br><span class="line">		Socket socket = serverSocket.accept();</span><br><span class="line"></span><br><span class="line">		<span class="comment">//3：获取socket的输入流</span></span><br><span class="line">		InputStream in = socket.getInputStream();</span><br><span class="line">		<span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">		<span class="comment">//4：读取数据</span></span><br><span class="line">		<span class="keyword">int</span> read = in.read(bytes);</span><br><span class="line">		System.out.println(<span class="keyword">new</span> String(bytes, <span class="number">0</span>, read));</span><br><span class="line"></span><br><span class="line">		<span class="comment">//5：关闭连接</span></span><br><span class="line">		socket.close();</span><br><span class="line">		serverSocket.close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>InetAddr类讲解：<a href="http://blog.xiaoxiaomo.com/2016/04/13/Java-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8BInetAddr%E5%92%8CURL/" title="InetAddr和URL">Java-网络编程InetAddr和URL</a></li>
+</ul>
+<h3 id="TCP-IP模型"><a href="#TCP-IP模型" class="headerlink" title="TCP/IP模型"></a>TCP/IP模型</h3><p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160413105349.png" alt=""></p>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/13/Java-网络编程InetAddr和URL/" rel="next" title="Java--网络编程InetAddr和URL">
+    上一篇：Java--网络编程InetAddr和URL
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/11/Hadoop-HDFS架构和Shell/" rel="next" title="Hadoop-HDFS架构和Shell">
+    下一篇：Hadoop-HDFS架构和Shell
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java--网络编程TCP和UDP" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Kafka--集群及API操作 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Kafka--集群及API操作"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Kafka--集群及API操作</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-05-14T01:53:25.000Z"><a href="/2016/05/14/Kafka-集群及API操作/">2016-05-14</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#kafka集群"><span class="section table-of-contents-text">kafka集群</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#集群搭建"><span class="section table-of-contents-text">集群搭建</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#容错和扩展机制"><span class="section table-of-contents-text">容错和扩展机制</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#容错"><span class="section table-of-contents-text">容错</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#扩容"><span class="section table-of-contents-text">扩容</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#API操作"><span class="section table-of-contents-text">API操作</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本篇博客，主要讲解<strong>kafka集群配置</strong>、<strong>kafka的容错</strong>和<strong>kafka扩展机制</strong>。以及使用kafka<strong>模拟一个网络流量实时统计</strong>来看一看Kafka的一些api使用方法。</p>
+<h2 id="kafka集群"><a href="#kafka集群" class="headerlink" title="kafka集群"></a>kafka集群</h2><h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><ul>
+<li><strong>一、准备</strong>集群机器（这里使用3台）：主机名xxo08、xxo09、xxo10（<em>我把zookeeper集群也放在了这里</em>）。</li>
+<li><p><strong>二、搭建并启动 </strong><a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"><strong>zookeeper集群</strong></a>。</p>
+</li>
+<li><p><strong>三、修改配置文件</strong></p>
+</li>
+</ul>
+<ol>
+<li>/opt/kafka/config/server.properties <strong>broker.id=0</strong>　　##broker的id每一个broker应该不同</li>
+<li>log.dirs=<strong>/opt/kafka_logs</strong>　　##</li>
+<li>zookeeper.connect=<strong>xxo08:2181,xxo09:2181,xxo10:2181</strong>  ##<strong>注意</strong>：我的zokeeper也在这三台机器上</li>
+</ol>
+<ul>
+<li><strong>四、同步其它节点</strong><br>scp -r /opt/kafka/ root@xxo09:/opt/<br>scp -r /opt/kafka/ root@xxo10:/opt/<br>并修改<br>xxo09 /opt/kafka/config/server.properties <strong>broker.id=1</strong>　　##broker的id<br>xxo10 /opt/kafka/config/server.properties <strong>broker.id=2</strong>　　##broker的id</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><strong>五、启动所有server</strong><br>nohup /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties &gt;&gt;/opt/logs/kafka-server.log 2&gt;&amp;1 &amp;</li>
+</ul>
+<ul>
+<li><p><strong>六、查看进程</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo08 ~]<span class="comment"># jps</span></span><br><span class="line">1337 QuorumPeerMain   <span class="comment">##zookeeper</span></span><br><span class="line">1411 Jps</span><br><span class="line">1362 Kafka      <span class="comment">##kafka</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>总结： </strong>对于broker来说是所有broker是独立的，由zk来协调管理。</p>
+</li>
+</ul>
+<h2 id="容错和扩展机制"><a href="#容错和扩展机制" class="headerlink" title="容错和扩展机制"></a>容错和扩展机制</h2><p>上篇博客<a href="http://blog.xiaoxiaomo.com/2016/05/13/Kafka-分布式消息队列/">Kafka-分布式消息队列/</a>中我们使用了单机的kafka,在创建一个topic的时候，副本 <strong>replication-factor</strong> 指定为 <strong>1</strong>(<em>我们只有一个broker也只能指定为1</em>)。现在我们搭建了集群，三个kafka服务（<em>3个broker</em>）我们最多就能创建三个副本了。记住：<strong>kafka容错的保障是他的副本机制！</strong></p>
+<h3 id="容错"><a href="#容错" class="headerlink" title="容错"></a>容错</h3><p><strong>如果，kafka集群中某个broker挂掉（fails），则zk会选择新的broker提供服务。</strong></p>
+<ul>
+<li><strong>下面来做一个测试，模拟节点宕机或挂掉，这里就强制kill掉某个kafka服务吧！</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########################1、创建一个hello的topic##################################</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --create --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --replication-factor 3 --partitions 4  --topic world</span></span><br><span class="line">Created topic <span class="string">"world"</span>.</span><br><span class="line"></span><br><span class="line"><span class="comment">########################2、查看一下hello (分布在4个partition中，每个P有三个备份)####</span></span><br><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic world</span></span><br><span class="line">Topic:world	PartitionCount:4	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: world	Partition: 0	Leader: 2 Replicas: 2,1,0	Isr: 2,1,0</span><br><span class="line">	Topic: world	Partition: 1	Leader: 0 Replicas: 0,2,1	Isr: 0,2,1</span><br><span class="line">	Topic: world	Partition: 2	Leader: 1 Replicas: 1,0,2	Isr: 1,0,2</span><br><span class="line">	Topic: world	Partition: 3	Leader: 2 Replicas: 2,0,1	Isr: 2,0,1</span><br><span class="line"><span class="comment">###############PartitionCount：　当前topic分区数</span></span><br><span class="line"><span class="comment">###############ReplicationFactor： 当前topic副本数</span></span><br><span class="line"><span class="comment">###############Configs： 当前topic自定义配置信息</span></span><br><span class="line"><span class="comment">###############Partition： patition序号</span></span><br><span class="line"><span class="comment">###############Leader： Leader的brokerID</span></span><br><span class="line"><span class="comment">###############Replicas： 所有副本的brokerId</span></span><br><span class="line"><span class="comment">###############Isr： 所有存活（可用）的brokerId</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#######################3、下面我们来强制kill掉,brokerId等于2的#####################</span></span><br><span class="line"><span class="comment">#######################注意我们在xxo10（brokerId=2）上操作#########################</span></span><br><span class="line">[root@xxo10 ~]<span class="comment"># jps</span></span><br><span class="line">1270 Kafka</span><br><span class="line">1372 Jps</span><br><span class="line">1245 QuorumPeerMain</span><br><span class="line">[root@xxo10 ~]<span class="comment"># kill -9 1270   ###########强制kill掉</span></span><br><span class="line">[root@xxo10 ~]<span class="comment"># jps</span></span><br><span class="line">1245 QuorumPeerMain</span><br><span class="line">1382 Jps</span><br><span class="line">[root@xxo10 ~]<span class="comment"># cd /opt/kafka</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#######################4、再来看一下topic 就会发现平衡机制已经重启分配partitoin######</span></span><br><span class="line">[root@xxo10 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic world</span></span><br><span class="line">Topic:world	PartitionCount:4	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: world	Partition: 0	Leader: 1	Replicas: 2,1,0	Isr: 1,0</span><br><span class="line">	Topic: world	Partition: 1	Leader: 0	Replicas: 0,2,1	Isr: 0,1</span><br><span class="line">	Topic: world	Partition: 2	Leader: 1	Replicas: 1,0,2	Isr: 1,0</span><br><span class="line">	Topic: world	Partition: 3	Leader: 0	Replicas: 2,0,1	Isr: 0,1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h3><p>对于扩容，是公司中使用教多的，比如集群不够了，重新购买了服务器，需要把这台服务器加入到kafak集群中。新加入的这个节点<strong>zk会自动识别</strong>并让它在适当的机会选择此节点提供服务。</p>
+<ol>
+<li>新加入的节点，<strong>配置信息(<em>server.properties</em>)记得保持相对一致</strong>。</li>
+<li>修改<strong>broker.id</strong>、<strong>log.dirs</strong>、<strong>zookeeper.connect</strong></li>
+<li>如果直接拷贝kafka,记得拷贝后新节点<strong>zk和kafka的存储路径</strong>应该把数据都删掉，防止数据不一致问题。因为<strong>zk的dataDir里面存储了zk和kafka的元数据</strong>信息，<strong>kafka的数据在kafka的Data目录</strong>就会多出一下奇怪的数据。</li>
+</ol>
+<ul>
+<li><strong>下面我们就假如新加入了一个节点就是xxo10(brokerId=2)，先来启动该节点</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo10 kafka]<span class="comment"># nohup bin/kafka-server-start.sh config/server.properties &gt;&gt; ../logs/kafka-server.log 2&gt;</span></span><br><span class="line">&amp;1 &amp;</span><br><span class="line">[1] 1412</span><br><span class="line"><span class="comment">##########1、启动后会发现这个节点不会是任何分区的leader，在Isr能看见它以存活########</span></span><br><span class="line">[root@xxo10 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic world</span></span><br><span class="line">Topic:world	PartitionCount:4	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: world	Partition: 0	Leader: 1	Replicas: 2,1,0	Isr: 1,0,2</span><br><span class="line">	Topic: world	Partition: 1	Leader: 0	Replicas: 0,2,1	Isr: 0,1,2</span><br><span class="line">	Topic: world	Partition: 2	Leader: 1	Replicas: 1,0,2	Isr: 1,0,2</span><br><span class="line">	Topic: world	Partition: 3	Leader: 0	Replicas: 2,0,1	Isr: 0,1,2</span><br><span class="line"></span><br><span class="line"><span class="comment">##########2、怎么重新均匀分配？########</span></span><br><span class="line"><span class="comment">##########2.1、Broker配置中的自动均衡策略######################################</span></span><br><span class="line"><span class="comment">#####Auto.leader.rebalance.enable=true######################################</span></span><br><span class="line"><span class="comment">#####leader.imbalance.check.interval.seconds 默认值：300#####################</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##########2.2、手动配置执行###################################################</span></span><br><span class="line"><span class="comment">##########下面我们手动配置一下#################################################</span></span><br><span class="line">[root@xxo10 kafka]<span class="comment"># bin/kafka-preferred-replica-election.sh --zookeeper xxo08:2181,xxo09:2181,xxo10:2181</span></span><br><span class="line">Successfully started preferred replica election <span class="keyword">for</span> partitions Set([world,0], [world,2], [world,3], [world,1])</span><br><span class="line">[root@xxo10 kafka]<span class="comment"># bin/kafka-topics.sh --describe --zookeeper xxo08:2181,xxo09:2181,xxo10:2181 --topic world</span></span><br><span class="line">Topic:world	PartitionCount:4	ReplicationFactor:3	Configs:</span><br><span class="line">	Topic: world	Partition: 0	Leader: 2	Replicas: 2,1,0	Isr: 1,0,2</span><br><span class="line">	Topic: world	Partition: 1	Leader: 0	Replicas: 0,2,1	Isr: 0,1,2</span><br><span class="line">	Topic: world	Partition: 2	Leader: 1	Replicas: 1,0,2	Isr: 1,0,2</span><br><span class="line">	Topic: world	Partition: 3	Leader: 2	Replicas: 2,0,1	Isr: 0,1,2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">####负载均衡，Kafka提供了一个 metadata API来管理broker之间的负载（对于0.7.x主要靠zookeeper来实现负载均衡）。</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="API操作"><a href="#API操作" class="headerlink" title="API操作"></a>API操作</h2><p>kafka使用了scala编写，但是提供了很多语言的API接口。比如scala、java、python、R、PHP等。<br>这里我就<strong>使用java来模拟一个网页流量的实时统计处理</strong>：</p>
+<ul>
+<li><p><strong>项目结构</strong>：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514162644.png" alt="项目结构"></p>
+</li>
+<li><p>一、<strong>配置文件</strong></p>
+</li>
+</ul>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">###############<span class="meta">#producer.properties##########################</span></span><br><span class="line">metadata.broker.<span class="built_in">list</span>=xxo08:<span class="number">9092</span>,xxo09:<span class="number">9092</span>,xxo10:<span class="number">9092</span></span><br><span class="line">partitioner.class=com.xxo.kafka.MyPartition</span><br><span class="line">producer.type=sync</span><br><span class="line">compression.codec=none</span><br><span class="line">serializer.class=kafka.serializer.StringEncoder</span><br><span class="line"></span><br><span class="line">################consumer.properties##########################</span><br><span class="line">zookeeper.connect=xxo08:<span class="number">2181</span>,xxo08:<span class="number">2181</span>,xxo08:<span class="number">2181</span></span><br><span class="line">zookeeper.connection.timeout.ms=<span class="number">6000</span></span><br><span class="line">group.id=xiaoxiaomo  ###组ID</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>二、<strong>生产者，模拟用户访问数据</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.kafka;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> kafka.javaapi.producer.Producer;</span><br><span class="line"><span class="keyword">import</span> kafka.producer.KeyedMessage;</span><br><span class="line"><span class="keyword">import</span> kafka.producer.ProducerConfig;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 模拟生产用户访问数据</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/5/14.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProduceUserData</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> Map&lt;Integer,String&gt; path = <span class="keyword">new</span> HashMap&lt;Integer, String&gt;();</span><br><span class="line">    <span class="keyword">static</span> Map&lt;Integer,Integer&gt; userId = <span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//1. 创建一个生产者对象</span></span><br><span class="line">        Properties prop = <span class="keyword">new</span> Properties();</span><br><span class="line">        prop.load( ProduceUserData.class.getClassLoader().getResourceAsStream(<span class="string">"producer.properties"</span>) );</span><br><span class="line">        Producer&lt;String, String&gt; producer = <span class="keyword">new</span> Producer&lt;String, String&gt;(<span class="keyword">new</span> ProducerConfig( prop ));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2. 构造message</span></span><br><span class="line">        String topic = <span class="string">"world"</span> ;  <span class="comment">//world 主题</span></span><br><span class="line">        List&lt;KeyedMessage&lt;String,String&gt;&gt; list = <span class="keyword">new</span> ArrayList&lt;KeyedMessage&lt;String, String&gt;&gt;() ;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//用户数据</span></span><br><span class="line">        <span class="comment">//init path</span></span><br><span class="line">        path.put(<span class="number">0</span>,<span class="string">"http://xiaoxiaomo.com/"</span>);</span><br><span class="line">        path.put(<span class="number">1</span>,<span class="string">"http://blog.xiaoxiaomo.com/"</span>);</span><br><span class="line">        path.put(<span class="number">2</span>,<span class="string">"http://blog.xiaoxiaomo.com/archives/"</span>);</span><br><span class="line">        path.put(<span class="number">3</span>,<span class="string">"http://blog.xiaoxiaomo.com/photo/"</span>);</span><br><span class="line">        path.put(<span class="number">4</span>,<span class="string">"http://blog.xiaoxiaomo.com/about/"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//init userId</span></span><br><span class="line">        userId.put(<span class="number">0</span>,<span class="number">2010</span>);</span><br><span class="line">        userId.put(<span class="number">1</span>,<span class="number">1001</span>);</span><br><span class="line">        userId.put(<span class="number">2</span>,<span class="number">1002</span>);</span><br><span class="line">        userId.put(<span class="number">3</span>,<span class="number">2001</span>);</span><br><span class="line">        userId.put(<span class="number">4</span>,<span class="number">2002</span>);</span><br><span class="line">        userId.put(<span class="number">5</span>,<span class="number">3003</span>);</span><br><span class="line">        userId.put(<span class="number">6</span>,<span class="number">4004</span>);</span><br><span class="line">        userId.put(<span class="number">7</span>,<span class="number">1007</span>);</span><br><span class="line">        userId.put(<span class="number">8</span>,<span class="number">1008</span>);</span><br><span class="line">        userId.put(<span class="number">9</span>,<span class="number">1009</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        Random random = <span class="keyword">new</span> Random();</span><br><span class="line">        <span class="keyword">while</span> ( <span class="keyword">true</span> )&#123;</span><br><span class="line">            <span class="comment">//随机产生数据</span></span><br><span class="line">            <span class="keyword">int</span> pathIndex=random.nextInt(<span class="number">5</span>);</span><br><span class="line">            <span class="keyword">int</span> userIndex=random.nextInt(<span class="number">10</span>);</span><br><span class="line">            <span class="keyword">int</span> isVip=random.nextInt(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//构造一个用户访问数据</span></span><br><span class="line">            String visData = String.format(<span class="string">"%s\t%s\t%s\t%s"</span>,</span><br><span class="line">                    userId.get(userIndex),</span><br><span class="line">                    path.get(pathIndex),</span><br><span class="line">                    <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>).format(<span class="keyword">new</span> Date()), isVip) ;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//使用了pathIndex作为一个Key分区用</span></span><br><span class="line">            list.add( <span class="keyword">new</span> KeyedMessage&lt;String, String&gt;( topic ,String.valueOf(pathIndex) , visData ) );</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 发送</span></span><br><span class="line">            producer.send(list);</span><br><span class="line"></span><br><span class="line">            Thread.sleep( random.nextInt(<span class="number">2000</span>) );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//4. 关闭</span></span><br><span class="line">        <span class="comment">//producer.close();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>三、<strong>消费者，处理用户访问日志信息</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.kafka;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> kafka.consumer.Consumer;</span><br><span class="line"><span class="keyword">import</span> kafka.consumer.ConsumerConfig;</span><br><span class="line"><span class="keyword">import</span> kafka.consumer.ConsumerIterator;</span><br><span class="line"><span class="keyword">import</span> kafka.consumer.KafkaStream;</span><br><span class="line"><span class="keyword">import</span> kafka.javaapi.consumer.ConsumerConnector;</span><br><span class="line"><span class="keyword">import</span> kafka.message.MessageAndMetadata;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消费者</span></span><br><span class="line"><span class="comment"> * 处理用户访问日志信息</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/5/14.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerUserVisit</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> times = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">static</span> Map&lt;String,Integer&gt; map = <span class="keyword">new</span> HashMap&lt;String, Integer&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//1. 创建消费者</span></span><br><span class="line">        Properties prop = <span class="keyword">new</span> Properties();</span><br><span class="line">        prop.load( ConsumerUserVisit.class.getClassLoader().getResourceAsStream( <span class="string">"consumer.properties"</span> ) );</span><br><span class="line">        ConsumerConnector connector = Consumer.createJavaConsumerConnector(<span class="keyword">new</span> ConsumerConfig(prop));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.</span></span><br><span class="line">        String topic = <span class="string">"world"</span> ;</span><br><span class="line">        Map&lt;String, Integer&gt; topicCountMap =  <span class="keyword">new</span> HashMap&lt;String, Integer&gt;();</span><br><span class="line">        topicCountMap.put( topic , <span class="number">3</span> ) ; <span class="comment">//这里启用了三个消费者线程</span></span><br><span class="line"></span><br><span class="line">        Map&lt;String, List&lt;KafkaStream&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt;&gt;&gt; streams = connector.createMessageStreams(topicCountMap);</span><br><span class="line">        List&lt;KafkaStream&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt;&gt; streamList = streams.get(topic);</span><br><span class="line">        <span class="keyword">for</span> (KafkaStream&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt; stream : streamList) &#123;</span><br><span class="line">            ConsumerIterator&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt; iterator = stream.iterator();</span><br><span class="line">            <span class="keyword">new</span> Thread( <span class="keyword">new</span> RunConsumer(  iterator ) ).start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//处理访问数据</span></span><br><span class="line">        Timer timer = <span class="keyword">new</span> Timer(); <span class="comment">//定时来打印一下信息</span></span><br><span class="line">        timer.schedule(<span class="keyword">new</span> TimerTask() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (map) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">for</span> (String key:map.keySet())&#123;</span><br><span class="line">                        System.out.println(String.format(<span class="string">"访问path： %s, 的次数： %s"</span>,key,map.get(key)));</span><br><span class="line">                    &#125;</span><br><span class="line">                    System.out.println(<span class="string">"总访问次数： "</span>+times);</span><br><span class="line">                    map.clear();</span><br><span class="line">                    times=<span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; , <span class="number">0</span> ,<span class="number">5</span>*<span class="number">1000</span> );</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 多线程处理数据，防阻塞</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">RunConsumer</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> ConsumerIterator&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt; iterator ;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">RunConsumer</span><span class="params">(ConsumerIterator&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt; iterator)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.iterator = iterator ;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">while</span> ( iterator.hasNext() )&#123;</span><br><span class="line">                MessageAndMetadata&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt; next = iterator.next();</span><br><span class="line">                String str = <span class="keyword">new</span> String(next.message());</span><br><span class="line">                String[] strs = str.split(<span class="string">"\t"</span>);</span><br><span class="line">                Integer key = map.get(strs[<span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">synchronized</span> ( map ) &#123;</span><br><span class="line">                    <span class="keyword">int</span> count = <span class="number">1</span> ;</span><br><span class="line">                    <span class="keyword">if</span>( key != <span class="keyword">null</span>  )&#123;</span><br><span class="line">                        count += key ;</span><br><span class="line">                    &#125;</span><br><span class="line">                    map.put( strs[<span class="number">1</span>] , count ) ;</span><br><span class="line">                    times ++ ;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>四、自定义Partition</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.kafka;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> kafka.producer.Partitioner;</span><br><span class="line"><span class="keyword">import</span> kafka.utils.VerifiableProperties;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义partition</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/5/14.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPartition</span> <span class="keyword">implements</span> <span class="title">Partitioner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyPartition</span><span class="params">(VerifiableProperties verifiableProperties)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//记得要有这个构造函数，不然会报错！</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(Object key, <span class="keyword">int</span> numPartitions)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>( key == <span class="keyword">null</span> ) <span class="keyword">return</span> <span class="number">0</span> ;</span><br><span class="line">        Integer k = Integer.parseInt(key+<span class="string">""</span>) ;</span><br><span class="line">        <span class="keyword">return</span> k % numPartitions;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输出结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">总访问次数： <span class="number">0</span></span><br><span class="line">总访问次数： <span class="number">0</span></span><br><span class="line">访问path： http:<span class="comment">//xiaoxiaomo.com/, 的次数： 5</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/photo/, 的次数： 3</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/archives/, 的次数： 2</span></span><br><span class="line">总访问次数： <span class="number">10</span></span><br><span class="line">访问path： http:<span class="comment">//xiaoxiaomo.com/, 的次数： 6</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/about/, 的次数： 3</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/photo/, 的次数： 3</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/archives/, 的次数： 6</span></span><br><span class="line">总访问次数： <span class="number">18</span></span><br><span class="line">访问path： http:<span class="comment">//xiaoxiaomo.com/, 的次数： 6</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/, 的次数： 4</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/about/, 的次数： 3</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/photo/, 的次数： 5</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/archives/, 的次数： 9</span></span><br><span class="line">总访问次数： <span class="number">27</span></span><br><span class="line">访问path： http:<span class="comment">//xiaoxiaomo.com/, 的次数： 24</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/, 的次数： 23</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/about/, 的次数： 16</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/photo/, 的次数： 21</span></span><br><span class="line">访问path： http:<span class="comment">//blog.xiaoxiaomo.com/archives/, 的次数： 32</span></span><br><span class="line">总访问次数： <span class="number">116</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>本博客所用源码下载地址：<a href="http://download.csdn.net/detail/tang__xuandong/9520209" target="_blank" rel="noopener">http://download.csdn.net/detail/tang__xuandong/9520209</a></p>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/05/14/Kafka-数据迁移/" rel="next" title="Kafka--集群及API操作">
+    上一篇：Kafka--集群及API操作
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/05/13/Kafka-分布式消息队列/" rel="next" title="Kafka--分布式消息队列">
+    下一篇：Kafka--分布式消息队列
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Kafka--集群及API操作" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

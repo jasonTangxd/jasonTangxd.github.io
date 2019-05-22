@@ -1,0 +1,773 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>OWL--监控系统实战五二次开发 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="OWL--监控系统实战五二次开发"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>OWL--监控系统实战五二次开发</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-08-28T03:46:55.000Z"><a href="/2017/08/28/OWL-监控系统实战五二次开发/">2017-08-28</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Golang/" class="chip red lighten-1">Golang</a>
+        
+            <a href="/tags/运维/" class="chip red lighten-1">运维</a>
+        
+            <a href="/tags/OWL/" class="chip red lighten-1">OWL</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#监控系统实战六二次开发"><span class="section table-of-contents-text">监控系统实战六二次开发</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#思路"><span class="section table-of-contents-text">思路</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#能不能直接获？"><span class="section table-of-contents-text">能不能直接获？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#想一下其他的途径"><span class="section table-of-contents-text">想一下其他的途径</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#东西在这儿，怎么拿走？"><span class="section table-of-contents-text">东西在这儿，怎么拿走？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#通过进程获取"><span class="section table-of-contents-text">通过进程获取</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#用户和进程关系的映射"><span class="section table-of-contents-text">用户和进程关系的映射</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#优化用户和进程的映射"><span class="section table-of-contents-text">优化用户和进程的映射</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#具体代码实现"><span class="section table-of-contents-text">具体代码实现</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#准备开始coding"><span class="section table-of-contents-text">准备开始coding</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#获取用户与进程映射"><span class="section table-of-contents-text">获取用户与进程映射</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#遍历进程号组装数据"><span class="section table-of-contents-text">遍历进程号组装数据</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#遇到的问题"><span class="section table-of-contents-text">遇到的问题</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#优化"><span class="section table-of-contents-text">优化</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#效果"><span class="section table-of-contents-text">效果</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　二次开发？ 当然就是<strong>修改源代码</strong>了。<br>　　为什么进行二次开发？ 当然就是<strong>有新需求</strong>了。</p>
+<ul>
+<li>需求的来由<blockquote>
+<p>因为，我们做的是一个多租户的平台，需要实现用户资源的隔离。<br>在资源隔离这一块，选择了对yarn的改造，我们知道在yarn的这一块已经对cpu和内存进行了隔离，但是还没有网络IO和磁盘IO资源的隔离。<br>然后我们就想着在监控系统采集这一层，去采集到用户维度的磁盘IO和网络IO。<br>所以，采集用户维度的资源（网络，磁盘，内存，cpu），不仅仅有利于我们下一步对yarn的二次开发，而且也有益于我们更细维度的监控。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="监控系统实战六二次开发"><a href="#监控系统实战六二次开发" class="headerlink" title="监控系统实战六二次开发"></a>监控系统实战六二次开发</h2><a id="more"></a>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><h4 id="能不能直接获？"><a href="#能不能直接获？" class="headerlink" title="能不能直接获？"></a><strong>能不能直接获？</strong></h4><p>在linux里面有没有地方直接获取用户维度的信息（网络，磁盘，内存，cpu）？并没有！<br><code>top</code>行吗？来看一看，发现并没有网络和磁盘相关的数据<br><img src="https://img.xiaoxiaomo.com/blog/img/owl20.jpg" alt="top"><br><code>iostat</code>呢？发现也没有用户，直接能获取的这条路是走不通了。<br><img src="https://img.xiaoxiaomo.com/blog/img/owl21.jpg" alt="iostat"></p>
+<h4 id="想一下其他的途径"><a href="#想一下其他的途径" class="headerlink" title="想一下其他的途径"></a><strong>想一下其他的途径</strong></h4><p>我们知道，在linux系统中我们这些东西（看到的所有东西）都是以文件的形式体现的，那在文件里是否有我们想要的数据呢？<br><code>ls /proc</code> 看一下，哈哈，感觉快找到我们想要的了。<br><img src="https://img.xiaoxiaomo.com/blog/img/owl22.jpg" alt="ls /proc"></p>
+<h4 id="东西在这儿，怎么拿走？"><a href="#东西在这儿，怎么拿走？" class="headerlink" title="东西在这儿，怎么拿走？"></a><strong>东西在这儿，怎么拿走？</strong></h4><p>在<code>/proc</code>下面有好多东西，现在就去分析一下拿我们想要的就行了。<br>暂时别急，发现只有总的信息，还有一堆数字（进程号），暂时还没法区分用户！(直接拿不到想要的)</p>
+<h4 id="通过进程获取"><a href="#通过进程获取" class="headerlink" title="通过进程获取"></a><strong>通过进程获取</strong></h4><p>直接拿不到用户的资源信息，那就只能通过进程然后汇总间接获取了！<br><code>ls /proc/1</code>看一下进程号为“1”的进程下面的信息，果然还是找到想要的了<br><img src="https://img.xiaoxiaomo.com/blog/img/owl23.jpg" alt="ls /proc/1"></p>
+<h4 id="用户和进程关系的映射"><a href="#用户和进程关系的映射" class="headerlink" title="用户和进程关系的映射"></a><strong>用户和进程关系的映射</strong></h4><p>在进程下面算是能获取到资源了（网络，磁盘，内存，cpu），现在要做的就是让它与用户关联。<br><code>cat /proc/1/status</code>，在status找到了用户相关的信息，Uid,Gid<br><img src="https://img.xiaoxiaomo.com/blog/img/owl24.jpg" alt="/proc/1/status"></p>
+<h4 id="优化用户和进程的映射"><a href="#优化用户和进程的映射" class="headerlink" title="优化用户和进程的映射"></a><strong>优化用户和进程的映射</strong></h4><ol>
+<li><p><strong>通过上面的分析，现在直观的思路就是</strong>：</p>
+<ul>
+<li>在<code>/proc</code>下找到所有num(进程号)</li>
+<li>然后通过进程下面的status文件找到用户/组ID</li>
+<li>把用户ID，拿到<code>/etc/passwd</code>去获取用户名称</li>
+<li>组ID，去<code>/etc/group</code>去获取组名称</li>
+<li>然后再去，做用户/组合进程的映射</li>
+</ul>
+</li>
+<li><p>这种方法能实现，但是<strong>过于复杂</strong>，<strong>性能差</strong></p>
+</li>
+<li><p><strong>我们换一种思路，先去获取用户，然后再通过用户去找进程，这种办法是不是更好呢?</strong></p>
+<ul>
+<li>最开始想通过<code>/run/user</code>来获取用户，发现并不全，最后通过<code>ps</code>获取用户<br><img src="https://img.xiaoxiaomo.com/blog/img/owl25.jpg" alt="ps -aux"></li>
+<li><code>ps -o ruser=userForLongName -e|sort| uniq</code> ps 排序去重就获取到了所有用户<br><img src="https://img.xiaoxiaomo.com/blog/img/owl27.jpg" alt="ps -o ruser=userForLongName -e |sort| uniq"></li>
+<li>然后通过<code>ps -u userName</code> 获取用户进程（这样关系就很清晰了）<br><img src="https://img.xiaoxiaomo.com/blog/img/owl28.jpg" alt="ps -u hadoop | awk &#39;{if(NR&gt;1){print $1}}&#39;"></li>
+</ul>
+</li>
+<li><p>总结一下</p>
+<ul>
+<li>通过<code>ps命令</code>组装用户和进程的关系</li>
+<li>遍历映射关系，去<code>/proc/&lt;pid&gt;/</code>取数据</li>
+<li>保存数据</li>
+</ul>
+</li>
+</ol>
+<h3 id="具体代码实现"><a href="#具体代码实现" class="headerlink" title="具体代码实现"></a>具体代码实现</h3><h4 id="准备开始coding"><a href="#准备开始coding" class="headerlink" title="准备开始coding"></a>准备开始coding</h4><ul>
+<li>在之前的博客，我们已近分析了owl的源码，应该是有个整体的了解，以及我们需要修改哪儿的代码也应该是有一个比较清晰的思路了，我们再来看看入口：<br><img src="https://img.xiaoxiaomo.com/blog/img/owl29.jpg" alt="owl二次开发程序入口"></li>
+</ul>
+<h4 id="获取用户与进程映射"><a href="#获取用户与进程映射" class="headerlink" title="获取用户与进程映射"></a>获取用户与进程映射</h4><ol>
+<li><p>定义一个映射结构体</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用户属性</span></span><br><span class="line"><span class="keyword">type</span> UserAttr <span class="keyword">struct</span> &#123;</span><br><span class="line">	Uid   <span class="keyword">string</span></span><br><span class="line">	UName <span class="keyword">string</span></span><br><span class="line">	Gid   <span class="keyword">string</span></span><br><span class="line">	GName <span class="keyword">string</span></span><br><span class="line">	Pid   []<span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取所有正在运行的用户</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取所有正在运行的用户</span></span><br><span class="line">	getUserCommand, err := ExecCommand(<span class="string">"/bin/sh"</span>, <span class="string">"-c"</span>, <span class="string">"ps -o ruser=userForLongName -e |sort| uniq"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过用户名，获取用户信息（uid,gid,uName,gName）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过用户名，获取用户信息（uid,gid,uName,gName）</span></span><br><span class="line">    idCommand, err := ExecCommand(<span class="string">"id"</span>, scannerUser.Text())</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过用户名获取用户所有进程ID</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用户所有进程ID</span></span><br><span class="line">    psCommand, err := ExecCommand(<span class="string">"/bin/sh"</span>, <span class="string">"-c"</span>, <span class="string">"ps -u userName | awk '&#123;if(NR&gt;1)&#123;print $1&#125;&#125;'"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取用户信息以及用户所运行的进程关系，上面的代码整体后如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取用户信息以及用户所运行的进程</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getUserAttr</span><span class="params">()</span> []<span class="title">UserAttr</span></span>&#123;</span><br><span class="line">	<span class="comment">//获取所有正在运行的用户</span></span><br><span class="line">	getUserCommand, err := ExecCommand(<span class="string">"/bin/sh"</span>, <span class="string">"-c"</span>, <span class="string">"ps -o ruser=userForLongName -e |sort| uniq"</span>)</span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line"></span><br><span class="line">	userAttrs := <span class="built_in">make</span>([]UserAttr, <span class="number">0</span>)</span><br><span class="line">	scannerUser := bufio.NewScanner(bytes.NewReader(getUserCommand))</span><br><span class="line">	<span class="keyword">for</span> scannerUser.Scan() &#123;</span><br><span class="line">		<span class="keyword">if</span> scannerUser.Text() != <span class="string">"userForLongName"</span> &#123;</span><br><span class="line">			<span class="comment">//通过用户名，获取用户信息（uid,gid,uName,gName）</span></span><br><span class="line">			idCommand, err := ExecCommand(<span class="string">"id"</span>, scannerUser.Text())</span><br><span class="line">			<span class="comment">// ......</span></span><br><span class="line">			scannerId := bufio.NewScanner(bytes.NewReader(idCommand))</span><br><span class="line">			<span class="keyword">for</span> scannerId.Scan() &#123;</span><br><span class="line">				<span class="comment">//用户&amp;&amp;用户组信息</span></span><br><span class="line">				f1 := strings.Split(scannerId.Text(), <span class="string">" "</span>)</span><br><span class="line">				user := strings.Split(f1[<span class="number">0</span>], <span class="string">"="</span>)[<span class="number">1</span>] <span class="comment">//用户信息</span></span><br><span class="line">				uidAndName := strings.Split(user, <span class="string">"("</span>)</span><br><span class="line"></span><br><span class="line">				group := strings.Split(f1[<span class="number">1</span>], <span class="string">"="</span>)[<span class="number">1</span>] <span class="comment">//用户组信息</span></span><br><span class="line">				gidAndName := strings.Split(group, <span class="string">"("</span>)</span><br><span class="line"></span><br><span class="line">				<span class="comment">//用户所有进程ID</span></span><br><span class="line">				psCommand, err := ExecCommand(<span class="string">"/bin/sh"</span>, <span class="string">"-c"</span>, <span class="string">"ps -u "</span>+scannerUser.Text()+<span class="string">" | awk '&#123;if(NR&gt;1)&#123;print $1&#125;&#125;'"</span>)</span><br><span class="line">				<span class="comment">// ......</span></span><br><span class="line">				scannerPs := bufio.NewScanner(bytes.NewReader(psCommand))</span><br><span class="line">				pid := []<span class="keyword">string</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">for</span> scannerPs.Scan() &#123;</span><br><span class="line">					pid = <span class="built_in">append</span>(pid, scannerPs.Text())</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				userAttr := UserAttr&#123;</span><br><span class="line">					Uid:   uidAndName[<span class="number">0</span>],</span><br><span class="line">					UName: scannerUser.Text(),</span><br><span class="line">					Gid:   gidAndName[<span class="number">0</span>],</span><br><span class="line">					GName: strings.TrimSuffix(gidAndName[<span class="number">1</span>], <span class="string">")"</span>),</span><br><span class="line">					Pid:   pid,</span><br><span class="line">				&#125;</span><br><span class="line">				userAttrs = <span class="built_in">append</span>(userAttrs, userAttr)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="遍历进程号组装数据"><a href="#遍历进程号组装数据" class="headerlink" title="遍历进程号组装数据"></a>遍历进程号组装数据</h4><blockquote>
+<p>组装好用户和进程的关系后，下面就是遍历关系，获取进程下面的（网络，磁盘，内存，cpu）<br>这里就不一一举例收集上面四个了，以网络为例来说明</p>
+</blockquote>
+<ol>
+<li><p>网络数据在那个文件？<br>这个得确认好，笔者最开始是收集<code>/proc/&lt;pid&gt;/net/snmp</code>下的tcp和udp等网络数据最后写完了发现不对！！<br>最后重写，收集<code>/proc/&lt;pid&gt;/net/dev</code>下的网卡流量信息，<code>cat /proc/1/net/dev</code>来看一看结构（网卡|接收|传输）：<br><img src="https://img.xiaoxiaomo.com/blog/img/owl30.jpg" alt="/proc/1/net/dev"></p>
+</li>
+<li><p>定义数据结构</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> NETPIDCountersStat <span class="keyword">struct</span> &#123;</span><br><span class="line">	RBytes		<span class="keyword">uint64</span> 	<span class="comment">// 表示收到的字节</span></span><br><span class="line">	RPackets	<span class="keyword">uint64</span>	<span class="comment">// 表示收到正确的包量</span></span><br><span class="line">	RErrs		<span class="keyword">uint64</span>  <span class="comment">// 表示收到错误的包量</span></span><br><span class="line">	RDrop		<span class="keyword">uint64</span>  <span class="comment">// 表示收到丢弃的包量</span></span><br><span class="line"></span><br><span class="line">	TBytes		<span class="keyword">uint64</span>  <span class="comment">// 表示发送的字节</span></span><br><span class="line">	TPackets	<span class="keyword">uint64</span>  <span class="comment">// 表示发送正确的包量</span></span><br><span class="line">	TErrs		<span class="keyword">uint64</span>  <span class="comment">// 表示发送错误的包量</span></span><br><span class="line">	TDrop		<span class="keyword">uint64</span>  <span class="comment">// 表示发送丢弃的包量</span></span><br><span class="line"></span><br><span class="line">	UName		<span class="keyword">string</span></span><br><span class="line">	GName		<span class="keyword">string</span></span><br><span class="line">	NetCar		<span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解析dev文件组装数据</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NETPIDCounters</span><span class="params">(netCarName <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">map</span>[<span class="keyword">string</span>]NETPIDCountersStat, error)</span></span> &#123;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">    <span class="keyword">for</span> _, pid := <span class="keyword">range</span> u.Pid &#123;</span><br><span class="line">        data, err := ioutil.ReadFile(<span class="string">"/proc/"</span> + pid + <span class="string">"/net/dev"</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            <span class="comment">//打印异常但不停止程序 可能有些进程在获取到pid后获取信息时已经停止了</span></span><br><span class="line">            logs.Error(err.Error())</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        scanner := bufio.NewScanner(bytes.NewReader(data))</span><br><span class="line">        d := NETPIDCountersStat&#123;&#125;</span><br><span class="line">        <span class="comment">// 获取pid的具体io值</span></span><br><span class="line">        <span class="keyword">for</span> scanner.Scan() &#123;</span><br><span class="line">            f := strings.Split(scanner.Text(), <span class="string">": "</span>)</span><br><span class="line">            <span class="keyword">if</span>( <span class="built_in">len</span>(f) == <span class="number">2</span>  &amp;&amp; strings.TrimSpace(f[<span class="number">0</span>]) == netName) &#123;</span><br><span class="line">                <span class="keyword">if</span>( <span class="built_in">len</span>(f) == <span class="number">2</span>  &amp;&amp; strings.TrimSpace(f[<span class="number">0</span>]) == v)&#123;</span><br><span class="line">                    fields := strings.Fields(f[<span class="number">1</span>])	<span class="comment">//网络流量 数据</span></span><br><span class="line">                    rBytes, err := strconv.ParseUint((fields[<span class="number">0</span>]), <span class="number">10</span>, <span class="number">64</span>)</span><br><span class="line">                    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> ret, err</span><br><span class="line">                    &#125;</span><br><span class="line">                    d.RBytes = rBytes</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">//......</span></span><br><span class="line">                    </span><br><span class="line">                    <span class="keyword">if</span> d == empty &#123;</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                    &#125;</span><br><span class="line">                    d.UName = name</span><br><span class="line">                    d.GName = gName</span><br><span class="line">                    d.NetCar = v</span><br><span class="line">                    ret[v+pid] = d</span><br><span class="line">    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解析结构体数据，组装成<code>types.TimeSeriesData</code>数据</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用户级别的网络流量</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">netUserMetrics</span><span class="params">(netCarName <span class="keyword">string</span>)</span> []*<span class="title">types</span>.<span class="title">TimeSeriesData</span></span> &#123;</span><br><span class="line">	cnt, err := netstat.NETPIDCounters(netCarName)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	ts := time.Now().Unix()</span><br><span class="line">	metrics := []*types.TimeSeriesData&#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> k, v := <span class="keyword">range</span> cnt &#123;</span><br><span class="line">		<span class="keyword">if</span> NameNotAvalid(v.NetCar) &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		metrics = <span class="built_in">append</span>(metrics,</span><br><span class="line">			&amp;types.TimeSeriesData&#123;</span><br><span class="line">				Metric:    <span class="string">"net.user.rbytes"</span>,</span><br><span class="line">				Value:     <span class="keyword">float64</span>(v.RBytes),</span><br><span class="line">				Cycle:     Cycle,</span><br><span class="line">				Timestamp: ts,</span><br><span class="line">				DataType:  <span class="string">"COUNTER"</span>,</span><br><span class="line">				Tags:      <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>&#123;<span class="string">"user"</span>: v.UName, <span class="string">"group"</span>: v.GName, <span class="string">"iface"</span>: k&#125;,</span><br><span class="line">			&#125;,</span><br><span class="line">			</span><br><span class="line">			<span class="comment">// ......</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><ul>
+<li>除了上面提到的最开始解析错文件，还遇到了一些问题</li>
+</ul>
+<ol>
+<li><p><code>ps -aux |awk &#39;{if(NR&gt;1){print $1}}&#39; |sort| uniq</code> 想查找用户信息，结果显示不全<br><img src="https://img.xiaoxiaomo.com/blog/img/owl26.jpg" alt="ps -aux |awk &#39;{if(NR&gt;1){print $1}}&#39; |sort| uniq"><br>解决办法：<a href="http://www.linuxdiyf.com/linux/29239.html" target="_blank" rel="noopener">http://www.linuxdiyf.com/linux/29239.html</a></p>
+</li>
+<li><p>统计用户所有进程网络io后,然后想加和保存一个汇总的结果到数据库（当然很好的是数据量会小），结果引发了一系列问题</p>
+<ul>
+<li>这样汇总统计后，发现root用户的流量统计出来太吓人了<br><img src="https://img.xiaoxiaomo.com/blog/img/owl31.jpg" alt="root用户的流量"></li>
+<li>直觉可能是自己单位换算有问题，或者是我之前的思路有问题？看了源码然后问了下作者发现没啥问题，单位都正常bytes。</li>
+<li><strong>于是就把每一个进程的详细记录值打印出来</strong>，查看了一下没有问题，差值不明显，看不出来结果！<br><img src="https://img.xiaoxiaomo.com/blog/img/owl32.jpg" alt="log"></li>
+<li>然后又统计了和上一秒的差值（上一秒root用户总值 -减去 当前root用户总值），卧槽，<strong>怎么还有负数</strong>！后来上面的文本往下看（<strong>每次进程数不一样</strong>，左边为168行即168个进程，右边170行即170个进程，绿色的30706那个进程左边就没有！）！！<br><img src="https://img.xiaoxiaomo.com/blog/img/owl33.jpg" alt="log"></li>
+<li>最后想着求一下均值，也是没法解决这个问题，果断放弃了汇总后保存结果，只能分别保存每一个pid的信息了</li>
+</ul>
+</li>
+<li><p>Golang的类型也是一个坑，注意一下类型转换还有类似于这种（uint|int）的区别。</p>
+</li>
+<li>线上环境网卡的问题，因为线上网络的吞吐量非常大通常使用网卡bond把多个物理网卡绑定为一个逻辑网卡，需要确定统计那个网卡<br><img src="https://img.xiaoxiaomo.com/blog/img/owl34.jpg" alt="网卡bond"></li>
+</ol>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><ol>
+<li><p>模拟单例模式做了一个25s的缓存</p>
+<ul>
+<li>因为我们每一次都需要去调用获取用户与进程的关系，它们（网络，磁盘，内存，cpu）的数据组装是分开写的，所以每个Cycle(60s)时间内需要调用4次</li>
+<li>然后自己就把获取进程信息那块代码做了一个缓存<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟单例模式做了一个25s的缓存</span></span><br><span class="line"><span class="keyword">var</span> u []UserAttr</span><br><span class="line"><span class="keyword">var</span> currTime <span class="keyword">int64</span></span><br><span class="line"><span class="keyword">var</span> lock *sync.Mutex = &amp;sync.Mutex&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetUserPidInfo</span><span class="params">()</span> []<span class="title">UserAttr</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> u == <span class="literal">nil</span> || time.Now().Unix() - currTime &gt; <span class="number">25</span> &#123;</span><br><span class="line">		lock.Lock()</span><br><span class="line">		<span class="keyword">defer</span> lock.Unlock()</span><br><span class="line">		u = getUserAttr()</span><br><span class="line">		currTime = time.Now().Unix()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> u</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>多网卡灵活配置</p>
+<ul>
+<li>通过配置，传入需要统计的网卡名称（多个网卡以逗号分隔），如果不传会统计指定的默认网卡<br><img src="https://img.xiaoxiaomo.com/blog/img/owl35.jpg" alt="多网卡支持"></li>
+</ul>
+</li>
+</ol>
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p><img src="https://img.xiaoxiaomo.com/blog/img/owl36.jpg" alt="网络"><br><img src="https://img.xiaoxiaomo.com/blog/img/owl37.jpg" alt="磁盘"></p>
+
+                
+<p class="red-link-context">
+    <a href="/2017/08/28/OWL-监控系统实战六插件开发/" rel="next" title="OWL--监控系统实战六插件开发">
+    上一篇：OWL--监控系统实战六插件开发
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/08/28/OWL-监控系统实战四认识OpenTSDB/" rel="next" title="OWL--监控系统实战四认识OpenTSDB">
+    下一篇：OWL--监控系统实战四认识OpenTSDB
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="OWL--监控系统实战五二次开发" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

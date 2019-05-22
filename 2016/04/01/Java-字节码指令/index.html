@@ -1,0 +1,766 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java-字节码指令 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java-字节码指令"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java-字节码指令</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-01T01:07:54.000Z"><a href="/2016/04/01/Java-字节码指令/">2016-04-01</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/JVM/" class="chip red lighten-1">JVM</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#加载和存储指令"><span class="section table-of-contents-text">加载和存储指令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#运算指令"><span class="section table-of-contents-text">运算指令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#类型转换指令"><span class="section table-of-contents-text">类型转换指令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#对象创建与操作"><span class="section table-of-contents-text">对象创建与操作</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#操作数栈管理指令"><span class="section table-of-contents-text">操作数栈管理指令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#控制转移指令"><span class="section table-of-contents-text">控制转移指令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#方法调用和返回指令"><span class="section table-of-contents-text">方法调用和返回指令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#抛出异常"><span class="section table-of-contents-text">抛出异常</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#同步"><span class="section table-of-contents-text">同步</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<code>字节码</code>是JVM的机器语言。JVM加载类文件时，对类中的每个方法，都会得到一个<code>字节码流</code>。这些字节码流保存在JVM的方法区中。在程序运行过程中，当一个方法被调用时，它的字节码流就会被执行。</p>
+<a id="more"></a>
+<ul>
+<li>基础简介</li>
+</ul>
+<ol>
+<li>方法的字节码流就是JVM的指令（instruction）序列。</li>
+<li><code>Java虚拟机的指令</code>：由<strong>一个字节长度</strong>、代表着某种特定操作含义的数字（<code>操作码Opcode</code>）以及跟随其后的0-n个代表此操作所需参数（<code>操作数Operaands</code>）而构成。即<strong>指令=操作码+操作数</strong>，虚拟机中许多指令并不包含操作数，只有一个操作码。</li>
+<li>JVM中，所有的计算都是围绕栈。因为JVM没有存储任意数值的寄存器，<strong>所有的操作数在计算开始之前，都必须先压入栈中</strong>。</li>
+</ol>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160402093442.png" alt=""></p>
+<p>源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.demo.util;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/3/31.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LineNumberDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String c = <span class="string">"c"</span> ;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String a = <span class="string">"abc"</span> ;</span><br><span class="line">        String b = <span class="string">"ab"</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>字节码和数据类型</li>
+</ul>
+<p>在java虚拟机中，<code>大多数的指令都包含了操作数所对应的数据类型</code>。这一点很重要，理解了这一点很多指令都能联想记忆，例如：<em>iload指令用于从局部变量表中加载int型的数据到操作数栈中，而fload就是加载float类型的数据</em>。下面列出：</p>
+<ol>
+<li>i–<strong>int</strong></li>
+<li>l–<strong>long</strong></li>
+<li>s–<strong>short</strong></li>
+<li>b–<strong>byte</strong></li>
+<li>c–<strong>char</strong></li>
+<li>f–<strong>float</strong></li>
+<li>d–<strong>double</strong></li>
+<li>a–<strong>reference</strong></li>
+</ol>
+<h2 id="加载和存储指令"><a href="#加载和存储指令" class="headerlink" title="加载和存储指令"></a>加载和存储指令</h2><p>每个操作如果需要从操作栈中读参数，则总是将这些<strong>参数出栈</strong>，如果操作有结果，总是会将结果<strong>入栈</strong>。</p>
+<p><code>加载</code>：将数据从<strong>栈帧的局部变量表</strong>加载到<strong>操作数栈</strong>;<br><code>存储</code>：将<strong>操作数栈</strong>存储到<strong>栈帧的局部变量表</strong>;</p>
+<ul>
+<li>1、<code>将一个局部变量加载到操作栈</code>-<code>load</code>。例如： <strong>iload</strong>、<strong>iload_n</strong>、<strong>lload</strong>、<strong>lload_n</strong>、<strong>fload</strong>、<strong>fload_n</strong>、<strong>dload</strong>、<strong>dload_n</strong>、<strong>aload</strong>、<strong>aload_n</strong></li>
+<li>2、<code>将一个数值从操作数栈存储到局部变量表</code>-<code>store</code>。例如： <strong>istore</strong>、<strong>istore_n</strong>、<strong>lstore</strong>、<strong>lstore_n</strong>、<strong>fstore</strong>、<strong>fstore_n</strong>、<strong>dstore</strong>、<strong>dstore_n</strong>、<strong>astore</strong>、<strong>astore_n</strong></li>
+<li>3、<code>将一个常量加载到操作数栈</code>。例如： <strong>bipush</strong>、<strong>sipush</strong>、<strong>ldc</strong>、<strong>ldc_w</strong>、<strong>ldc2_w</strong>、<strong>aconst_null</strong>、<strong>iconst_m1</strong>、<strong>iconst_i</strong>、<strong>lconst_l</strong>、<strong>fconst_f</strong>、<strong>dconst_d</strong></li>
+</ul>
+<p>例如，下面事例1：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.demo.util;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/1.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadStoreDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">128</span> ;<span class="comment">//会自动拆箱为short</span></span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">22</span> ;<span class="comment">//会自动拆箱为byte</span></span><br><span class="line">        String c =<span class="string">"momo"</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<code>javap -c</code>编译后：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">LoadStoreDemo</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> java.lang.String a;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.LoadStoreDemo();<span class="comment">//默认构造方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0 <span class="comment">//一个引用类型的局部变量加载到操作栈</span></span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">1</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V //</span></span><br><span class="line">   <span class="number">4</span>:   <span class="keyword">return</span>	<span class="comment">//没有返回值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(java.lang.String[]); <span class="comment">//main方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   sipush  <span class="number">128</span> <span class="comment">//将一个short类型(int自动拆箱)常量加载到操作数栈（压入栈顶）</span></span><br><span class="line">   <span class="number">3</span>:   istore_1 <span class="comment">//将数值从操作数栈存储到局部变量表，即a中(弹栈)</span></span><br><span class="line">   <span class="number">4</span>:   bipush  <span class="number">22</span> <span class="comment">//将一个byte类型(自动拆箱)常量压入栈顶</span></span><br><span class="line">   <span class="number">6</span>:   istore_2 <span class="comment">//将数值从操作数栈存储到局部变量表中，即b中</span></span><br><span class="line">   <span class="number">7</span>:   ldc     #<span class="number">2</span>; <span class="comment">//String momo //将字符串常量压入栈顶</span></span><br><span class="line">   <span class="number">9</span>:   astore_3 <span class="comment">//将数值从操作数栈存储到局部变量表c中</span></span><br><span class="line">   <span class="number">10</span>:   <span class="keyword">return</span>	<span class="comment">//没有返回值</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="运算指令"><a href="#运算指令" class="headerlink" title="运算指令"></a>运算指令</h2><p><code>算术指令</code>，用于对两个操作数栈上的值进行某种特定运算，并把结果<strong>重新存入到操作栈顶</strong>。<br><code>运算指令分为两种</code>：<strong>整型（int,long）</strong>、<strong>浮点型（float,double）</strong>,对于没有直接支持 byte、short、char和boolean的算术指令使用int。</p>
+<p>下面来看一下<strong>所有的算术指令</strong>：</p>
+<ul>
+<li><code>加法指令</code>：<strong>iadd</strong>、<strong>ladd</strong>、<strong>fadd</strong>、<strong>dadd</strong></li>
+<li><code>减法指令</code>：<strong>isub</strong>、<strong>lsub</strong>、<strong>fsub</strong>、<strong>dsub</strong></li>
+<li><code>乘法指令</code>：<strong>imul</strong>、<strong>lmul</strong>、<strong>fmul</strong>、<strong>dmul</strong></li>
+<li><code>除法指令</code>：<strong>idiv</strong>、<strong>ldiv</strong>、<strong>fdiv</strong>、<strong>ddiv</strong></li>
+<li><code>求余指令</code>：<strong>irem</strong>、<strong>lrem</strong>、<strong>frem</strong>、<strong>drem</strong></li>
+<li><code>取反指令</code>：<strong>ineg</strong>、<strong>lneg</strong>、<strong>fneg</strong>、<strong>dneg</strong></li>
+<li><code>位移指令</code>：<strong>ishl</strong>、<strong>ishr</strong>、<strong>iushr</strong>、<strong>lshl</strong>、<strong>lshr</strong>、<strong>lushr</strong></li>
+<li><code>按位或指令</code>：<strong>ior</strong>、<strong>lor</strong></li>
+<li><code>按位与指令</code>：<strong>iand</strong>、<strong>land</strong></li>
+<li><code>按位异或指令</code>：<strong>ixor</strong>、<strong>lxor</strong></li>
+<li><code>局部变量自增指令</code>：<strong>iinc</strong>(是少见的直接更新一个局部变量而无需在操作数栈中进行读写的指令)</li>
+<li><code>比较指令</code>：<strong>dcmpg</strong>、<strong>dcmpl</strong>、<strong>fcmpg</strong>、<strong>fcmpl</strong>、<strong>lcmp</strong></li>
+</ul>
+<p>java实例代码2：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/1.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperatorDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">127</span> ;</span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">127000000</span> ;</span><br><span class="line">        <span class="keyword">int</span> d = a+b ;</span><br><span class="line">        <span class="keyword">long</span> c = a*b ;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<code>javap -c</code>编译后：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">OperatorDemo</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.OperatorDemo();<span class="comment">//默认构造方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">1</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">4</span>:   <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(java.lang.String[]); <span class="comment">//main方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   bipush  <span class="number">127</span> <span class="comment">//将一个常量加载到操作数栈</span></span><br><span class="line">   <span class="number">2</span>:   istore_1 <span class="comment">//将常量从操作数栈存储到局部变量表中，即a中</span></span><br><span class="line">   <span class="number">3</span>:   ldc     #<span class="number">2</span>; <span class="comment">//int 127000000 //int类型</span></span><br><span class="line">   <span class="number">5</span>:   istore_2 <span class="comment">//将数值从操作数栈存储到局部变量表</span></span><br><span class="line">   <span class="number">6</span>:   iload_1 <span class="comment">//将一个局部变量a加载到操作栈</span></span><br><span class="line">   <span class="number">7</span>:   iload_2 <span class="comment">//将一个局部变量b加载到操作栈</span></span><br><span class="line">   <span class="number">8</span>:   iadd <span class="comment">//把上面两个操作栈中的int数据类型相加</span></span><br><span class="line">   <span class="number">9</span>:   istore_3 <span class="comment">//把相加的结果d存到布局变量表</span></span><br><span class="line">   <span class="number">10</span>:  iload_1 <span class="comment">//重复第6步操作</span></span><br><span class="line">   <span class="number">11</span>:  iload_2 <span class="comment">//重复第7步操作</span></span><br><span class="line">   <span class="number">12</span>:  imul <span class="comment">//相乘</span></span><br><span class="line">   <span class="number">13</span>:  i2l <span class="comment">//int类型转为long类型</span></span><br><span class="line">   <span class="number">14</span>:  lstore  <span class="number">4</span> <span class="comment">//把相乘的结果c存到布局变量表</span></span><br><span class="line">   <span class="number">16</span>:  <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="类型转换指令"><a href="#类型转换指令" class="headerlink" title="类型转换指令"></a>类型转换指令</h2><p><code>类型转换指令</code>，数据类型进行相互转换，一般用于实现用户代码的<strong>显式类型转换</strong>操作，或者用来处理 Java 虚拟机字节码指令集中<code>指令非完全独立</code>的问题。</p>
+<p>宽化类型转换</p>
+<ul>
+<li>int 类型到 long、float 或者 double 类型</li>
+<li>long 类型到 float、double 类型</li>
+<li>float 类型到 double 类型</li>
+</ul>
+<p>窄化类型转换</p>
+<p>i2b、i2c、i2s、l2i、f2i、f2l、d2i、d2l 和 d2f。窄化类型转换可能会导致转换结果产生不同的正负号、不同的数量级，转换过程很可能会导致数值丢失精度。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/2.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TypeCastDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">typeCase</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">128</span> ;</span><br><span class="line">        <span class="keyword">short</span> j = (<span class="keyword">short</span>) i;</span><br><span class="line">        <span class="keyword">double</span> d = i*<span class="number">5.20</span> ;</span><br><span class="line">        <span class="keyword">int</span> z = (<span class="keyword">int</span>) d;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">TypeCastDemo</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.TypeCastDemo();</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">1</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">4</span>:   <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> typeCase();<span class="comment">//typeCase方法（下面简单的介绍一下）</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   sipush  <span class="number">128</span> <span class="comment">//将一个常量压入栈顶</span></span><br><span class="line">   <span class="number">3</span>:   istore_1 <span class="comment">//将栈顶的值弹出（弹栈）存储到局部变量表中，i中</span></span><br><span class="line">   <span class="number">4</span>:   iload_1 <span class="comment">//将局部变量中的i加载到操作栈</span></span><br><span class="line">   <span class="number">5</span>:   i2s <span class="comment">//将i的int类型转为short</span></span><br><span class="line">   <span class="number">6</span>:   istore_2 <span class="comment">//并存储到局布变量表中，j中</span></span><br><span class="line">   <span class="number">7</span>:   iload_1 <span class="comment">//加载局部变量i，到操作栈</span></span><br><span class="line">   <span class="number">8</span>:   i2d <span class="comment">//将操作栈变量i的类型转为double</span></span><br><span class="line">   <span class="number">9</span>:   ldc2_w  #<span class="number">2</span>; <span class="comment">//double 5.2d //</span></span><br><span class="line">   <span class="number">12</span>:  dmul <span class="comment">//将操作栈中的值相乘</span></span><br><span class="line">   <span class="number">13</span>:  dstore_3 <span class="comment">//将相乘的结果存储到局部变量表，d中</span></span><br><span class="line">   <span class="number">14</span>:  dload_3 <span class="comment">//加载局部变量表中的d，到操作栈</span></span><br><span class="line">   <span class="number">15</span>:  d2i <span class="comment">//将double类型的变量d转为int类型</span></span><br><span class="line">   <span class="number">16</span>:  istore  <span class="number">5</span> <span class="comment">//把结果存储到局部变量表中，z中</span></span><br><span class="line">   <span class="number">18</span>:  <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="对象创建与操作"><a href="#对象创建与操作" class="headerlink" title="对象创建与操作"></a>对象创建与操作</h2><p>虽然类实例和数组都是对象，但 Java 虚拟机对类实例和数组的创建与操作使用了不同的字节码指令：</p>
+<p><strong>创建类实例的指令</strong>：<code>new</code><br><strong>创建数组的指令</strong>：<code>newarray</code>，<code>anewarray</code>，<code>multianewarray</code><br><strong>访问类字段（static字段，或者称为类变量）和实例字段（非static字段，或者成为实例变量）的指令</strong>：<code>getfield</code>、<code>putfield</code>、<code>getstatic</code>、<code>putstatic</code><br><strong>把一个数组元素加载到操作数栈的指令</strong>：<code>baload</code>、<code>caload</code>、<code>saload</code>、<code>iaload</code>、<code>laload</code>、<code>faload</code>、<code>daload</code>、<code>aaload</code><br><strong>将一个操作数栈的值储存到数组元素中的指令</strong>：<code>bastore</code>、<code>castore</code>、<code>sastore</code>、<code>iastore</code>、<code>fastore</code>、<code>dastore</code>、<code>aastore</code><br><strong>取数组长度的指令</strong>：<code>arraylength</code><br><strong>检查类实例类型的指令</strong>：<code>instanceof</code>、<code>checkcas</code></p>
+<p>看看下面的实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对象创建与操作</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/2.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Instantiation</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String NAME = <span class="string">"LIU BI"</span> ;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] arr1 = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>] ;</span><br><span class="line">        arr1[<span class="number">0</span>] = <span class="number">86</span> ;</span><br><span class="line">        arr1[<span class="number">2</span>] = <span class="number">19</span> ;</span><br><span class="line">        String[] strs = &#123;<span class="string">"2"</span>,<span class="string">"xiao"</span>,<span class="string">"mo"</span> , NAME &#125; ;</span><br><span class="line">        String tc = <span class="keyword">new</span> String(<span class="string">"abc"</span>) ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译后<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">Instantiation</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> java.lang.String NAME;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.Instantiation();</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">1</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">4</span>:   <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(java.lang.String[]); <span class="comment">//main方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   iconst_5 <span class="comment">//将常量5压入栈顶</span></span><br><span class="line">   <span class="number">1</span>:   newarray <span class="keyword">int</span> <span class="comment">//创建一个int类型的数组</span></span><br><span class="line">   <span class="number">3</span>:   astore_1 <span class="comment">//将数组存储到局部变量表中，arr1中</span></span><br><span class="line">   <span class="number">4</span>:   aload_1 <span class="comment">//将局部变量arr1加载到操作栈</span></span><br><span class="line">   <span class="number">5</span>:   iconst_0 <span class="comment">//将常量0加载到操作数栈，</span></span><br><span class="line">   <span class="number">6</span>:   bipush  <span class="number">86</span> <span class="comment">//将一个byte类型常量86加载到操作数栈</span></span><br><span class="line">   <span class="number">8</span>:   iastore <span class="comment">//将一个操作数栈的值86储存到数组元素中,arr[0]中</span></span><br><span class="line">   <span class="number">9</span>:   aload_1 <span class="comment">//将局部变量arr1加载到操作栈</span></span><br><span class="line">   <span class="number">10</span>:  iconst_2 <span class="comment">//将常量2加载到操作数栈</span></span><br><span class="line">   <span class="number">11</span>:  bipush  <span class="number">19</span> <span class="comment">//将一个byte类型常量19加载到操作数栈</span></span><br><span class="line">   <span class="number">13</span>:  iastore <span class="comment">//将一个操作数栈的值19储存到数组元素中,arr[2]中</span></span><br><span class="line">   <span class="number">14</span>:  iconst_4 <span class="comment">// 将常量4压入栈顶</span></span><br><span class="line">   <span class="number">15</span>:  anewarray       #<span class="number">2</span>; <span class="comment">//class java/lang/String //创建一个String类型的数组</span></span><br><span class="line">   <span class="number">18</span>:  dup <span class="comment">//直接操作操作数栈</span></span><br><span class="line">   <span class="number">19</span>:  iconst_0 <span class="comment">//将常量0加载到操作数栈，</span></span><br><span class="line">   <span class="number">20</span>:  ldc     #<span class="number">3</span>; <span class="comment">//String 2 //字符串常量加载到操作数栈,2</span></span><br><span class="line">   <span class="number">22</span>:  aastore <span class="comment">//将引用类型的操作数栈的值储存到数组元素中，strs[0]中</span></span><br><span class="line">   <span class="number">23</span>:  dup <span class="comment">//直接操作操作数栈</span></span><br><span class="line">   <span class="number">24</span>:  iconst_1 <span class="comment">//将常量1加载到操作数栈，</span></span><br><span class="line">   <span class="number">25</span>:  ldc     #<span class="number">4</span>; <span class="comment">//String xiao //字符串常量xiao加载到操作数栈</span></span><br><span class="line">   <span class="number">27</span>:  aastore <span class="comment">//将引用类型的操作数栈的值储存到数组元素中，strs[1]中</span></span><br><span class="line">   <span class="number">28</span>:  dup <span class="comment">//直接操作操作数栈</span></span><br><span class="line">   <span class="number">29</span>:  iconst_2 <span class="comment">//将常量2加载到操作数栈，</span></span><br><span class="line">   <span class="number">30</span>:  ldc     #<span class="number">5</span>; <span class="comment">//String mo //字符串常量加载到操作数栈</span></span><br><span class="line">   <span class="number">32</span>:  aastore <span class="comment">//将引用类型的操作数栈的值储存到数组元素中，strs[2]中</span></span><br><span class="line">   <span class="number">33</span>:  dup  <span class="comment">//直接操作操作数栈</span></span><br><span class="line">   <span class="number">34</span>:  iconst_3 <span class="comment">//将常量3加载到操作数栈，</span></span><br><span class="line">   <span class="number">35</span>:  getstatic       #<span class="number">6</span>; <span class="comment">//Field NAME:Ljava/lang/String; //获取静态变量</span></span><br><span class="line">   <span class="number">38</span>:  aastore <span class="comment">//将引用类型的操作数栈的值储存到变量中</span></span><br><span class="line">   <span class="number">39</span>:  astore_2 <span class="comment">//将引用类型的操作数栈的值储存到变量中</span></span><br><span class="line">   <span class="number">40</span>:  <span class="keyword">new</span>     #<span class="number">2</span>; <span class="comment">//class java/lang/String //实例化一个对象</span></span><br><span class="line">   <span class="number">43</span>:  dup <span class="comment">//直接操作操作数栈</span></span><br><span class="line">   <span class="number">44</span>:  ldc     #<span class="number">7</span>; <span class="comment">//String abc //将字符串常量abc加载到操作数栈</span></span><br><span class="line">   <span class="number">46</span>:  invokespecial   #<span class="number">8</span>; <span class="comment">//Method java/lang/String."&lt;init&gt;":(Ljava/lang/String;)V //调用实例方法new String</span></span><br><span class="line">   <span class="number">49</span>:  astore_3 <span class="comment">//将引用类型的操作数栈的值储存到变量中，tc中</span></span><br><span class="line">   <span class="number">50</span>:  <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> &#123;&#125;; <span class="comment">//静态区域</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   ldc     #<span class="number">9</span>; <span class="comment">//String LIU BI //字符串常量‘LIU BI’加载到操作数栈</span></span><br><span class="line">   <span class="number">2</span>:   putstatic       #<span class="number">6</span>; <span class="comment">//Field NAME:Ljava/lang/String;//实例静态字段</span></span><br><span class="line">   <span class="number">5</span>:   <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="操作数栈管理指令"><a href="#操作数栈管理指令" class="headerlink" title="操作数栈管理指令"></a>操作数栈管理指令</h2><p>虚拟机提供了一些用于直接操作操作数栈的指令，包括：pop、pop2、dup、dup2、dup_x1、dup2_x1、dup_x2、dup2_x2 和 swap。如上事例，直接操作数栈</p>
+<h2 id="控制转移指令"><a href="#控制转移指令" class="headerlink" title="控制转移指令"></a>控制转移指令</h2><p><code>控制转移指令</code>，可以让JVM有条件或无条件地<strong>从指定指令</strong>转移到指令的下一条指令<strong>继续执行程序</strong>。控制转移指令包括有：</p>
+<p><code>条件分支</code>：<strong>ifeq</strong>、<strong>iflt</strong>、<strong>ifle</strong>、<strong>ifne</strong>、<strong>ifgt</strong>、<strong>ifge</strong>、<strong>ifnull</strong>、<strong>ifnonnull</strong>、<strong>if_icmpeq</strong>、<strong>if_icmpne</strong>、<strong>if_icmplt</strong>, <strong>if_icmpgt</strong>、<strong>if_icmple</strong>、<strong>if_icmpge</strong>、<strong>if_acmpeq</strong> 和 <strong>if_acmpne</strong><br><code>复合条件分支</code>：<strong>tableswitch</strong>、<strong>lookupswitch</strong><br><code>无条件分支</code>：<strong>goto</strong>、<strong>goto_w</strong>、<strong>jsr</strong>、<strong>jsr_w</strong>、<strong>ret</strong></p>
+<ul>
+<li>事例代码</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.demo.util;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 流程控制语句</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/2.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ControlStatement</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span><span class="params">(<span class="keyword">int</span> a , <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> max = a ;</span><br><span class="line">        <span class="keyword">if</span>( b &gt; a )&#123;</span><br><span class="line">            max = b ;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max ;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">formatPrint</span><span class="params">( <span class="keyword">int</span>[] arr )</span></span>&#123;</span><br><span class="line">        System.out.print(<span class="string">"["</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; arr.length ; i++ )&#123;</span><br><span class="line">            System.out.print(arr[i]);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>( i &lt; arr.length -<span class="number">1</span> )&#123;</span><br><span class="line">                System.out.print(<span class="string">","</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.print(<span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>反编译后字节码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">ControlStatement</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.ControlStatement();</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">1</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">4</span>:   <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span> max(<span class="keyword">int</span>, <span class="keyword">int</span>); <span class="comment">//max方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   iload_1 <span class="comment">//将一个局部变量加载到操作数栈，a</span></span><br><span class="line">   <span class="number">1</span>:   istore_3 <span class="comment">//将上面操作数栈存储到局部变量表中，max</span></span><br><span class="line">   <span class="number">2</span>:   iload_2 <span class="comment">//将变量压入操作数栈中，b</span></span><br><span class="line">   <span class="number">3</span>:   iload_1 <span class="comment">//将变量压入操作数栈中，a</span></span><br><span class="line">   <span class="number">4</span>:   if_icmple <span class="number">9</span> <span class="comment">//比较栈顶的两个值的大小,如果为false回调到第9条字节码处执行</span></span><br><span class="line">   <span class="number">7</span>:   iload_2 <span class="comment">//如果判断为true,会加载栈顶的值，b</span></span><br><span class="line">   <span class="number">8</span>:   istore_3 <span class="comment">//将b值存储到局部变量max中</span></span><br><span class="line">   <span class="number">9</span>:   iload_3 <span class="comment">//如果判断为false，则会加载局部变量数值，max</span></span><br><span class="line">   <span class="number">10</span>:  ireturn <span class="comment">//返回一个int类型数据</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">formatPrint</span><span class="params">(<span class="keyword">int</span>[])</span></span>;<span class="comment">//一个静态方法</span></span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   getstatic  #<span class="number">2</span>; <span class="comment">//Field java/lang/System.out:Ljava/io/PrintStream;//获取输出流</span></span><br><span class="line">   <span class="number">3</span>:   ldc     #<span class="number">3</span>; <span class="comment">//String [ //将字符串常量‘[’压入栈顶(和加载到操作数栈一个意思)</span></span><br><span class="line">   <span class="number">5</span>:   invokevirtual #<span class="number">4</span>; <span class="comment">//Method java/io/PrintStream.print:(Ljava/lang/String;)V //io输出流</span></span><br><span class="line">   <span class="number">8</span>:   iconst_0 <span class="comment">//将常量0加载到操作数栈</span></span><br><span class="line">   <span class="number">9</span>:   istore_1 <span class="comment">//将栈顶的值出栈存储到局部变量表中，i=0</span></span><br><span class="line">   <span class="number">10</span>:  iload_1 <span class="comment">//加载局部变量i到操作栈，此时i已有值</span></span><br><span class="line">   <span class="number">11</span>:  aload_0 <span class="comment">//加载引用类型的变量到操作栈中，arr</span></span><br><span class="line">   <span class="number">12</span>:  arraylength <span class="comment">//获取数组长度，arr.length</span></span><br><span class="line">   <span class="number">13</span>:  if_icmpge <span class="number">47</span> <span class="comment">//判断局部变量i是否大于等于数组长度，如果true，跳到47条指令</span></span><br><span class="line">   <span class="number">16</span>:  getstatic #<span class="number">2</span>; <span class="comment">//Field java/lang/System.out:Ljava/io/PrintStream;//获取输出流</span></span><br><span class="line">   <span class="number">19</span>:  aload_0 <span class="comment">//加载引用类型的变量到操作栈中,arr；同第11条指令</span></span><br><span class="line">   <span class="number">20</span>:  iload_1 <span class="comment">//加载int类型的变量到操作栈中,即i</span></span><br><span class="line">   <span class="number">21</span>:  iaload <span class="comment">//把arr的数组元素加载到操作数栈中</span></span><br><span class="line">   <span class="number">22</span>:  invokevirtual   #<span class="number">5</span>; <span class="comment">//Method java/io/PrintStream.print:(I)V //调用输出打印</span></span><br><span class="line">   <span class="number">25</span>:  iload_1 <span class="comment">//加载局部变量i到操作栈</span></span><br><span class="line">   <span class="number">26</span>:  aload_0 <span class="comment">//加载引用类型的变量到操作栈中,arr；同第11条指令</span></span><br><span class="line">   <span class="number">27</span>:  arraylength <span class="comment">////获取数组长度，arr.length；同第12条指令</span></span><br><span class="line">   <span class="number">28</span>:  iconst_1 <span class="comment">//将常量1加载到操作数栈，</span></span><br><span class="line">   <span class="number">29</span>:  isub <span class="comment">//在操作数栈中使用数组长度减去变量1</span></span><br><span class="line">   <span class="number">30</span>:  if_icmpge <span class="number">41</span> <span class="comment">//如果变量i大于等于数组长度，跳转到第41条指令</span></span><br><span class="line">   <span class="number">33</span>:  getstatic #<span class="number">2</span>; <span class="comment">//Field java/lang/System.out:Ljava/io/PrintStream;//获取输出流</span></span><br><span class="line">   <span class="number">36</span>:  ldc     #<span class="number">6</span>; <span class="comment">//String , //将字符串常量‘,’压入栈顶</span></span><br><span class="line">   <span class="number">38</span>:  invokevirtual   #<span class="number">4</span>; <span class="comment">//Method java/io/PrintStream.print:(Ljava/lang/String;)V调用输出打印</span></span><br><span class="line">   <span class="number">41</span>:  iinc    <span class="number">1</span>, <span class="number">1</span> <span class="comment">//变量i自增1（局部变量表中的第1个位置的值（即i）加1）</span></span><br><span class="line">   <span class="number">44</span>:  <span class="keyword">goto</span>    <span class="number">10</span> <span class="comment">//回调到第10条指令，继续执行</span></span><br><span class="line">   <span class="number">47</span>:  getstatic       #<span class="number">2</span>; <span class="comment">//Field java/lang/System.out:Ljava/io/PrintStream;//获取输出流</span></span><br><span class="line">   <span class="number">50</span>:  ldc     #<span class="number">7</span>; <span class="comment">//String ] //将字符串常量‘]’压入栈顶</span></span><br><span class="line">   <span class="number">52</span>:  invokevirtual   #<span class="number">4</span>; <span class="comment">//Method java/io/PrintStream.print:(Ljava/lang/String;)V调用输出打印</span></span><br><span class="line">   <span class="number">55</span>:  <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="方法调用和返回指令"><a href="#方法调用和返回指令" class="headerlink" title="方法调用和返回指令"></a>方法调用和返回指令</h2><ul>
+<li>四条指令用于方法调用</li>
+</ul>
+<p><code>invokevirtual</code>：指令<strong>用于调用对象的实例方法</strong>，根据对象的实际类型进行分派（虚方法分派），这也是Java语言中最常见的方法分派方式。<br><code>invokeinterface</code>：指令<strong>用于调用接口方法</strong>，它会在运行时搜索一个实现了这个接口方法的对象，找出适合的方法进行调用。<br><code>invokespecial</code>：指令<strong>用于调用一些需要特殊处理的实例方法</strong>，<strong>包括实例初始化方法、私有方法和父类方法</strong>。<br><code>invokestatic</code>：指令<strong>用于调用类方法（static方法）</strong>。</p>
+<ul>
+<li>方法返回指令</li>
+</ul>
+<p><code>ireturn</code>：（当返回值是 boolean、byte、char、short 和 int 类型时使用）<br><code>lreturn</code>：返回long类型<br><code>freturn</code>：返回floalt类型<br><code>dreturn</code>：返回double类型<br><code>areturn</code>：返回对象<br><code>return</code> ：指令表示为<strong>void的方法</strong>、<strong>实例初始化方法</strong>、<strong>类和接口的类初始化方法</strong>使用。</p>
+<h2 id="抛出异常"><a href="#抛出异常" class="headerlink" title="抛出异常"></a>抛出异常</h2><p>在程序中显式抛出异常的操作会由 <code>athrow</code> 指令实现，除了这种情况，还有别的异常会在其它 Java 虚拟机指令检测到异常状况时由虚拟机自动抛出。</p>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>JVM可以支持<code>方法级的同步</code>和<code>方法内部一段指令序列的同步</code>，这两种同步结构都是使用管程（<code>Monitor</code>）来支持的。</p>
+<ul>
+<li>方法级的同步：是隐式，即无需通过字节码指令来控制的，它<strong>实现在方法调用和返回操作之中</strong>。</li>
+</ul>
+<p>虚拟机可以从方法常量池中的方法表结构（method_info Structure）中的 ACC_SYNCHRONIZED 访问标志区分一个方法是否同步方法。当方法调用时，调用指令将会检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置，如果设置了，执行线程将先持有管程，然后再执行方法，最后再方法完成（无论是正常完成还是非正常完成）时释放管程。在方法执行期间，执行线程持有了管程，其他任何线程都无法再获得同一个管程。如果一个同步方法执行期间抛出了异常，并且在方法内部无法处理此异常，那这个同步方法所持有的管程将在异常抛到同步方法之外时自动释放。</p>
+<ul>
+<li>同步一段指令集序列：通常是由Java语言中的<strong>synchronized块</strong>来表示的。</li>
+</ul>
+<p>JVM的指令集中有monitorenter和monitorexit两条指令来支持synchronized关键字的语义，正确实现 synchronized 关键字需要编译器与 Java 虚拟机两者协作支持。</p>
+<p><code>结构化锁定（Structured Locking）</code>：是指在方法调用期间每一个管程退出都与前面的管程进入相匹配的情形。因为无法保证所有提交给 Java 虚拟机执行的代码都满足结构化锁定，所以 Java 虚拟机允许（但不强制要求）通过以下两条规则来保证结构化锁定成立。假设 T 代表一条线程，M 代表一个管程的话：</p>
+<p>T在方法执行时持有管程 M 的次数必须与 T 在方法完成（包括正常和非正常完成）时释放管程 M 的次数相等。<br>找方法调用过程中，任何时刻都不会出现线程 T 释放管程 M 的次数比 T 持有管程 M 次数多的情况。<br>请注意，在同步方法调用时自动持有和释放管程的过程也被认为是在方法调用期间发生。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/2.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Integer num=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> Lock lock=<span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    <span class="keyword">private</span> AtomicInteger number=<span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> SynDemo().syn() ;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">syn</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//启动10个线程</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(<span class="keyword">new</span> TestSyn()).start() ;</span><br><span class="line">            <span class="comment">//new Thread(new LockTest()).start() ;</span></span><br><span class="line">            <span class="comment">//new Thread(new LockFreeTest()).start() ;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TestSyn</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (num) &#123;  <span class="comment">// 间接的被转化为单线程了，相当于串行执行代码</span></span><br><span class="line">                <span class="keyword">if</span>(  num &lt; <span class="number">5</span> )&#123;</span><br><span class="line">                    System.out.println(String.format(</span><br><span class="line">                            <span class="string">"name:%s,   num:%s"</span>,Thread.currentThread().getName(),num));</span><br><span class="line">                    num ++ ;</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用lock方式</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">LockTest</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            lock.lock();</span><br><span class="line">            <span class="keyword">if</span> (num &lt; <span class="number">5</span>) &#123;</span><br><span class="line">                System.out.println(String.format(<span class="string">"thread:%s   num:%s Do some thing"</span>, Thread.currentThread().getName(), num));</span><br><span class="line">                num++;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 使用原子类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">LockFreeTest</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (number.get() &lt; <span class="number">5</span>) &#123;</span><br><span class="line">                System.out.println(String.format(<span class="string">"thread:%s   num:%s Do some thing"</span>, Thread.currentThread().getName(),</span><br><span class="line">                        number.getAndIncrement()));</span><br><span class="line">                <span class="comment">//num++;</span></span><br><span class="line">                <span class="comment">// System.out.println(num);</span></span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译后，如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">SynDemo</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span></span><br><span class="line">java.lang.Integer num;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.SynDemo();</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">3</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">4</span>:   aload_0</span><br><span class="line">   <span class="number">5</span>:   iconst_0</span><br><span class="line">   <span class="number">6</span>:   invokestatic    #<span class="number">4</span>; <span class="comment">//Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;</span></span><br><span class="line">   <span class="number">9</span>:   putfield        #<span class="number">5</span>; <span class="comment">//Field num:Ljava/lang/Integer;</span></span><br><span class="line">   <span class="number">12</span>:  aload_0</span><br><span class="line">   <span class="number">13</span>:  <span class="keyword">new</span>     #<span class="number">6</span>; <span class="comment">//class java/util/concurrent/locks/ReentrantLock</span></span><br><span class="line">   <span class="number">16</span>:  dup</span><br><span class="line">   <span class="number">17</span>:  invokespecial   #<span class="number">7</span>; <span class="comment">//Method java/util/concurrent/locks/ReentrantLock."&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">20</span>:  putfield        #<span class="number">2</span>; <span class="comment">//Field lock:Ljava/util/concurrent/locks/Lock;</span></span><br><span class="line">   <span class="number">23</span>:  aload_0</span><br><span class="line">   <span class="number">24</span>:  <span class="keyword">new</span>     #<span class="number">8</span>; <span class="comment">//class java/util/concurrent/atomic/AtomicInteger</span></span><br><span class="line">   <span class="number">27</span>:  dup</span><br><span class="line">   <span class="number">28</span>:  iconst_0</span><br><span class="line">   <span class="number">29</span>:  invokespecial   #<span class="number">9</span>; <span class="comment">//Method java/util/concurrent/atomic/AtomicInteger."&lt;init&gt;":(I)V</span></span><br><span class="line">   <span class="number">32</span>:  putfield        #<span class="number">1</span>; <span class="comment">//Field number:Ljava/util/concurrent/atomic/AtomicInteger;</span></span><br><span class="line">   <span class="number">35</span>:  <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(java.lang.String[]);</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   <span class="keyword">new</span>     #<span class="number">10</span>; <span class="comment">//class com/xxo/demo/util/SynDemo</span></span><br><span class="line">   <span class="number">3</span>:   dup</span><br><span class="line">   <span class="number">4</span>:   invokespecial   #<span class="number">11</span>; <span class="comment">//Method "&lt;init&gt;":()V</span></span><br><span class="line">   <span class="number">7</span>:   invokespecial   #<span class="number">12</span>; <span class="comment">//Method syn:()V</span></span><br><span class="line">   <span class="number">10</span>:  <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> java.util.concurrent.locks.Lock access$<span class="number">000</span>(com.xxo.demo.util.SynDemo);</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   getfield        #<span class="number">2</span>; <span class="comment">//Field lock:Ljava/util/concurrent/locks/Lock;</span></span><br><span class="line">   <span class="number">4</span>:   areturn</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> java.util.concurrent.atomic.AtomicInteger access$<span class="number">100</span>(com.xxo.demo.util.SynDemo);</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   <span class="number">1</span>:   getfield        #<span class="number">1</span>; <span class="comment">//Field number:Ljava/util/concurrent/atomic/AtomicInteger;</span></span><br><span class="line">   <span class="number">4</span>:   areturn</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                
+<p class="red-link-context">
+    <a href="/2016/04/02/Scala-继承/" rel="next" title="Scala--继承">
+    上一篇：Scala--继承
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/03/31/Java-工具javap讲解/" rel="next" title="Java-工具javap讲解">
+    下一篇：Java-工具javap讲解
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java-字节码指令" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

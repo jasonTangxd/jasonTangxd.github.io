@@ -1,0 +1,731 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java--HashMap笔记整理 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java--HashMap笔记整理"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java--HashMap笔记整理</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2019-03-12T03:59:27.000Z"><a href="/2019/03/12/Java-HashMap笔记整理/">2019-03-12</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#一、-Map整体结构"><span class="section table-of-contents-text">一、  Map整体结构</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#二、-HashTable、HashMap、TreeMap都是最常见的一些Map实现-它们的简单区别？"><span class="section table-of-contents-text">二、 HashTable、HashMap、TreeMap都是最常见的一些Map实现,它们的简单区别？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#三、-HashMap内部的结构"><span class="section table-of-contents-text">三、 HashMap内部的结构</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#四、-哈希表"><span class="section table-of-contents-text">四、 哈希表</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#五、HashMap中的哈希函数"><span class="section table-of-contents-text">五、HashMap中的哈希函数</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#六、为何HashMap的数组长度一定是2的次幂？"><span class="section table-of-contents-text">六、为何HashMap的数组长度一定是2的次幂？</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#七、equals方法和hashCode方法，需要一起重写"><span class="section table-of-contents-text">七、equals方法和hashCode方法，需要一起重写</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#八、JDK8中的HashMap"><span class="section table-of-contents-text">八、JDK8中的HashMap</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <h2 id="一、-Map整体结构"><a href="#一、-Map整体结构" class="headerlink" title="一、  Map整体结构"></a>一、  Map整体结构</h2><p><img src="https://img.xiaoxiaomo.com/blog/img/hashmap01.png" alt="hashMap 解析"></p>
+<ul>
+<li>HashTable比较特别，作为类似Vector、Stack的早期集合相关类型，<strong>它是扩展了Dictionary类的，类结构上其他类明显不同，其他都扩展了AbstractMap。</strong></li>
+<li>LinkedHashMap和TreeMap都可以保证某种顺序，但二者还是非常不同的。<ul>
+<li>LinkedHashMap <strong>通常是遍历顺序符合插入顺序</strong>，它的实现是通过为条目（键值对）维护一个双向链表。</li>
+<li>TreeMap <strong>整体顺序是由键的顺序关系决定的</strong>，通过Comparator或Comparable（自然顺序）来决定。<a id="more"></a>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="二、-HashTable、HashMap、TreeMap都是最常见的一些Map实现-它们的简单区别？"><a href="#二、-HashTable、HashMap、TreeMap都是最常见的一些Map实现-它们的简单区别？" class="headerlink" title="二、 HashTable、HashMap、TreeMap都是最常见的一些Map实现,它们的简单区别？"></a>二、 HashTable、HashMap、TreeMap都是最常见的一些Map实现,它们的简单区别？</h2><ol>
+<li>HashTable是早期Java类库提供的一个<code>哈希表</code>实现，本身是同步的，不支持null键和值，<strong>由于同步导致的性能开销</strong>，所以已经很少被推荐使用。</li>
+<li>HashMap大致与HashTable一致，<strong>主要区别HashMap不是同步的，支持null键和值等</strong>。<strong>性能好</strong>，通常情况下，<strong>put、get可以达到常数时间的性能。</strong></li>
+<li>TreeMap则是<strong>基于红黑树的一种提供顺序访问的Map，</strong><code>get、put、remove之类操作都是O（log(n)）的时间复杂度</code>，具体顺序可以由指定的Comparator来决定，或者根据键的自然顺序来判断。</li>
+</ol>
+<h2 id="三、-HashMap内部的结构"><a href="#三、-HashMap内部的结构" class="headerlink" title="三、 HashMap内部的结构"></a>三、 HashMap内部的结构</h2><ul>
+<li>HashMap内部的结构，它可以看作是数组（Node&lt;K,V&gt;[] table）和链表结合组成的复合结构，数组被分为一个个桶（bucket），<strong>通过哈希值决定了键值对在这个数组的寻址</strong>；<code>哈希值相同的键值对，则以链表形式存储，如果链表大小超过阈值（TREEIFY_THRESHOLD, 8），图中的链表就会被改造为树形结构。</code><br><img src="https://img.xiaoxiaomo.com/blog/img/hashmap02.png" alt="HashMap内部的结构"></li>
+</ul>
+<h2 id="四、-哈希表"><a href="#四、-哈希表" class="headerlink" title="四、 哈希表"></a>四、 哈希表</h2><ol>
+<li>数据结构的物理存储结构只有两种：<strong>顺序存储结构</strong>和<strong>链式存储结构</strong>（像栈，队列，树，图等是从逻辑结构去抽象的，映射到内存中）。在数组中根据下标查找某个元素，一次定位就可以达到。</li>
+<li><strong>同样哈希表如果不考虑哈希冲突的情况下，仅需一次定位即可完成，时间复杂度为O(1)，因为哈希表的主干就是数组。</strong></li>
+<li>比如我们要新增或查找某个元素，我们通过把当前元素的关键字 通过某个函数映射到数组中的某个位置，通过数组下标一次定位就可完成操作。<blockquote>
+<p>存储位置 = f(关键字)</p>
+</blockquote>
+</li>
+<li><p>这个函数f一般称为哈希函数(哈希算法)，哈希算法或散列函数可以将不定长的输入，通过散列算法转换成一个定长的输出，这个输出就是哈希值或散列值。这个函数的设计好坏会直接影响到哈希表的优劣。</p>
+</li>
+<li><p>如果两个不同的元素，通过哈希函数得出的实际存储地址相同怎么办？也就是说，当我们对某个元素进行哈希运算，得到一个存储地址，然后要进行插入的时候，发现已经被其他元素占用了，其实这就是所谓的<code>哈希冲突</code>，也叫<code>哈希碰撞</code>。</p>
+</li>
+<li>好的哈希函数会尽可能地保证 <strong>计算简单</strong>和<strong>散列地址分布均匀</strong>。但是，数组是一块连续的固定长度的内存空间，再好的哈希函数也不能保证得到的存储地址绝对不发生冲突。<br>解决hash碰撞的方法有很多例如：<strong>链地址法，开放定址法（发生冲突，继续寻找下一块未被占用的存储地址），再哈希法，建立公共溢出区</strong>。参考：<a href="https://blog.csdn.net/sinat_37906153/article/details/83004831" target="_blank" rel="noopener">https://blog.csdn.net/sinat_37906153/article/details/83004831</a><br>HashMap即：采用了链地址法，也就是数组+链表的方式。</li>
+</ol>
+<h2 id="五、HashMap中的哈希函数"><a href="#五、HashMap中的哈希函数" class="headerlink" title="五、HashMap中的哈希函数"></a>五、HashMap中的哈希函数</h2><ul>
+<li><p>HashMap以jdk1.7  put为例：<br><img src="https://img.xiaoxiaomo.com/blog/img/hashmap03.png" alt="HashMap以jdk1.7"></p>
+</li>
+<li><p>hash() 方法中使用扰动算法将 hashCode 的高位和低位混合起来：<strong>可以有效降低冲突概率。</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/hashmap04.png" alt="hashMap hash()"><br><img src="https://img.xiaoxiaomo.com/blog/img/hashmap05.png" alt="hashMap 冲突"> </p>
+</li>
+<li><p><strong>注意</strong>：HashMap 的初始长度为 16，且每次扩容都必须以 2 的倍数（2^n）扩充。因为在 HashMap 中，采用按位与运算（&amp;）代替取模运算（&amp;），当 b = 2^n 时，a % b = a &amp; (b - 1) 。</p>
+</li>
+</ul>
+<h2 id="六、为何HashMap的数组长度一定是2的次幂？"><a href="#六、为何HashMap的数组长度一定是2的次幂？" class="headerlink" title="六、为何HashMap的数组长度一定是2的次幂？"></a>六、为何HashMap的数组长度一定是2的次幂？</h2><ul>
+<li>如果数组进行扩容，数组长度发生变化，而存储位置 index = h&amp;(length-1),index也可能会发生变化，需要重新计算index</li>
+<li>hashMap的数组长度一定保持2的次幂，比如16的二进制表示为 10000，那么length-1就是15，二进制为01111，同理扩容后的数组长度为32，二进制表示为100000，length-1为31，二进制表示为011111。从下图可以我们也能看到这样会保证低位全为1，而扩容后只有一位差异，也就是多出了最左位的1，这样在通过 h&amp;(length-1)的时候，只要h对应的最左边的那一个差异位为0，就能保证得到的新的数组索引和老数组索引一致(大大减少了之前已经散列良好的老数组的数据位置重新调换)。以及使地位更加散列。参考：<a href="https://www.cnblogs.com/chengxiao/p/6059914.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengxiao/p/6059914.html</a></li>
+</ul>
+<h2 id="七、equals方法和hashCode方法，需要一起重写"><a href="#七、equals方法和hashCode方法，需要一起重写" class="headerlink" title="七、equals方法和hashCode方法，需要一起重写"></a>七、equals方法和hashCode方法，需要一起重写</h2><ol>
+<li>equals(Object obj)方法用来判断两个对象是否“相同”，如果“相同”则返回true，否则返回false。</li>
+<li>hashCode()方法返回一个int数，在Object类中的默认实现是“将该对象的内部地址转换成一个整数返回”。 </li>
+<li><strong>重写equals但不重写hashCode,引发的问题</strong><ul>
+<li>由于没有重写hashCode方法，所以put操作时，key(hashcode1)–&gt;hash–&gt;indexFor–&gt;最终索引位置 ，而通过key取出value的时候 key(hashcode2)–&gt;hash–&gt;indexFor–&gt;最终索引位置，由于hashcode1不等于hashcode2(默认返回内存地址转换后的整数)，导致没有定位到一个数组位置而返回逻辑上错误的值null（但也有可能碰巧定位到一个数组位置）。</li>
+</ul>
+</li>
+<li><strong>重写hashCode但不重写equals,引发的问题</strong><ul>
+<li>同理，在取值时，做equals比较的时候由于equals1方法不等于equals2方法（默认使用‘==’来判断）所以会返回false。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>注意</strong>：如果对象已经存在集合中，再去修改hashcode值的相关信息,会导致内存泄露问题。参考：<a href="https://blog.csdn.net/fmwind/article/details/76460681" target="_blank" rel="noopener">https://blog.csdn.net/fmwind/article/details/76460681</a></li>
+</ul>
+<h2 id="八、JDK8中的HashMap"><a href="#八、JDK8中的HashMap" class="headerlink" title="八、JDK8中的HashMap"></a>八、JDK8中的HashMap</h2><ol>
+<li><p><strong>一直到JDK7为止，HashMap的结构都是这么简单，基于一个数组以及多个链表的实现，hash值冲突的时候，就将对应节点以链表的形式存储。</strong></p>
+</li>
+<li><p>这样子的HashMap性能上就抱有一定疑问，如果说成百上千个节点在hash时发生碰撞，存储一个链表中，那么如果要查找其中一个节点，那就不可避免的花费O(N)的查找时间，这将是多么大的性能损失。这个问题终于在JDK8中得到了解决。再最坏的情况下，链表查找的时间复杂度为O(n)，而红黑树一直是O(logn)，这样会提高HashMap的效率。</p>
+</li>
+<li><p>JDK7中HashMap采用的是位桶+链表的方式，即我们常说的散列链表的方式，<strong>而JDK8中采用的是位桶+链表/红黑树的方式，也是非线程安全的。当某个位桶的链表的长度达到某个阀值的时候（默认8），这个链表就将转换成红黑树</strong>。红黑树：<a href="https://my.oschina.net/hosee/blog/618828" target="_blank" rel="noopener">https://my.oschina.net/hosee/blog/618828</a><br><img src="https://img.xiaoxiaomo.com/blog/img/hashmap06.png" alt="JDK7中HashMap源码"></p>
+</li>
+<li><p>JDK8中Entry的名字变成了Node，原因是和红黑树的实现TreeNode相关联。transient Node&lt;K,V&gt;[] table;</p>
+</li>
+<li><p>当冲突节点数不小于8-1时，转换成红黑树。static final int TREEIFY_THRESHOLD = 8;</p>
+</li>
+<li><p>JDK8中的源码：<br><img src="https://img.xiaoxiaomo.com/blog/img/hashmap07.png" alt="JDK8中HashMap源码"></p>
+</li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2019/03/13/Java-线程安全与不安全&amp;同步异步和锁/" rel="next" title="Java--线程安全与不安全&amp;同步异步和锁">
+    上一篇：Java--线程安全与不安全&amp;同步异步和锁
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2018/05/29/Kerberos-给CDH集群添加Kerberos认证/" rel="next" title="Kerberos-给CDH集群添加Kerberos认证">
+    下一篇：Kerberos-给CDH集群添加Kerberos认证
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java--HashMap笔记整理" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

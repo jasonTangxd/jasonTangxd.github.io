@@ -1,0 +1,689 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Flume--kafka source启动异常 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Flume--kafka source启动异常"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/异常/">异常</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Flume--kafka source启动异常</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-05-19T14:02:24.000Z"><a href="/2016/05/19/Flume-kafka-source启动异常/">2016-05-19</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#报错"><span class="section table-of-contents-text">报错</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#原因"><span class="section table-of-contents-text">原因</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#解决办法"><span class="section table-of-contents-text">解决办法</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <ul>
+<li>在flume中配置了一个kafka source的agent。如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># 使用kafka作为一个sources</span><br><span class="line"></span><br><span class="line"># Name the components on <span class="keyword">this</span> agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># kfka source</span><br><span class="line">a1.sources.r1.type = org.apache.flume.source.kafka.KafkaSource</span><br><span class="line">a1.sources.r1.zookeeperConnect = xxo08:<span class="number">2181</span>,xxo09:<span class="number">2181</span>,xxo10:<span class="number">2181</span>##zk集群</span><br><span class="line">a1.sources.r1.topic = word</span><br><span class="line">a1.sources.r1.groupId = flume</span><br><span class="line">a1.sources.r1.kafka.consumer.timeout.ms = <span class="number">3000</span></span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source <span class="keyword">and</span> sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><ul>
+<li><p>启动一个agent的时候报了一个错：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2016</span>-<span class="number">05</span>-<span class="number">20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">710</span> (lifecycleSupervisor-<span class="number">1</span>-<span class="number">3</span>) [ERROR - org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">253</span>)] Unable to start PollableSourceRunner: &#123; source:org.apache.flume.source.kafka.KafkaSource&#123;name:r1,state:IDLE&#125; counterGroup:&#123; name:<span class="keyword">null</span> counters:&#123;&#125; &#125; &#125; - Exception follows.</span><br><span class="line">java.lang.NoClassDefFoundError: org/apache/zookeeper/Watcher</span><br><span class="line">	at java.lang.ClassLoader.defineClass1(Native Method)</span><br><span class="line">	at java.lang.ClassLoader.defineClass(ClassLoader.java:<span class="number">800</span>)</span><br><span class="line">	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:<span class="number">142</span>)</span><br><span class="line">	at java.net.URLClassLoader.defineClass(URLClassLoader.java:<span class="number">449</span>)</span><br><span class="line">	at java.net.URLClassLoader.access$<span class="number">100</span>(URLClassLoader.java:<span class="number">71</span>)</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1</span>.run(URLClassLoader.java:<span class="number">361</span>)</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1</span>.run(URLClassLoader.java:<span class="number">355</span>)</span><br><span class="line">	at java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.net.URLClassLoader.findClass(URLClassLoader.java:<span class="number">354</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">425</span>)</span><br><span class="line">	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:<span class="number">308</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">358</span>)</span><br><span class="line">	at kafka.consumer.ZookeeperConsumerConnector.connectZk(ZookeeperConsumerConnector.scala:<span class="number">156</span>)</span><br><span class="line">	at kafka.consumer.ZookeeperConsumerConnector.&lt;init&gt;(ZookeeperConsumerConnector.scala:<span class="number">114</span>)</span><br><span class="line">	at kafka.javaapi.consumer.ZookeeperConsumerConnector.&lt;init&gt;(ZookeeperConsumerConnector.scala:<span class="number">65</span>)</span><br><span class="line">	at kafka.javaapi.consumer.ZookeeperConsumerConnector.&lt;init&gt;(ZookeeperConsumerConnector.scala:<span class="number">67</span>)</span><br><span class="line">	at kafka.consumer.Consumer$.createJavaConsumerConnector(ConsumerConnector.scala:<span class="number">100</span>)</span><br><span class="line">	at kafka.consumer.Consumer.createJavaConsumerConnector(ConsumerConnector.scala)</span><br><span class="line">	at org.apache.flume.source.kafka.KafkaSourceUtil.getConsumer(KafkaSourceUtil.java:<span class="number">47</span>)</span><br><span class="line">	at org.apache.flume.source.kafka.KafkaSource.start(KafkaSource.java:<span class="number">200</span>)</span><br><span class="line">	at org.apache.flume.source.PollableSourceRunner.start(PollableSourceRunner.java:<span class="number">74</span>)</span><br><span class="line">	at org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">251</span>)</span><br><span class="line">	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:<span class="number">471</span>)</span><br><span class="line">	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:<span class="number">304</span>)</span><br><span class="line">	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$<span class="number">301</span>(ScheduledThreadPoolExecutor.java:<span class="number">178</span>)</span><br><span class="line">	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:<span class="number">293</span>)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1145</span>)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">615</span>)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:<span class="number">745</span>)</span><br><span class="line">Caused by: java.lang.ClassNotFoundException: org.apache.zookeeper.Watcher</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1</span>.run(URLClassLoader.java:<span class="number">366</span>)</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1</span>.run(URLClassLoader.java:<span class="number">355</span>)</span><br><span class="line">	at java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.net.URLClassLoader.findClass(URLClassLoader.java:<span class="number">354</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">425</span>)</span><br><span class="line">	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:<span class="number">308</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">358</span>)</span><br><span class="line">	... <span class="number">29</span> more</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>具体启动信息如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo08 flume]<span class="meta"># bin/flume-ng agent --conf conf/ --conf-file conf/kafka_source.conf --name a1 -Dflume.root.logger=INFO,console</span></span><br><span class="line">Info: Sourcing environment configuration script /opt/flume/conf/flume-env.sh</span><br><span class="line">Info: <span class="function">Including Hive libraries found <span class="title">via</span> <span class="params">()</span> <span class="keyword">for</span> Hive access</span></span><br><span class="line">+ exec /usr/local/jdk1.7.0_79/bin/java -Xmx20m -Dflume.root.logger=INFO,console -cp '/opt/flume/conf:/opt/flume/lib/*:/lib/*' -Djava.library.path= org.apache.flume.node.Application --conf-file conf/kafka_source.conf --name a1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">943</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-0</span>) [INFO - org.apache.flume.node.PollingPropertiesFileConfigurationProvider.start(PollingPropertiesFileConfigurationProvider.java:<span class="number">61</span>)] Configuration provider starting</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">949</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.PollingPropertiesFileConfigurationProvider$FileWatcherRunnable.run(PollingPropertiesFileConfigurationProvider.java:<span class="number">133</span>)] Reloading configuration file:conf/kafka_source.conf</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">960</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.conf.FlumeConfiguration$AgentConfiguration.addProperty(FlumeConfiguration.java:<span class="number">931</span>)] Added sinks: k1 Agent: a1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">961</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.conf.FlumeConfiguration$AgentConfiguration.addProperty(FlumeConfiguration.java:<span class="number">1017</span>)] Processing:k1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">962</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.conf.FlumeConfiguration$AgentConfiguration.addProperty(FlumeConfiguration.java:<span class="number">1017</span>)] Processing:k1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">981</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.conf.FlumeConfiguration.validateConfiguration(FlumeConfiguration.java:<span class="number">141</span>)] Post-validation flume configuration contains configuration <span class="keyword">for</span> agents: [a1]</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">982</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.AbstractConfigurationProvider.loadChannels(AbstractConfigurationProvider.java:<span class="number">145</span>)] Creating channels</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">06</span>,<span class="number">994</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.channel.DefaultChannelFactory.create(DefaultChannelFactory.java:<span class="number">42</span>)] Creating instance of channel c1 type memory</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">001</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.AbstractConfigurationProvider.loadChannels(AbstractConfigurationProvider.java:<span class="number">200</span>)] Created channel c1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">003</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.source.DefaultSourceFactory.create(DefaultSourceFactory.java:<span class="number">41</span>)] Creating instance of source r1, type org.apache.flume.source.kafka.KafkaSource</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">011</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.source.kafka.KafkaSourceUtil.getKafkaProperties(KafkaSourceUtil.java:<span class="number">37</span>)] context=&#123; parameters:&#123;topic=hello, groupId=flume, zookeeperConnect=xxo08:<span class="number">2181</span>,xxo09:<span class="number">2181</span>,xxo10:<span class="number">2181</span>, kafka.consumer.timeout.ms=<span class="number">3000</span>, channels=c1, type=org.apache.flume.source.kafka.KafkaSource&#125; &#125;</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">051</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.sink.DefaultSinkFactory.create(DefaultSinkFactory.java:<span class="number">42</span>)] Creating instance of sink: k1, type: logger</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">057</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.AbstractConfigurationProvider.getConfiguration(AbstractConfigurationProvider.java:<span class="number">114</span>)] Channel c1 connected to [r1, k1]</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">071</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.Application.startAllComponents(Application.java:<span class="number">138</span>)] Starting <span class="keyword">new</span> configuration:&#123; sourceRunners:&#123;r1=PollableSourceRunner: &#123; source:org.apache.flume.source.kafka.KafkaSource&#123;name:r1,state:IDLE&#125; counterGroup:&#123; name:null counters:&#123;&#125; &#125; &#125;&#125; sinkRunners:&#123;k1=SinkRunner: &#123; policy:org.apache.flume.sink.DefaultSinkProcessor@<span class="number">4</span>ab9ba02 counterGroup:&#123; name:null counters:&#123;&#125; &#125; &#125;&#125; channels:&#123;c1=org.apache.flume.channel.MemoryChannel&#123;name: c1&#125;&#125; &#125;</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">071</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.Application.startAllComponents(Application.java:<span class="number">145</span>)] Starting Channel c1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">140</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-0</span>) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.<span class="keyword">register</span>(MonitoredCounterGroup.java:<span class="number">120</span>)] Monitored counter group <span class="keyword">for</span> type: CHANNEL, name: c1: Successfully registered <span class="keyword">new</span> MBean.</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">142</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-0</span>) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.start(MonitoredCounterGroup.java:<span class="number">96</span>)] Component type: CHANNEL, name: c1 started</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">143</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.Application.startAllComponents(Application.java:<span class="number">173</span>)] Starting Sink k1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">148</span> (conf-file-poller<span class="number">-0</span>) [INFO - org.apache.flume.node.Application.startAllComponents(Application.java:<span class="number">184</span>)] Starting Source r1</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">149</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - org.apache.flume.source.kafka.KafkaSource.start(KafkaSource.java:<span class="number">196</span>)] Starting org.apache.flume.source.kafka.KafkaSource&#123;name:r1,state:IDLE&#125;...</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">601</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - kafka.utils.Logging$class.info(Logging.scala:<span class="number">68</span>)] Verifying properties</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">663</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - kafka.utils.Logging$class.info(Logging.scala:<span class="number">68</span>)] Property <span class="keyword">auto</span>.commit.enable is overridden to <span class="literal">false</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">663</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - kafka.utils.Logging$class.info(Logging.scala:<span class="number">68</span>)] Property consumer.timeout.ms is overridden to <span class="number">3000</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">663</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - kafka.utils.Logging$class.info(Logging.scala:<span class="number">68</span>)] Property group.id is overridden to flume</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">664</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - kafka.utils.Logging$class.info(Logging.scala:<span class="number">68</span>)] Property zookeeper.connect is overridden to xxo08:<span class="number">2181</span>,xxo09:<span class="number">2181</span>,xxo10:<span class="number">2181</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">708</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [INFO - kafka.utils.Logging$class.info(Logging.scala:<span class="number">68</span>)] [flume_xxo08<span class="number">-1463677867706</span>-e244b0f9], Connecting to zookeeper instance at xxo08:<span class="number">2181</span>,xxo09:<span class="number">2181</span>,xxo10:<span class="number">2181</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">710</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [ERROR - org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">253</span>)] Unable to start PollableSourceRunner: &#123; source:org.apache.flume.source.kafka.KafkaSource&#123;name:r1,state:IDLE&#125; counterGroup:&#123; name:null counters:&#123;&#125; &#125; &#125; - Exception follows.</span><br><span class="line">java.lang.NoClassDefFoundError: org/apache/zookeeper/Watcher</span><br><span class="line">	at java.lang.ClassLoader.defineClass1(Native Method)</span><br><span class="line">	at java.lang.ClassLoader.defineClass(ClassLoader.java:<span class="number">800</span>)</span><br><span class="line">	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:<span class="number">142</span>)</span><br><span class="line">	at java.net.URLClassLoader.defineClass(URLClassLoader.java:<span class="number">449</span>)</span><br><span class="line">	at java.net.URLClassLoader.access$<span class="number">100</span>(URLClassLoader.java:<span class="number">71</span>)</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1.</span>run(URLClassLoader.java:<span class="number">361</span>)</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1.</span>run(URLClassLoader.java:<span class="number">355</span>)</span><br><span class="line">	at java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.net.URLClassLoader.findClass(URLClassLoader.java:<span class="number">354</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">425</span>)</span><br><span class="line">	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:<span class="number">308</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">358</span>)</span><br><span class="line">	at kafka.consumer.ZookeeperConsumerConnector.connectZk(ZookeeperConsumerConnector.scala:<span class="number">156</span>)</span><br><span class="line">	at kafka.consumer.ZookeeperConsumerConnector.&lt;init&gt;(ZookeeperConsumerConnector.scala:<span class="number">114</span>)</span><br><span class="line">	at kafka.javaapi.consumer.ZookeeperConsumerConnector.&lt;init&gt;(ZookeeperConsumerConnector.scala:<span class="number">65</span>)</span><br><span class="line">	at kafka.javaapi.consumer.ZookeeperConsumerConnector.&lt;init&gt;(ZookeeperConsumerConnector.scala:<span class="number">67</span>)</span><br><span class="line">	at kafka.consumer.Consumer$.createJavaConsumerConnector(ConsumerConnector.scala:<span class="number">100</span>)</span><br><span class="line">	at kafka.consumer.Consumer.createJavaConsumerConnector(ConsumerConnector.scala)</span><br><span class="line">	at org.apache.flume.source.kafka.KafkaSourceUtil.getConsumer(KafkaSourceUtil.java:<span class="number">47</span>)</span><br><span class="line">	at org.apache.flume.source.kafka.KafkaSource.start(KafkaSource.java:<span class="number">200</span>)</span><br><span class="line">	at org.apache.flume.source.PollableSourceRunner.start(PollableSourceRunner.java:<span class="number">74</span>)</span><br><span class="line">	at org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">251</span>)</span><br><span class="line">	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:<span class="number">471</span>)</span><br><span class="line">	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:<span class="number">304</span>)</span><br><span class="line">	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$<span class="number">301</span>(ScheduledThreadPoolExecutor.java:<span class="number">178</span>)</span><br><span class="line">	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:<span class="number">293</span>)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1145</span>)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">615</span>)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:<span class="number">745</span>)</span><br><span class="line">Caused by: java.lang.ClassNotFoundException: org.apache.zookeeper.Watcher</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1.</span>run(URLClassLoader.java:<span class="number">366</span>)</span><br><span class="line">	at java.net.URLClassLoader$<span class="number">1.</span>run(URLClassLoader.java:<span class="number">355</span>)</span><br><span class="line">	at java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.net.URLClassLoader.findClass(URLClassLoader.java:<span class="number">354</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">425</span>)</span><br><span class="line">	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:<span class="number">308</span>)</span><br><span class="line">	at java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">358</span>)</span><br><span class="line">	... <span class="number">29</span> more</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">07</span>,<span class="number">719</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-3</span>) [ERROR - org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">264</span>)] Unsuccessful attempt to shutdown component: &#123;&#125; due to missing dependencies. Please shutdown the agentor disable <span class="keyword">this</span> component, <span class="keyword">or</span> the agent will bein an undefined state.</span><br><span class="line">java.lang.NullPointerException</span><br><span class="line">	at org.apache.flume.source.PollableSourceRunner$PollingRunner.access$<span class="number">200</span>(PollableSourceRunner.java:<span class="number">125</span>)</span><br><span class="line">	at org.apache.flume.source.PollableSourceRunner.stop(PollableSourceRunner.java:<span class="number">93</span>)</span><br><span class="line">	at org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">259</span>)</span><br><span class="line">	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:<span class="number">471</span>)</span><br><span class="line">	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:<span class="number">304</span>)</span><br><span class="line">	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$<span class="number">301</span>(ScheduledThreadPoolExecutor.java:<span class="number">178</span>)</span><br><span class="line">	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:<span class="number">293</span>)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1145</span>)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">615</span>)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:<span class="number">745</span>)</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">10</span>,<span class="number">723</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-2</span>) [INFO - org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">233</span>)] Component PollableSourceRunner: &#123; source:org.apache.flume.source.kafka.KafkaSource&#123;name:r1,state:IDLE&#125; counterGroup:&#123; name:null counters:&#123;&#125; &#125; &#125; is in error state, <span class="keyword">and</span> Flume will notattempt to change its state</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">13</span>,<span class="number">726</span> (lifecycleSupervisor<span class="number">-1</span><span class="number">-2</span>) [INFO - org.apache.flume.lifecycle.LifecycleSupervisor$MonitorRunnable.run(LifecycleSupervisor.java:<span class="number">233</span>)] Component PollableSourceRunner: &#123; source:org.apache.flume.source.kafka.KafkaSource&#123;name:r1,state:IDLE&#125; counterGroup:&#123; name:null counters:&#123;&#125; &#125; &#125; is in error state, <span class="keyword">and</span> Flume will notattempt to change its state</span><br><span class="line">^C2016<span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">610</span> (agent-shutdown-hook) [INFO - org.apache.flume.lifecycle.LifecycleSupervisor.stop(LifecycleSupervisor.java:<span class="number">79</span>)] Stopping lifecycle supervisor <span class="number">10</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">615</span> (agent-shutdown-hook) [INFO - org.apache.flume.node.PollingPropertiesFileConfigurationProvider.stop(PollingPropertiesFileConfigurationProvider.java:<span class="number">83</span>)] Configuration provider stopping</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">616</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">150</span>)] Component type: CHANNEL, name: c1 stopped</span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">617</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">156</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.start.time == <span class="number">1463677867142</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">617</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">162</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.stop.time == <span class="number">1463677874616</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">618</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">178</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.capacity == <span class="number">1000</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">618</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">178</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.current.size == <span class="number">0</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">618</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">178</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.event.put.attempt == <span class="number">0</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">618</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">178</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.event.put.success == <span class="number">0</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">619</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">178</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.event.take.attempt == <span class="number">2</span></span><br><span class="line"><span class="number">2016</span><span class="number">-05</span><span class="number">-20</span> <span class="number">01</span>:<span class="number">11</span>:<span class="number">14</span>,<span class="number">620</span> (agent-shutdown-hook) [INFO - org.apache.flume.instrumentation.MonitoredCounterGroup.stop(MonitoredCounterGroup.java:<span class="number">178</span>)] Shutdown Metric <span class="keyword">for</span> type: CHANNEL, name: c1. channel.event.take.success == <span class="number">0</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><ul>
+<li><strong>缺少了zookeeper-**</strong>.jar，博主这里的为：zookeeper-3.4.6.jar**</li>
+</ul>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><ul>
+<li><strong>三种解决办法</strong>：</li>
+</ul>
+<ol>
+<li>把 zookeeper-3.4.6.jar 拷贝到<code>${FLUME_HOME}/lib</code>下面，比如我的flume在/opt下面，我需要拷贝到<code>/opt/flume/lib/</code>下面。</li>
+<li>配置 <strong>FLUME_CLASSPATH</strong>=”<strong>zookeeper jar 的地址</strong>“（默认注释掉了），例如：<code>FLUME_CLASSPATH=&quot;/opt/zookeeper/zookeeper-3.4.6.jar&quot;</code>（即指定到我zk下面的jar）。</li>
+<li>博主测试时，机器中同时安装了 hadoop 也是可以的，因为 hadoop lib 下面默认带了 zk 的jar。</li>
+</ol>
+<p>　　
+　
+　
+　</p>
+
+                
+<p class="red-link-context">
+    <a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/" rel="next" title="Idea/Eclipse--Windows下调试Hadoop">
+    上一篇：Idea/Eclipse--Windows下调试Hadoop
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/05/16/游记-晴空万里的阳台山/" rel="next" title="游记--晴空万里的阳台山">
+    下一篇：游记--晴空万里的阳台山
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Flume--kafka source启动异常" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

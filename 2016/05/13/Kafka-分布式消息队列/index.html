@@ -1,0 +1,747 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Kafka--分布式消息队列 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Kafka--分布式消息队列"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Kafka--分布式消息队列</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-05-13T13:31:34.000Z"><a href="/2016/05/13/Kafka-分布式消息队列/">2016-05-13</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Kafka概述"><span class="section table-of-contents-text">Kafka概述</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#设计"><span class="section table-of-contents-text">设计</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#特点"><span class="section table-of-contents-text">特点</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#服务"><span class="section table-of-contents-text">服务</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#消息发送流程"><span class="section table-of-contents-text">消息发送流程</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Kafka安装"><span class="section table-of-contents-text">Kafka安装</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#kafka操作"><span class="section table-of-contents-text">kafka操作</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#主题topic"><span class="section table-of-contents-text">主题topic</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#生产-消费"><span class="section table-of-contents-text">生产/消费</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<code>Kafka</code> <strong>分布式的发布-订阅消息系统</strong>。最初由 <strong>LinkedIn</strong> 公司开发，使用 <strong>Scala</strong> 语言编写，2010年12月份开源成为 Apache 项目的一部分。<strong>Kafka 是一个高吞吐量的、持久性的、分布式发布订阅消息系统</strong>。<strong>它主要用于处理活跃的数据（登录、浏览、点击、分享、喜欢等用户行为产生的数据）。</strong></p>
+<h2 id="Kafka概述"><a href="#Kafka概述" class="headerlink" title="Kafka概述"></a>Kafka概述</h2><h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><ul>
+<li><strong><a href="http://kafka.apache.org/documentation.html#design" target="_blank" rel="noopener">主要的设计元素</a>：</strong><blockquote>
+<ol>
+<li>Kafka在设计之时为就将<strong>持久化消息</strong>作为通常的使用情况进行了考虑。</li>
+<li>主要的设计约束是<strong>吞吐量</strong>而不是功能。</li>
+<li>有关哪些数据<strong>已经被使用了的状态信息保存为数据使用者（consumer）的一部分</strong>，而不是保存在服务器之上。</li>
+<li>Kafka是<strong>一种显式的分布式系统</strong>。它假设，数据生产者（producer）、代理（brokers）和数据使用者（consumer）分散于多台机器之上。</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><strong>在对消息进行存储和缓存时，Kafka严重地依赖于文件系统。所有数据都要立即写入文件系统持久化的日志中但不进行刷新数据的任何调用（<em>有刷新策略，可以配置</em>）</strong>。就意味着，数据被传输到OS内核的页面缓存中了，OS随后会将这些数据刷新到磁盘的。</li>
+</ul>
+<a id="more"></a>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><strong>高吞吐量、低延迟</strong>：可以满足每秒百万级别消息的生产和消费、延迟最低只有几毫秒。</li>
+<li><strong>持久性</strong>：有一套完善的消息存储机制，确保数据的高效安全的持久化。</li>
+<li><strong>容错性</strong>：允许集群中节点失败（若副本数量为n,则允许n-1个节点失败）</li>
+<li><strong>可扩展性</strong>：kafka集群支持热扩展。</li>
+<li><strong>高并发</strong>：支持数千个客户端同时读写。</li>
+</ul>
+<h3 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h3><p>　　　　<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160513222806.png" alt="Kafka集群分布"></p>
+<ul>
+<li><strong>broker</strong>： 缓存代理，<strong>kafka集群中的一个kafka服务节点称为一个broker，主要存储消息数据</strong>。不是主从关系，各个broker在集群中地位一样，可以随意的增删broker节点。</li>
+<li><strong>topic</strong>： kafka 处理的<strong>消息的分类</strong>。</li>
+<li><strong>partition</strong>： <strong>一个topic在broker中被分为1个或者多个partition，分区在创建topic的时候指定。</strong></li>
+<li><strong>message</strong>： 消息（<em>offset，MessageSize，data</em>），是<strong>通信的基本单位</strong>，每个消息都属于一个<strong>partition</strong>。</li>
+<li><strong>producer</strong>： <strong>生产者，向kafka的一个topic发布消息</strong>。</li>
+<li><strong>consumer</strong>： <strong>消费者，订阅topic并处理其发布的消息</strong>。</li>
+<li><strong>zookeeper</strong>： <strong>协调kafka的正常运行</strong>。</li>
+<li><strong>push-and-pull</strong> : Kafka中的Producer和consumer采用的是push-and-pull模式，即<strong>Producer只管向broker push消息，consumer只管从broker pull消息，两者对消息的生产和消费是异步的</strong>。<h3 id="消息发送流程"><a href="#消息发送流程" class="headerlink" title="消息发送流程"></a>消息发送流程</h3></li>
+</ul>
+<p>　　　　<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160513221804.png" alt="Kafka消息发送流程"></p>
+<ul>
+<li><strong>1、Producer：</strong> 可以根据用户<strong>自定义算法</strong>来根据消息的key来计算输入到哪个partition。可以指定<strong>同步异步</strong>（producer.type），异步发送模式允许进行批量发送，先将消息缓存在内存中，然后一次请求<strong>批量发送</strong>出去。（<em>queue.buffering.max.ms=5000、queue.buffering.max.messages=10000</em>）。</li>
+<li><strong>2、broker</strong> 为了减少磁盘写入的次数,broker会将消息暂时<strong>buffer</strong>起来,当消息的个数达到<strong>一定阀值或者过了一定的时间间隔时</strong>,再flush到磁盘,这样减少了磁盘IO调用的次数。配置（<em>log.flush.interval…、log.retention…默认7天</em>）。</li>
+<li><strong>3、kafka：</strong> 集群接收到Producer发过来的消息后，将其持久化到硬盘，并保留消息指定时长(可配置)，不关注消息是否被消费。</li>
+<li><strong>4、Consumer：</strong> 从kafka集群pull数据，并控制获取消息的offset。<strong>每个consumer属于一个consumer group，可以指定组id。Group.id</strong>。</li>
+</ul>
+<h2 id="Kafka安装"><a href="#Kafka安装" class="headerlink" title="Kafka安装"></a>Kafka安装</h2><ol>
+<li><p><a href="https://www.apache.org/dyn/closer.cgi?path=/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz" target="_blank" rel="noopener"><strong>下载</strong></a> <a href="https://www.apache.org/dyn/closer.cgi?path=/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz" target="_blank" rel="noopener">https://www.apache.org/dyn/closer.cgi?path=/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz</a></p>
+</li>
+<li><p><strong>解压并修改目录 </strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo07 ~]<span class="comment"># tar -zxvf kafka_2.11-0.8.2.2.tgz -C /opt/  ##解压到指定目录</span></span><br><span class="line">[root@xxo07 ~]<span class="comment"># mv /opt/kafka_2.11-0.8.2.2/ /opt/kafka     ##改一下目录名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>配置和启动zookeeper服务</strong>（使用kafka内置zk）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###################启用zk服务 #############################</span></span><br><span class="line">[root@xxo07 ~]<span class="comment"># mkdir /opt/logs       ##创建一个logs目录，用于存放日子文件</span></span><br><span class="line">[root@xxo07 ~]<span class="comment"># nohup /opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties &gt; /opt/logs/kafka-zk.log 2&gt;&amp;1 &amp;   ##后台启动zk服务</span></span><br><span class="line">[1] 1212</span><br><span class="line">[root@xxo07 ~]<span class="comment"># jps   ##查看进程</span></span><br><span class="line">1234 Jps</span><br><span class="line">1212 QuorumPeerMain   <span class="comment">##zk已经启动</span></span><br><span class="line"><span class="comment">###################查看日志：more /opt/logs/kafka-zk.log ######</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动 Kafka-server</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo07 ~]<span class="comment"># nohup /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties &gt; /opt/logs/kafka-server.log 2&gt;&amp;1 &amp;</span></span><br><span class="line">[2] 1244</span><br><span class="line">[root@xxo07 ~]<span class="comment"># jps   ##查看进程</span></span><br><span class="line">1289 Jps</span><br><span class="line">1244 Kafka            <span class="comment">##Kafka服务</span></span><br><span class="line">1212 QuorumPeerMain</span><br><span class="line"><span class="comment">###################查看日志： more /opt/logs/kafka-server.log ######</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="kafka操作"><a href="#kafka操作" class="headerlink" title="kafka操作"></a>kafka操作</h2><h3 id="主题topic"><a href="#主题topic" class="headerlink" title="主题topic"></a>主题topic</h3><ul>
+<li><p><strong>kafka-topics.sh</strong> 操作 如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo08 kafka]<span class="comment"># bin/kafka-topics.sh        ##看一下怎么使用，需要什么参数</span></span><br><span class="line">Create, delete, describe, or change a topic.</span><br><span class="line">Option                                  Description                            </span><br><span class="line">------                                  -----------                            </span><br><span class="line">--alter                                 Alter the configuration <span class="keyword">for</span> the topic. </span><br><span class="line">--config &lt;name=value&gt;                   A topic configuration override <span class="keyword">for</span> the </span><br><span class="line">                                          topic being created or altered.The   </span><br><span class="line">                                          following is a list of valid         </span><br><span class="line">                                          configurations:                      </span><br><span class="line">                                        	unclean.leader.election.enable        </span><br><span class="line">                                        	delete.retention.ms                   </span><br><span class="line">                                        	segment.jitter.ms                     </span><br><span class="line">                                        	retention.ms                          </span><br><span class="line">                                        	flush.ms                              </span><br><span class="line">                                        	segment.bytes                         </span><br><span class="line">                                        	flush.messages                        </span><br><span class="line">                                        	segment.ms                            </span><br><span class="line">                                        	retention.bytes                       </span><br><span class="line">                                        	cleanup.policy                        </span><br><span class="line">                                        	segment.index.bytes                   </span><br><span class="line">                                        	min.cleanable.dirty.ratio             </span><br><span class="line">                                        	max.message.bytes                     </span><br><span class="line">                                        	file.delete.delay.ms                  </span><br><span class="line">                                        	min.insync.replicas                   </span><br><span class="line">                                        	index.interval.bytes                  </span><br><span class="line">                                        See the Kafka documentation <span class="keyword">for</span> full   </span><br><span class="line">                                          details on the topic configs.        </span><br><span class="line">--create                                Create a new topic.                    </span><br><span class="line">--delete                                Delete a topic                         </span><br><span class="line">--delete-config &lt;name&gt;                  A topic configuration override to be   </span><br><span class="line">                                          removed <span class="keyword">for</span> an existing topic (see   </span><br><span class="line">                                          the list of configurations under the </span><br><span class="line">                                          --config option).                    </span><br><span class="line">--describe                              List details <span class="keyword">for</span> the given topics.     </span><br><span class="line">--<span class="built_in">help</span>                                  Print usage information.               </span><br><span class="line">--list                                  List all available topics.             </span><br><span class="line">--partitions &lt;Integer: <span class="comment"># of partitions&gt; The number of partitions for the topic </span></span><br><span class="line">                                          being created or altered (WARNING:   </span><br><span class="line">                                          If partitions are increased <span class="keyword">for</span> a    </span><br><span class="line">                                          topic that has a key, the partition  </span><br><span class="line">                                          logic or ordering of the messages    </span><br><span class="line">                                          will be affected                     </span><br><span class="line">--replica-assignment                    A list of manual partition-to-broker   </span><br><span class="line">  &lt;broker_id_for_part1_replica1 :         assignments <span class="keyword">for</span> the topic being      </span><br><span class="line">  broker_id_for_part1_replica2 ,          created or altered.                  </span><br><span class="line">  broker_id_for_part2_replica1 :                                               </span><br><span class="line">  broker_id_for_part2_replica2 , ...&gt;                                          </span><br><span class="line">--replication-factor &lt;Integer:          The replication factor <span class="keyword">for</span> each        </span><br><span class="line">  replication factor&gt;                     partition <span class="keyword">in</span> the topic being created.</span><br><span class="line">--topic &lt;topic&gt;                         The topic to be create, alter or       </span><br><span class="line">                                          describe. Can also accept a regular  </span><br><span class="line">                                          expression except <span class="keyword">for</span> --create option</span><br><span class="line">--topics-with-overrides                 <span class="keyword">if</span> <span class="built_in">set</span> when describing topics, only    </span><br><span class="line">                                          show topics that have overridden     </span><br><span class="line">                                          configs                              </span><br><span class="line">--unavailable-partitions                <span class="keyword">if</span> <span class="built_in">set</span> when describing topics, only    </span><br><span class="line">                                          show partitions whose leader is not  </span><br><span class="line">                                          available                            </span><br><span class="line">--under-replicated-partitions           <span class="keyword">if</span> <span class="built_in">set</span> when describing topics, only    </span><br><span class="line">                                          show under replicated partitions     </span><br><span class="line">--zookeeper &lt;urls&gt;                      REQUIRED: The connection string <span class="keyword">for</span>    </span><br><span class="line">                                          the zookeeper connection <span class="keyword">in</span> the form </span><br><span class="line">                                          host:port. Multiple URLS can be      </span><br><span class="line">                                          given to allow fail-over.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>新增</strong> 一个topic</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo07 ~]<span class="comment"># cd /opt/kafka/bin/   ##这里进入一下kafka/bin目录</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################新增一个topic："hello"，为它分配一个分区，保存一个副本############</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 2 --topic hello</span></span><br><span class="line">Created topic <span class="string">"hello"</span>.</span><br><span class="line"></span><br><span class="line"><span class="comment">################replication-factor不能大于broker数（这里我们只有一个partitions）#</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 2 --topic world</span></span><br><span class="line">Error <span class="keyword">while</span> executing topic <span class="built_in">command</span> replication factor: 2 larger than available brokers: 1</span><br><span class="line">kafka.admin.AdminOperationException: replication factor: 2 larger than available brokers: 1</span><br><span class="line">	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:70)</span><br><span class="line">	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:171)</span><br><span class="line">	at kafka.admin.TopicCommand$.createTopic(TopicCommand.scala:93)</span><br><span class="line">	at kafka.admin.TopicCommand$.main(TopicCommand.scala:55)</span><br><span class="line">	at kafka.admin.TopicCommand.main(TopicCommand.scala)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查询</strong> topic</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --describe --zookeeper localhost:2181 --topic hello</span></span><br><span class="line">Topic:hello	PartitionCount:2	ReplicationFactor:1	Configs:</span><br><span class="line">	Topic: hello	Partition: 0	Leader: 0	Replicas: 0	Isr: 0</span><br><span class="line">	Topic: hello	Partition: 1	Leader: 0	Replicas: 0	Isr: 0</span><br><span class="line"></span><br><span class="line"><span class="comment">#########################查询所有可以使用的topic######################</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --list --zookeeper localhost:2181</span></span><br><span class="line">hello</span><br><span class="line">world</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>修改</strong> topic</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#########################修改hello为2个分区#########################   </span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --alter --zookeeper localhost:2181 -partitions 3 --topic hello</span></span><br><span class="line">WARNING: If partitions are increased <span class="keyword">for</span> a topic that has a key, the partition logic or ordering of the messages will be affected</span><br><span class="line">Adding partitions succeeded!</span><br><span class="line"></span><br><span class="line"><span class="comment">########################修改partition数（只能增加）#################</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --alter --zookeeper localhost:2181 -partitions 2 --topic hello</span></span><br><span class="line">WARNING: If partitions are increased <span class="keyword">for</span> a topic that has a key, the partition logic or ordering of the messages will be affected</span><br><span class="line">Error <span class="keyword">while</span> executing topic <span class="built_in">command</span> The number of partitions <span class="keyword">for</span> a topic can only be increased</span><br><span class="line">kafka.admin.AdminOperationException: The number of partitions <span class="keyword">for</span> a topic can only be increased</span><br><span class="line">	at kafka.admin.AdminUtils$.addPartitions(AdminUtils.scala:114)</span><br><span class="line">	at kafka.admin.TopicCommand$<span class="variable">$anonfun</span><span class="variable">$alterTopic</span><span class="variable">$1</span>.apply(TopicCommand.scala:119)</span><br><span class="line">	at kafka.admin.TopicCommand$<span class="variable">$anonfun</span><span class="variable">$alterTopic</span><span class="variable">$1</span>.apply(TopicCommand.scala:100)</span><br><span class="line">	at scala.collection.mutable.ResizableArray<span class="variable">$class</span>.foreach(ResizableArray.scala:59)</span><br><span class="line">	at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:48)</span><br><span class="line">	at kafka.admin.TopicCommand$.alterTopic(TopicCommand.scala:100)</span><br><span class="line">	at kafka.admin.TopicCommand$.main(TopicCommand.scala:57)</span><br><span class="line">	at kafka.admin.TopicCommand.main(TopicCommand.scala)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>删除</strong> topic</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#######################删除world topic ############################</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --delete --zookeeper localhost:2181 --topic world</span></span><br><span class="line">Topic world is marked <span class="keyword">for</span> deletion.</span><br><span class="line">Note: This will have no impact <span class="keyword">if</span> delete.topic.enable is not <span class="built_in">set</span> to <span class="literal">true</span>.</span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --list --zookeeper localhost:2181</span></span><br><span class="line">hello</span><br><span class="line">world - marked <span class="keyword">for</span> deletion   <span class="comment">##可以看见还在，如果重启可以删除</span></span><br><span class="line"></span><br><span class="line"><span class="comment">###是否开启topic的删除功能:默认为false 修改delete.topic.enable=true可以不用重启</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># vim ../config/server.properties  ###修改配置如下图</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-server-stop.sh             ###关闭kafka</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># jps</span></span><br><span class="line">1645 Jps</span><br><span class="line">1212 QuorumPeerMain</span><br><span class="line">[root@xxo07 bin]<span class="comment"># nohup /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties &gt; /opt/logs/kafka-server.log 2&gt;&amp;1 &amp;</span></span><br><span class="line">[2] 1665</span><br><span class="line">[root@xxo07 bin]<span class="comment"># jps    #####################已经重新启动</span></span><br><span class="line">1665 Kafka</span><br><span class="line">1710 Jps</span><br><span class="line">1212 QuorumPeerMain</span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --list --zookeeper localhost:2181  ########查看，已经被删除了</span></span><br><span class="line">hello</span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 2 --topic world</span></span><br><span class="line">Created topic <span class="string">"world"</span>.   <span class="comment">######################重新创建了一个</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --delete --zookeeper localhost:2181 --topic world ###再次删除</span></span><br><span class="line">Topic world is marked <span class="keyword">for</span> deletion.</span><br><span class="line">Note: This will have no impact <span class="keyword">if</span> delete.topic.enable is not <span class="built_in">set</span> to <span class="literal">true</span>.  <span class="comment">######这个为提示信息</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-topics.sh --list --zookeeper localhost:2181  ########查看，已经被删除了</span></span><br><span class="line">hello</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160513234642.png" alt="修改server.properties"></p>
+<h3 id="生产-消费"><a href="#生产-消费" class="headerlink" title="生产/消费"></a>生产/消费</h3><ul>
+<li><p><strong>创建生产者 producer</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">############broker-list：必须的参数，kafka的服务地址[多个用逗号隔开]#############</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># bin/kafka-console-producer.sh --broker-list localhost:9092 --topic hello</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>创建消费者 consumer</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###################Zookeeper：必须的参数，kafka的zk集群地址####################</span></span><br><span class="line"><span class="comment">############Topic\whitelist\blacklist：</span></span><br><span class="line"><span class="comment">############1、具体的单个topic</span></span><br><span class="line"><span class="comment">############2、多个白名单topic字符串[逗号隔开]。</span></span><br><span class="line"><span class="comment">############3、多个黑名单topic字符串[逗号隔开]。</span></span><br><span class="line">[root@xxo07 bin]<span class="comment"># kafka-console-consumer.sh --zookeeper localhost:2181 --topic hello --from-beginning</span></span><br><span class="line"><span class="comment">##################标记删除的topic也可以使用###################################</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>实例</strong><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514001613.png" alt="producer 生产一个消息"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514001501.png" alt="consumer 消费者该消息"></p>
+</li>
+</ul>
+<ul>
+<li><strong>概念理解</strong>：<blockquote>
+<p><strong>消费者组理解</strong>：很多consumer可以组成一个组，一个消息在<strong>组中</strong>只能被一个consumer消费，可以被<strong>不同的组</strong>消费。<br><strong>消息持久化</strong>：Kafka中会把消息持久化到本地文件系统中，并且保持极高的效率。<br><strong>消息状态</strong>：在Kafka中，消息的状态被保存在consumer中，broker不会关心哪个消息被消费了被谁消费了，只记录一个offset值（指向partition中下一个要被消费的消息位置）。<br><strong>消息有效期</strong>：Kafka会长久（<em>默认七天，一般公司生产环境中会设置很长</em>）保留其中的消息，以便consumer可以多次消费。<br><strong>批量发送</strong>：Kafka支持以消息集合为单位进行批量发送，以<strong>提高push效率</strong>。<br><strong>同步异步</strong>：<strong>Producer采用异步push方式，极大提高Kafka系统的吞吐率</strong>（可以通过参数控制）。<br>分区机制partition：Kafka的broker端支持消息分区，Producer可以决定把消息发到哪个分区，在一个分区中消息的顺序就是Producer发送消息的顺序，一个主题中可以有多个分区，具体分区的数量是可配置的。分区的意义很重大，后面的内容会逐渐体现。<br><strong>离线数据装载</strong>：Kafka由于对可拓展的数据持久化的支持，它也非常适合向Hadoop或者数据仓库中进行数据装载。<br><strong>插件支持</strong>：现在不少活跃的社区已经开发出不少插件来拓展Kafka的功能，如用来配合Storm、Hadoop、flume相关的插件。</p>
+</blockquote>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/05/14/Kafka-集群及API操作/" rel="next" title="Kafka--集群及API操作">
+    上一篇：Kafka--集群及API操作
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/05/09/Hadoop-Ganglia集群监控/" rel="next" title="Hadoop--Ganglia集群监控">
+    下一篇：Hadoop--Ganglia集群监控
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Kafka--分布式消息队列" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

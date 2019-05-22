@@ -1,0 +1,784 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Spark--从RDD的角度来看Spark内部原理 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Spark--从RDD的角度来看Spark内部原理"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Spark--从RDD的角度来看Spark内部原理</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-07-05T07:29:08.000Z"><a href="/2017/07/05/Spark-从RDD的角度来看Spark内部原理/">2017-07-05</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#RDD为什么是Spark的核心概念"><span class="section table-of-contents-text">RDD为什么是Spark的核心概念</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#通过一个wordCount例子来看一看RDD"><span class="section table-of-contents-text">通过一个wordCount例子来看一看RDD</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#RDD的管理与操作（算子）"><span class="section table-of-contents-text">RDD的管理与操作（算子）</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#常见的RDD操作有哪些（包括RDD的分类）"><span class="section table-of-contents-text">常见的RDD操作有哪些（包括RDD的分类）</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#RDD的依赖关系（DAG）"><span class="section table-of-contents-text">RDD的依赖关系（DAG）</span></a></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#RDD依赖关系的划分（stage）"><span class="section table-of-contents-text">RDD依赖关系的划分（stage）</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　- 上篇博客主要讲了<a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">Spark的执行流程</a>，看完后应该是对Spark有一个整体的了解，对Spark各个组件的工作流程都应该是有一个很清晰的认识了。<br>本篇博客，笔者主要是继续接着“<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener">宜人蜂巢内部分享</a>”，从RDD的角度来看Spark的内部原理，包括以下内容：</p>
+<blockquote>
+<ol>
+<li>RDD为什么是Spark的核心概念</li>
+<li>通过一个wordCount例子来看一看RDD</li>
+<li>RDD的管理与操作（算子）</li>
+<li>常见的RDD操作有哪些（包括RDD的分类）</li>
+<li>RDD的依赖关系（DAG）</li>
+<li>RDD依赖关系的划分（stage）</li>
+</ol>
+</blockquote>
+<a id="more"></a>
+<h1 id="RDD为什么是Spark的核心概念"><a href="#RDD为什么是Spark的核心概念" class="headerlink" title="RDD为什么是Spark的核心概念"></a>RDD为什么是Spark的核心概念</h1><ul>
+<li><code>Spark建立在统一抽象的RDD之上</code>，使得Spark可以很容易扩展，比如 Spark Streaming、Spark SQL、Machine Learning、Graph都是在spark RDD上面进行的扩展（可以看见RDD的核心地位了吧）</li>
+<li><strong>RDD是什么呢？理解一下概念</strong>：</li>
+</ul>
+<ol>
+<li>RDD(Resilient Distributed Dataset)：弹性分布式数据集。</li>
+<li>RDD是只读的，由多个partition组成</li>
+<li>Partition分区，和Block数据块是一一对应的<br><img src="https://img.xiaoxiaomo.com/blog/img/spark15.jpg" alt="RDD 与 Partition、Block 的对应关系图"></li>
+</ol>
+<h1 id="通过一个wordCount例子来看一看RDD"><a href="#通过一个wordCount例子来看一看RDD" class="headerlink" title="通过一个wordCount例子来看一看RDD"></a>通过一个wordCount例子来看一看RDD</h1><ul>
+<li>上面只是RDD的概念，下面举个wordCount的例子来说明一下：<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> file = sc.textFile(<span class="string">"hdfs://data/test.txt"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> data = file.flatMap(_.split(<span class="string">" "</span>)).map((_,<span class="number">1</span>)).reduceByKey(_ + _)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog/img/spark13.jpg" alt="wordCount 例子，执行示意图"></p>
+<ul>
+<li>Spark 程序具体的流程图<br><img src="https://img.xiaoxiaomo.com/blog/img/spark06.jpg" alt="Spark 程序具体的流程图"></li>
+</ul>
+<ol>
+<li>客户端提交任务，<strong>初始化sparkContext之后</strong>，sc.textFile(“hdfs://“)，去hdfs加载文件</li>
+<li>加载的文件比如有300MB，在hdfs中就有3个block块，对应 RDD 里面的三个partition</li>
+<li><code>加载的这个过程其实就是RDD的创建（MapPartitionsRDD）</code></li>
+<li>数据被加载到不同的partition中，通过构建的stage（task set）然后提交到executor中去并行计算</li>
+<li>计算完成后输出结果</li>
+</ol>
+<ul>
+<li>在整个spark计算流程里面，RDD起到了一些什么作用？</li>
+</ul>
+<blockquote>
+<p>作用当然大了！可以看出整个计算流程都是基于RDD在做计算,从数据加载，即RDD的创建,中途的计算（stage的划分，RDD的操作，shuffle）。到最后结果的输出，整个计算流程都是由RDD在贯穿</p>
+</blockquote>
+<blockquote>
+<p>写博客其实挺累的，太耗时了</p>
+</blockquote>
+<blockquote>
+<p>…</p>
+</blockquote>
+<blockquote>
+<p>继续吧，既然已经开始…..</p>
+</blockquote>
+<h1 id="RDD的管理与操作（算子）"><a href="#RDD的管理与操作（算子）" class="headerlink" title="RDD的管理与操作（算子）"></a>RDD的管理与操作（算子）</h1><ul>
+<li><strong>RDD管理</strong></li>
+</ul>
+<ol>
+<li>RDD是一个分布式数据集，即数据分布存储在多台机器上。从上面也可以看到，每个RDD的数据都以Block的形式存储于多台机器上</li>
+<li>在Spark任务运行时</li>
+<li><strong>Driver 节点</strong>的BlockManagerMaster保存Block的元数据，并且管理RDD与Block的关系。</li>
+<li><strong>Executor </strong>会启动一个BlockManagerSlave，管理Block数据并向BlockManagerMaster注册该Block</li>
+<li>当RDD不再需要存储的时候，BlockManagerMaster将向BlockManagerSlave发送指令删除相应的Block。<br><img src="https://img.xiaoxiaomo.com/blog/img/spark08.jpg" alt="RDD管理"></li>
+</ol>
+<ul>
+<li><p><strong>RDD操作</strong><br>RDD还提供了一组丰富的操作来操作这些数据，这种操作叫做算子。比如map、flatMap、filter、join、groupBy、reduceByKey等</p>
+</li>
+<li><p>RDD分类，分为创建算子、转换、缓存、执行</p>
+</li>
+</ul>
+<ol>
+<li><code>Transformation</code>：转换算子，这类转换并不触发提交作业，完成作业中间过程处理。</li>
+<li><code>Action</code>：行动算子，这类算子会触发SparkContext提交Job作业。<br><img src="https://img.xiaoxiaomo.com/blog/img/spark09.jpg" alt="RDD操作"></li>
+</ol>
+<h1 id="常见的RDD操作有哪些（包括RDD的分类）"><a href="#常见的RDD操作有哪些（包括RDD的分类）" class="headerlink" title="常见的RDD操作有哪些（包括RDD的分类）"></a>常见的RDD操作有哪些（包括RDD的分类）</h1><ul>
+<li><p>常见的算子，如下图所示：<br><img src="https://img.xiaoxiaomo.com/blog/img/spark10.jpg" alt="常见的算子"></p>
+</li>
+<li><p>具体的来看一下，例如map算子示例如下：<br><img src="https://img.xiaoxiaomo.com/blog/img/spark16.jpg" alt=""></p>
+</li>
+</ul>
+<h1 id="RDD的依赖关系（DAG）"><a href="#RDD的依赖关系（DAG）" class="headerlink" title="RDD的依赖关系（DAG）"></a>RDD的依赖关系（DAG）</h1><ul>
+<li>RDD的依赖关系有两种：窄依赖（narrow dependency）和宽依赖（wide dependency）。</li>
+</ul>
+<ol>
+<li><code>窄依赖</code>：<strong>每一个parent RDD的Partition最多被子RDD的一个Partition使用</strong></li>
+<li><code>宽依赖</code>：<strong>多个子RDD的Partition会依赖同一个parent RDD的Partition</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/spark11.jpg" alt="RDD的依赖关系--血统（左边窄依赖，右边宽依赖）"></li>
+</ol>
+<ul>
+<li><strong>依赖的具体实现</strong>，以及怎么去知道是窄依赖还是宽依赖？</li>
+</ul>
+<ol>
+<li><p><strong>所有的依赖</strong>都要实现trait <code>Dependency[T]</code></p>
+<blockquote>
+<p>abstract class Dependency[T] extends Serializable {<br>　　　　def rdd: RDD[T]<br>  }</p>
+</blockquote>
+</li>
+<li><p><strong>窄依赖</strong>是有两种具体实现 <code>OneToOneDependency</code> 和 <code>RangeDependency</code></p>
+<blockquote>
+<p>abstract class NarrowDependency<a href="_rdd: RDD[T]">T</a> extends Dependency[T] {<br>　　　　def getParents(partitionId: Int): Seq[Int]<br>　　　　override def rdd: RDD[T] = _rdd<br>}</p>
+<p>//OneToOneDependency<br>class OneToOneDependency<a href="rdd: RDD[T]" target="_blank" rel="noopener">T</a> extends NarrowDependency<a href="rdd">T</a> {<br>　　　　override def getParents(partitionId: Int) = List(partitionId)</p>
+<p>//RangeDependency<br>class RangeDependency<a href="rdd: RDD[T], inStart: Int, outStart: Int, length: Int" target="_blank" rel="noopener">T</a> extends NarrowDependency<a href="rdd">T</a> {</p>
+<p>　　override def getParents(partitionId: Int): List[Int] = {<br>　　　　if (partitionId &gt;= outStart &amp;&amp; partitionId &lt; outStart + length) {<br>　　　　　　List(partitionId - outStart + inStart)<br>　　　　} else {<br>　　　　　　Nil<br>　　　　}<br>　　}<br>}</p>
+</blockquote>
+</li>
+<li><p><strong>宽依赖</strong>的实现只有一种：<code>ShuffleDependency</code></p>
+<blockquote>
+<p>class ShuffleDependency[K, V, C] extends Dependency[Product2[K, V]] { … }</p>
+</blockquote>
+</li>
+<li><p><strong>窄依赖|宽依赖，可以通过dependencies方法来查看</strong>，以上面的wordCount为例，可以看到res4（reduceByKey）为宽依赖<br><img src="https://img.xiaoxiaomo.com/blog/img/spark14.jpg" alt="RDD依赖关系的划分（stage）"></p>
+</li>
+</ol>
+<h1 id="RDD依赖关系的划分（stage）"><a href="#RDD依赖关系的划分（stage）" class="headerlink" title="RDD依赖关系的划分（stage）"></a>RDD依赖关系的划分（stage）</h1><ul>
+<li><code>RDD依赖关系的划分</code>，RDD怎么被划分到一个stage里面？</li>
+</ul>
+<ol>
+<li>就是<strong>通过窄依赖和宽依赖来划分stage的</strong></li>
+<li>如果是窄依赖就他们放在一个Stage里面，<strong>遇到宽依赖就断开</strong>划分为另外一个stage</li>
+<li>如上面的workCount例子，就划分为了两个stage，在reduceByKey的时候断开了</li>
+<li>如下图，遇到groupByKey断开，为一个stage1，map、union为窄依赖遇到join断开划分为stage2，其余划分为stage3<br><img src="https://img.xiaoxiaomo.com/blog/img/spark12.jpg" alt="RDD依赖关系的划分（stage）"></li>
+</ol>
+<ul>
+<li>参考：</li>
+</ul>
+<ol>
+<li><a href="http://blog.csdn.net/wangxiaotongfan/article/details/51395769" target="_blank" rel="noopener">http://blog.csdn.net/wangxiaotongfan/article/details/51395769</a></li>
+<li><a href="http://www.cnblogs.com/zlslch/p/5723403.html" target="_blank" rel="noopener">http://www.cnblogs.com/zlslch/p/5723403.html</a></li>
+</ol>
+
+                
+<p class="red-link-context">
+    <a href="/2017/07/06/SparkStreaming-相关介绍/" rel="next" title="Spark Streaming--相关介绍">
+    上一篇：Spark Streaming--相关介绍
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/07/05/Spark-从Spark组件来看Spark的执行流程/" rel="next" title="Spark--从Spark组件来看Spark的执行流程">
+    下一篇：Spark--从Spark组件来看Spark的执行流程
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Spark--从RDD的角度来看Spark内部原理" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

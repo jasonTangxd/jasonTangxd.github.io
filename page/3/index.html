@@ -1,0 +1,895 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>第 3 页 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        
+
+<div class="slider">
+    <ul class="slides">
+    
+       <li>
+           <a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">
+               <img class="slider-image" src="https://img.xiaoxiaomo.com/blog/img/sliderbg15.jpg">
+               <div class="caption center-align">
+                 <h4>Spark 系列博客</h3>
+                 <h5 class="light grey-text text-lighten-3">从Spark组件来看Spark的执行流程</h5>
+               </div>
+           </a>
+       </li>
+    
+       <li>
+           <a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-一/">
+               <img class="slider-image" src="https://img.xiaoxiaomo.com/blog/img/sliderbg16.jpeg">
+               <div class="caption left-align">
+                 <h4>Spark Streaming--应用与实战</h3>
+                 <h5 class="light grey-text text-lighten-3">streaming 系列博客详细讲解</h5>
+               </div>
+           </a>
+       </li>
+    
+       <li>
+           <a href="http://blog.xiaoxiaomo.com/2016/07/08/Hadoop-MapReduce源码分析">
+               <img class="slider-image" src="https://img.xiaoxiaomo.com/blog/img/sliderbg17.png">
+               <div class="caption right-align">
+                 <h4>Hadoop-MapReduce 源码分析</h3>
+                 <h5 class="light grey-text text-lighten-3">详细图解</h5>
+               </div>
+           </a>
+       </li>
+    
+   </ul>
+ </div>
+
+
+
+<div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/21/Linux-gcc-g-离线安装/">Linux--gcc/g++离线安装</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-21T09:25:50.000Z"><a href="/2017/11/21/Linux-gcc-g-离线安装/">2017-11-21</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　由于线上服务器没办法访问外网，于是<strong>很多软件都没办法在线安装</strong>。<code>gcc/g++</code> 是我们在编译软件时经常需要的软件，<code>gcc/g++</code>依赖的包还有点多。<br>具体安装一般是在网上搜一下按照流程安装就行了，自己这两三年来感觉搜索安装了好几次！！！决定还是把这个小小的流程记录下来吧，以便下次方便。</p>
+<h1 id="查看并下载对应版本"><a href="#查看并下载对应版本" class="headerlink" title="查看并下载对应版本"></a>查看并下载对应版本</h1><ul>
+<li><strong>常见异常</strong>：<code>configure: error: no accepttable C compiler found in $PATH</code> 就是缺少gcc导致，如下图编译安装python时发现缺少gcc：<br><img src="https://img.xiaoxiaomo.com/blog/img/linux-gcc01.png" alt="linux-gcc"> </li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/21/Linux-gcc-g-离线安装/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/21/Cassandra-用户密码设置/">Cassandra--用户密码设置</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-21T09:25:05.000Z"><a href="/2017/11/21/Cassandra-用户密码设置/">2017-11-21</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　<strong>Cassandra 用户名密码设置</strong>，我使用的cassandra版本为3.11.1。本篇博客不仅仅演示Cassandra 用户密码的设置，还包括Cassandra 用户的一些更新删除的操作。下面一起来看看：</p>
+<h1 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h1><ol>
+<li><p><strong>默认cassandra是不需要账号密码的</strong>，授权信息默认如下配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">authenticator: AllowAllAuthenticator</span><br><span class="line">authorizer: AllowAllAuthorizer</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改<code>conf/cassandra.yaml</code>配置文件，<strong>然后重启</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">authenticator: PasswordAuthenticator</span><br><span class="line">authorizer: CassandraAuthorizer</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/21/Cassandra-用户密码设置/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/16/Cassandra-Java-API/">Cassandra--Java API</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-16T06:58:56.000Z"><a href="/2017/11/16/Cassandra-Java-API/">2017-11-16</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　前面已经说了一种访问<code>Cassandra</code>的一种方式CQL，本篇博客还讲解一下其他的方式访问，主要是以Java API的方式，当然它是支持很多语言的，看看下图就知道了：<br><img src="https://img.xiaoxiaomo.com/blog/img/cassandra20.png" alt=""><br>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/16/Cassandra-Java-API/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/16/Cassandra-CQL/">Cassandra--CQL</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-16T06:58:26.000Z"><a href="/2017/11/16/Cassandra-CQL/">2017-11-16</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本篇博客主要讲Cassandra的基本操作，主要是通过<code>cqlsh</code>客户端命令。这个也是我们常用的基本操作，后面再会讲解一下通过java api的方式操作Cassandra。<br>下面让我们一起来熟悉吧！</p>
+<h1 id="启动cqlsh"><a href="#启动cqlsh" class="headerlink" title="启动cqlsh"></a>启动cqlsh</h1><ul>
+<li><p><code>启动cqlsh</code>，如果rpc_address不是设置为0.0.0.0，直接输入cqlsh是会拒绝连接的<br><em>Connection error: (‘Unable to connect to any servers’, {‘127.0.0.1’: error(111, “Tried connecting to [(‘127.0.0.1’, 9042)]. Last error: Connection refused”)})</em></p>
+</li>
+<li><p>需要指定ip，具体操作如下图（我们上篇博客设置为节点的ip）<br><img src="https://img.xiaoxiaomo.com/blog/img/cassandra09.jpg" alt=""></p>
+</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/16/Cassandra-CQL/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/16/Cassandra-配置文件讲解/">Cassandra--配置文件讲解</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-16T06:54:48.000Z"><a href="/2017/11/16/Cassandra-配置文件讲解/">2017-11-16</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本篇博客主要讲Cassandra的配置文件，主要是说的<code>cassandra.yaml</code>里面的一些配置项。这里会把主要的都列出来，以供参考，后续有新的东西也会持续补充更新。</p>
+<h2 id="Cassandra配置文件"><a href="#Cassandra配置文件" class="headerlink" title="Cassandra配置文件"></a>Cassandra配置文件</h2><ol>
+<li>在0.7版本之前,cassandra的配置文件是<code>conf/storage-conf.xml</code>文件。0.7之后是<code>conf/cassandra.yaml</code>文件</li>
+<li>可以通过-Dcassandra.conf指定需要加载的配置文件，例如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-Dcassandra.config=alternate-cassandra.yaml</span><br><span class="line">-Dcassandra.config=http://www.example.com/remote-cassandra.yaml</span><br><span class="line">-Dcassandra.config=file:///home/me/external-local-cassandra.yaml</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/16/Cassandra-配置文件讲解/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+
+    <ul class="pagination center-align">
+    <li class="">
+        <a href="/page/2/"><i class="fa fa-angle-left"></i></a>
+    </li>
+    
+    
+        <li class="waves-effect"><a href="/">1</a></li>
+    
+        <li class="waves-effect"><a href="/page/2">2</a></li>
+    
+        <li class="active red"><a href="/page/3">3</a></li>
+    
+        <li class="waves-effect"><a href="/page/4">4</a></li>
+    
+        <li class="waves-effect"><a href="/page/5">5</a></li>
+    
+        <li class="waves-effect"><a href="/page/6">6</a></li>
+    
+        <li class="waves-effect"><a href="/page/7">7</a></li>
+    
+        <li class="waves-effect"><a href="/page/8">8</a></li>
+    
+        <li class="waves-effect"><a href="/page/9">9</a></li>
+    
+        <li class="waves-effect"><a href="/page/10">10</a></li>
+    
+        <li class="waves-effect"><a href="/page/11">11</a></li>
+    
+        <li class="waves-effect"><a href="/page/12">12</a></li>
+    
+        <li class="waves-effect"><a href="/page/13">13</a></li>
+    
+        <li class="waves-effect"><a href="/page/14">14</a></li>
+    
+        <li class="waves-effect"><a href="/page/15">15</a></li>
+    
+        <li class="waves-effect"><a href="/page/16">16</a></li>
+    
+        <li class="waves-effect"><a href="/page/17">17</a></li>
+    
+        <li class="waves-effect"><a href="/page/18">18</a></li>
+    
+        <li class="waves-effect"><a href="/page/19">19</a></li>
+    
+        <li class="waves-effect"><a href="/page/20">20</a></li>
+    
+        <li class="waves-effect"><a href="/page/21">21</a></li>
+    
+        <li class="waves-effect"><a href="/page/22">22</a></li>
+    
+        <li class="waves-effect"><a href="/page/23">23</a></li>
+    
+        <li class="waves-effect"><a href="/page/24">24</a></li>
+    
+        <li class="waves-effect"><a href="/page/25">25</a></li>
+    
+        <li class="waves-effect"><a href="/page/26">26</a></li>
+    
+        <li class="waves-effect"><a href="/page/27">27</a></li>
+    
+        <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+    
+    <li class="">
+        <a href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    </li>
+ </ul>
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

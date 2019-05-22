@@ -1,0 +1,698 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Storm--故障容忍和消息可靠性 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Storm--故障容忍和消息可靠性"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Storm--故障容忍和消息可靠性</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-06-10T02:47:15.000Z"><a href="/2016/06/10/Storm-故障容忍和消息可靠性/">2016-06-10</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Storm/" class="chip red lighten-1">Storm</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#故障容忍"><span class="section table-of-contents-text">故障容忍</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#概念"><span class="section table-of-contents-text">概念</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#示例"><span class="section table-of-contents-text">示例</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#消息可靠性"><span class="section table-of-contents-text">消息可靠性</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#可靠性"><span class="section table-of-contents-text">可靠性</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#可靠性设置"><span class="section table-of-contents-text">可靠性设置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#acker示例"><span class="section table-of-contents-text">acker示例</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　如果Storm集群中某个Worker挂了会怎样？Nimbus和Supervisor挂掉了又会怎样？Storm流式处理数据又是怎样保证每条数据都能完全被处理的呢？这将是本博客讨论的重点，<strong>Storm的故障容忍</strong>，以及<strong>Storm的消息可靠性</strong>和<strong>Acker机制</strong>。</p>
+<a id="more"></a>
+<h2 id="故障容忍"><a href="#故障容忍" class="headerlink" title="故障容忍"></a>故障容忍</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><p><strong>Worker进程不会因Nimbus或者Supervisor的挂掉而受到影响</strong></p>
+<blockquote>
+<ol>
+<li><code>worker进程死掉</code>： Supervisor会重启它。如果这个Worker连续在启动时失败，并且无法让Nimbus观察到它的心跳，Nimbus将这个Worker重新分配到另一台机器上。</li>
+<li><code>supervisor进程死掉</code>： 这样不会影响之前已经提交的topology的运行，只是后期不会再向这个节点分配任务了。</li>
+<li><code>nimbus进程死掉</code>： 这样不会影响之前已经提交的topology的运行，只是后期不能向集群中提交topology了。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Nimbus和Supervisor daemon进程</strong>，设计成快速失败(无论何时当遇到任何异常情况，将会执行自毁)和无状态（所有的状态都保存在Zookeeper或者磁盘上）。</p>
+</li>
+<li><strong>Nimbus和Supervisor daemon进程</strong>，必须在监控下运行，如使用daemontools或者monit工具。</li>
+<li><strong>Nimbus是会有单点故障的问题</strong>，但Nimbus进程挂掉也不会引起任何灾难发生。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a><strong>示例</strong></h3><ul>
+<li>我这里有一个一主两从的节点，从节点主机名为xxo09、xxo10。然后向集群中提交了一个求和的topology，如下图所示：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160610122144.jpg" alt="首先，向Storm集群提交了一个求和topology"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160610122850.jpg" alt="查看Storm UI,发现spout和bolt都在xxo10上"></li>
+<li><p><strong>kill worker进程</strong><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160610123741.jpg" alt="kill 掉xxo10上worker进程，自动在xxo09上启动了"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160610124040.jpg" alt="Worker总topology重新分配到xxo09机器上"></p>
+</li>
+<li><p><strong>kill supervisor进程</strong><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160610130416.jpg" alt="kill 掉supervisor进程"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160610130459.jpg" alt="worker继续在工作"></p>
+</li>
+</ul>
+<h2 id="消息可靠性"><a href="#消息可靠性" class="headerlink" title="消息可靠性"></a>消息可靠性</h2><p>上面我们讨论了，storm的故障容错，下面我们继续来看一看strom是如何保证消息的可靠性的。</p>
+<h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><ol>
+<li>在Topology中，Spout通过SpoutOutputCollector的emit()方法发射一个tuple(源)即消息。而后经过在该Topology中定义的多个Bolt处理时，可能会产生一个或多个新的Tuple。源Tuple和新产生的Tuple便构成了一个<strong>Tuple树</strong>。</li>
+<li>当整棵<strong>Tuple树</strong>被处理完成，才算一个Tuple被完全处理，其中任何一个节点的Tuple处理失败或超时，则整棵<strong>Tuple树</strong>处理失败。</li>
+<li><strong>Storm的消息可靠性</strong> : 指的是storm保证每个tuple都能被toplology完全处理。而且处理的结果要么成功要么失败。出现失败的原因可能有两种即节点处理失败或者处理超时。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.spoutOutputCollector.emit( <span class="keyword">new</span> Values(i) );</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="可靠性设置"><a href="#可靠性设置" class="headerlink" title="可靠性设置"></a>可靠性设置</h3><ul>
+<li><p>如何开启：在spout中发射数据的时候，带上messageid,messageid和tuple中的元素的关系需要程序员自己维护</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.collector.emit(new Values(<span class="string">"num"</span>),messageid)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果对消息进去确认：这个工作其实是由acker线程进行追踪tuple的状态，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当在bolt中对数据处理成功的时候，需要调用</span></span><br><span class="line"><span class="keyword">this</span>.collector.ack(tuple) <span class="comment">//这个时候，spout类中的ack方法会被调用。（这个方法是一个回调方法）</span></span><br><span class="line">		</span><br><span class="line"><span class="comment">//如果在bolt中处理tuple的时候，最后没有调用ack方法(前提是：开起来acker消息确认机制)</span></span><br><span class="line"><span class="comment">//这个时候，当达到tuple的处理超时时间的时候，这个方法会被默认处理失败。这样spout类中的fail方法就会被调用。</span></span><br><span class="line">config.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, <span class="number">10</span>); <span class="comment">//设置超时时间</span></span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line"><span class="comment">//针对多个bolt的topology，需要把bolt发射出来的tuple作为上一级tuple的一个衍生tuple，</span></span><br><span class="line"><span class="comment">//相当于把这些tuple组成一个tuple树，</span></span><br><span class="line"><span class="comment">//此时，只有所有衍生的tuple都调用ack方法的时候，spout中的ack方法才会被调用。保证tuple被完全处理</span></span><br><span class="line"><span class="keyword">this</span>.collector.emit(input,<span class="keyword">new</span> Values(value));</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="acker示例"><a href="#acker示例" class="headerlink" title="acker示例"></a>acker示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.acker;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> backtype.storm.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.generated.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.spout.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.task.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.topology.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.topology.base.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.tuple.*;</span><br><span class="line"><span class="keyword">import</span> backtype.storm.utils.Utils;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 求和</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/6/6.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AckerSumTopology</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger( AckerSumTopology.class ) ;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 自定义Spout</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SumSpout</span> <span class="keyword">extends</span> <span class="title">BaseRichSpout</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> SpoutOutputCollector collector;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span> ;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 该方法只会被调用一次</span></span><br><span class="line"><span class="comment">         * 做一些初始化的操作</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> map</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> collector</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">(Map map, TopologyContext context, SpoutOutputCollector collector)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.collector = collector;</span><br><span class="line">            i = <span class="number">0</span> ;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 会不停的执行，像一个死循环</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">nextTuple</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            i++;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//messageid和tuple是一一对应的</span></span><br><span class="line">            <span class="comment">//可以认为messageid 是tuple里面的数据主键id</span></span><br><span class="line">            <span class="comment">//messageid和tuple关系需要程序员自己去维护</span></span><br><span class="line">            <span class="comment">//注意：只有在发spout中发射tuple的时候带上messageid，才说明开启了消息确认机制</span></span><br><span class="line">            <span class="keyword">this</span>.collector.emit( <span class="keyword">new</span> Values(i) , i );</span><br><span class="line">            Utils.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> declarer</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</span><br><span class="line">            declarer.declare( <span class="keyword">new</span> Fields(<span class="string">"num"</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ack</span><span class="params">(Object msgId)</span> </span>&#123;</span><br><span class="line">            System.out.println( <span class="string">"消息msgId："</span>+msgId + <span class="string">"，处理成功！"</span> );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fail</span><span class="params">(Object msgId)</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"消息msgId："</span> + msgId + <span class="string">"，处理失败！"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 自定义Bolt</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SumBolt</span> <span class="keyword">extends</span> <span class="title">BaseRichBolt</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> OutputCollector collector;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 做初始化操作</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> map</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> collector</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(Map map, TopologyContext context, OutputCollector collector)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.collector = collector ;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 循环执行，当对应的spout有输出时，该方法就会被调用一次</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> tuple</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">"求和："</span> + tuple.getIntegerByField(<span class="string">"num"</span>));</span><br><span class="line"><span class="comment">//                if( tuple.getIntegerByField("num") &gt; 10 )&#123; //test 手动抛出异常</span></span><br><span class="line"><span class="comment">//                    throw new RuntimeException("num &gt; 10!") ;</span></span><br><span class="line"><span class="comment">//                &#125;</span></span><br><span class="line"><span class="comment">//                outputCollector.ack( tuple );</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> ( Exception e )&#123;</span><br><span class="line">                collector.fail( tuple);</span><br><span class="line">                logger.error(<span class="string">" execute tuple error! "</span> , e  );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        TopologyBuilder builder = <span class="keyword">new</span> TopologyBuilder();</span><br><span class="line">        builder.setSpout(<span class="string">"spout_1"</span>, <span class="keyword">new</span> SumSpout());</span><br><span class="line">        <span class="comment">//通过shuffleGrouping，可以指定bolt接收哪个组件发射出来的数据</span></span><br><span class="line">        builder.setBolt(<span class="string">"bolt_1"</span>,<span class="keyword">new</span> SumBolt()).setNumTasks(<span class="number">5</span>).shuffleGrouping(<span class="string">"spout_1"</span>);</span><br><span class="line"></span><br><span class="line">        LocalCluster cluster = <span class="keyword">new</span> LocalCluster();</span><br><span class="line">        Config conf = <span class="keyword">new</span> Config();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用.setNumTasks(5) 预留task，方便后期进行rebalance</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//设置超时</span></span><br><span class="line">        <span class="comment">////在指定的时间内，如果bolt没有确认tuple处理成功，那么系统会默认这个tuple处理失败</span></span><br><span class="line">        conf.put( Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS , <span class="number">10</span> ) ;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//集群</span></span><br><span class="line">        <span class="keyword">if</span>( args != <span class="keyword">null</span> &amp;&amp; args.length &gt; <span class="number">0</span> )&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                StormSubmitter.submitTopology(</span><br><span class="line">                    AckerSumTopology.class.getSimpleName() , conf , builder.createTopology() );</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//本地</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            cluster.submitTopology( <span class="string">"cluster_1"</span>, conf ,builder.createTopology());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                
+<p class="red-link-context">
+    <a href="/2016/06/10/Storm-DRPC/" rel="next" title="Storm--DRPC">
+    上一篇：Storm--DRPC
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/06/09/Storm-并行度/" rel="next" title="Storm--并行度">
+    下一篇：Storm--并行度
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Storm--故障容忍和消息可靠性" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

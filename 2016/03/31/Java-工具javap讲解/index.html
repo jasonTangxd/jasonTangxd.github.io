@@ -1,0 +1,709 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java-工具javap讲解 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java-工具javap讲解"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java-工具javap讲解</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-03-31T06:17:44.000Z"><a href="/2016/03/31/Java-工具javap讲解/">2016-03-31</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#基本语法"><span class="section table-of-contents-text">基本语法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#javap-l-命令"><span class="section table-of-contents-text">javap -l 命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#javap-pub-pro-pac-pri"><span class="section table-of-contents-text">javap -pub|pro|pac|pri</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#javap-c-命令"><span class="section table-of-contents-text">javap -c 命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#javap-verbose"><span class="section table-of-contents-text">javap -verbose</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<code>javap</code>，是Java class文件分解器，反编译class文件，也可以查看java编译器生成的字节码。主要用于分解class文件。学习这个工具之前可以先去简单了解一下<a href="http://blog.xiaoxiaomo.com/2016/03/31/Java-%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/">class类文件结构</a>。</p>
+<a id="more"></a>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><p>命令格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap [option] class文件（没有后缀名）</span><br></pre></td></tr></table></figure>
+<p>如果[option]为空，javap将输出传递给它的类的public域及方法，并输出到标准输出设备上（默认I/O为控制台）。如下代码，先javac编译源码,然后javap反编译class文件，注意不需要添加“.class”后缀。源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.demo.util;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/3/31.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavapDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> num = <span class="number">10</span> ;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String name = <span class="string">"momo"</span> ;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String a = name ;</span><br><span class="line">        String b = <span class="string">"abc"</span> ;</span><br><span class="line">        String c = a+b ;</span><br><span class="line">        System.out.println(c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160331144401.png" alt=""></p>
+<ul>
+<li>下面来看一下javap的一些选项（常用的）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">javap -<span class="built_in">help</span> <span class="comment">#输出 javap 的帮助信息。</span></span><br><span class="line">javap　　-l   <span class="comment">#输出行及局部变量表。</span></span><br><span class="line">javap -public <span class="comment">#只显示public类及成员。</span></span><br><span class="line">javap -protected <span class="comment">#只显示protected和public类及成员。</span></span><br><span class="line">javap -package <span class="comment">#只显示包、protected和public类及成员。这是缺省设置。</span></span><br><span class="line">javap -private <span class="comment">#显示所有类和成员。</span></span><br><span class="line">javap -s 输出内部类型签名。</span><br><span class="line">javap -c <span class="comment">#输出类中各方法的未解析的代码，即构成Java字节码的指令。</span></span><br><span class="line">javap -verbose <span class="comment">#输出堆栈大小、各方法的locals及args数,以及class文件的编译版本</span></span><br></pre></td></tr></table></figure>
+<h2 id="javap-l-命令"><a href="#javap-l-命令" class="headerlink" title="javap -l 命令"></a>javap -l 命令</h2><p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160331162656.png" alt=""></p>
+<p><strong>public com.xxo.demo.util.JavapDemo();</strong> 表示的默认的无参构造函数，</p>
+<h2 id="javap-pub-pro-pac-pri"><a href="#javap-pub-pro-pac-pri" class="headerlink" title="javap -pub|pro|pac|pri"></a>javap -pub|pro|pac|pri</h2><ul>
+<li>来简单看一下<code>javap -public</code></li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160331150306.png" alt=""></p>
+<p>就会显示出类中所用的public的类，构造方法，全局变量，局部变量就不会在此显示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class com.xxo.demo.util.JavapDemo extends java.lang.Object&#123;//类信息</span><br><span class="line">    public static java.lang.String name;//public全部变量</span><br><span class="line">    public com.xxo.demo.util.JavapDemo();//默认的构造方法</span><br><span class="line">    public static void main(java.lang.String[]);//main方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面来修改一下源代码，</p>
+<ol>
+<li>私有化一下默认构造方法，然后重写一下带参构造方法</li>
+<li>定义一个protected的全局变量</li>
+<li>private的HashMap类型的变量</li>
+<li>修改后javac编译源码</li>
+</ol>
+<p>源码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxo.demo.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * javap Demo</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/3/31.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavapDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> num = <span class="number">10</span> ;<span class="comment">//私有全局变量</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String name = <span class="string">"momo"</span> ;<span class="comment">//共有全局变量</span></span><br><span class="line">    <span class="keyword">protected</span> Double height = <span class="number">175.0</span> ;<span class="comment">//protected</span></span><br><span class="line">    <span class="keyword">private</span> HashMap map ;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">JavapDemo</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JavapDemo</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.num = num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String a = name ;</span><br><span class="line">        String b = <span class="string">"abc"</span> ;</span><br><span class="line">        String c = a+b ;</span><br><span class="line">        System.out.println(c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用<code>javap -protected</code>查看，显示protected和public类及成员：</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160331161232.png" alt=""></p>
+<ul>
+<li>使用<code>javap -package</code>查看，会显示包、protected和public类及成员：</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160331162124.png" alt=""></p>
+<ul>
+<li>使用<code>javap -private</code>查看，会显示所用成员：</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160331162204.png" alt=""></p>
+<h2 id="javap-c-命令"><a href="#javap-c-命令" class="headerlink" title="javap -c 命令"></a>javap -c 命令</h2><p>javap -c #输出类中各方法的未解析的代码，即构成Java字节码的指令。我们这里还是使用上例中的源码，输入命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$  javap -c JavapDemo</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编译后结果：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">Compiled from <span class="string">"JavapDemo.java"</span>                                                             </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">xxo</span>.<span class="title">demo</span>.<span class="title">util</span>.<span class="title">JavapDemo</span> <span class="title">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span>&#123;</span>                         </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> java.lang.String name; <span class="comment">//静态的全局变量name</span></span><br><span class="line">                                                                                           </span><br><span class="line"><span class="keyword">protected</span> java.lang.Double height;<span class="comment">//Double类型的变量height</span></span><br><span class="line">                                                                                           </span><br><span class="line"><span class="keyword">public</span> com.xxo.demo.util.JavapDemo(<span class="keyword">int</span>);<span class="comment">//带参构造函数</span></span><br><span class="line">  Code:                                                                                    </span><br><span class="line">   <span class="number">0</span>:   aload_0 <span class="comment">//将引用类型的局部变量加载到操作栈，即this</span></span><br><span class="line">   <span class="number">1</span>:   invokespecial   #<span class="number">1</span>; <span class="comment">//Method java/lang/Object."&lt;init&gt;":()V //实例化对象this  </span></span><br><span class="line">   <span class="number">4</span>:   aload_0 <span class="comment">//将引用类型的局部变量加载到操作栈，即this      </span></span><br><span class="line">   <span class="number">5</span>:   bipush  <span class="number">10</span> <span class="comment">//将一个常量加载到操作数栈，10</span></span><br><span class="line">   <span class="number">7</span>:   putfield        #<span class="number">2</span>; <span class="comment">//Field num:I //设置类中字段this.num的值为10</span></span><br><span class="line">   <span class="number">10</span>:  aload_0    <span class="comment">//加载局部变量表中的数据到操作栈中，即this  </span></span><br><span class="line">   <span class="number">11</span>:  ldc2_w  #<span class="number">3</span>; <span class="comment">//double 175.0d  //将double类型的常量175.0d加载到操作数栈</span></span><br><span class="line">   <span class="number">14</span>:  invokestatic    #<span class="number">5</span>; <span class="comment">//Method java/lang/Double.valueOf:(D)Ljava/lang/Double;//调Double的valueOf方法</span></span><br><span class="line">   <span class="number">17</span>:  putfield        #<span class="number">6</span>; <span class="comment">//Field height:Ljava/lang/Double;//设置类中字段this.height的值</span></span><br><span class="line">   <span class="number">20</span>:  aload_0 <span class="comment">//加载局部变量表中的数据到操作栈中，即this</span></span><br><span class="line">   <span class="number">21</span>:  iload_1 <span class="comment">// 将int类型的局部变量加载到操作栈,即方法传递的num</span></span><br><span class="line">   <span class="number">22</span>:  putfield        #<span class="number">2</span>; <span class="comment">//Field num:I //设置类中字段this.num的值为num</span></span><br><span class="line">   <span class="number">25</span>:  <span class="keyword">return</span>  <span class="comment">//没有返回值</span></span><br><span class="line">                                                                                           </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(java.lang.String[]); <span class="comment">//main方法         </span></span><br><span class="line">  Code:                                                                                    </span><br><span class="line">   <span class="number">0</span>:   getstatic       #<span class="number">7</span>; <span class="comment">//Field name:Ljava/lang/String; //获取静态变量name，并压入栈顶</span></span><br><span class="line">   <span class="number">3</span>:   astore_1    <span class="comment">//将变量从操作数栈存储到局部变量中，（弹栈），即存入a中</span></span><br><span class="line">   <span class="number">4</span>:   ldc     #<span class="number">8</span>; <span class="comment">//String abc //字符串常量加载到操作数栈,abc</span></span><br><span class="line">   <span class="number">6</span>:   astore_2    <span class="comment">//将abc存储到局部变量表中，b中</span></span><br><span class="line">   <span class="number">7</span>:   <span class="keyword">new</span>     #<span class="number">9</span>; <span class="comment">//class java/lang/StringBuilder  //创建一个StringBuilder对象                                      </span></span><br><span class="line">   <span class="number">10</span>:  dup        <span class="comment">//直接操作操作数栈</span></span><br><span class="line">   <span class="number">11</span>:  invokespecial   #<span class="number">10</span>; <span class="comment">//Method java/lang/StringBuilder."&lt;init&gt;":()V //</span></span><br><span class="line">   <span class="number">14</span>:  aload_1 <span class="comment">//加载局部变量表中的数据到操作栈中,即a的数据（第四条指令把a已加载到局部变量表中）</span></span><br><span class="line">   <span class="number">15</span>:  invokevirtual   #<span class="number">11</span>; <span class="comment">//Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span></span><br><span class="line">				<span class="comment">//调用Builder的append方法</span></span><br><span class="line">   <span class="number">18</span>:  aload_2 <span class="comment">//加载局部变量表中的数据到操作栈中,即b的数据</span></span><br><span class="line">   <span class="number">19</span>:  invokevirtual   #<span class="number">11</span>; <span class="comment">//Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span></span><br><span class="line">				<span class="comment">//调用Builder的append方法                                                                   </span></span><br><span class="line">   <span class="number">22</span>:  invokevirtual   #<span class="number">12</span>; <span class="comment">//Method java/lang/StringBuilder.toString:()Ljava/lang/String;//调用Builder的toString方法</span></span><br><span class="line">                                                                                           </span><br><span class="line">   <span class="number">25</span>:  astore_3 <span class="comment">//将a+b的结果存储到局部变量表中，即c中</span></span><br><span class="line">   <span class="number">26</span>:  getstatic       #<span class="number">13</span>; <span class="comment">//Field java/lang/System.out:Ljava/io/PrintStream;//获取输出流</span></span><br><span class="line">   <span class="number">29</span>:  aload_3 <span class="comment">//加载局部变量表中的数据到操作栈中（第25条指令把c加载到了局部变量表）</span></span><br><span class="line">   <span class="number">30</span>:  invokevirtual   #<span class="number">14</span>; <span class="comment">//Method java/io/PrintStream.println:(Ljava/lang/String;)V //并输出打印</span></span><br><span class="line">   <span class="number">33</span>:  <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line">                                  </span><br><span class="line"><span class="keyword">static</span> &#123;&#125;;                                                                                 </span><br><span class="line">  Code:                                                                                    </span><br><span class="line">   <span class="number">0</span>:   ldc     #<span class="number">15</span>; <span class="comment">//String momo   //字符串常量加载到操作数栈,"momo"</span></span><br><span class="line">   <span class="number">2</span>:   putstatic       #<span class="number">7</span>; <span class="comment">//Field name:Ljava/lang/String; //设置类中字段name的值为momo</span></span><br><span class="line">   <span class="number">5</span>:   <span class="keyword">return</span> <span class="comment">//没有返回值</span></span><br><span class="line">                   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="javap-verbose"><a href="#javap-verbose" class="headerlink" title="javap -verbose"></a>javap -verbose</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Compiled from <span class="string">"JavapDemo.java"</span></span><br><span class="line">public class com.xxo.demo.util.JavapDemo extends java.lang.Object</span><br><span class="line">  SourceFile: <span class="string">"JavapDemo.java"</span></span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 50</span><br><span class="line">  Constant pool:</span><br><span class="line">const <span class="comment">#1 = Method       #17.#36;        //  java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">const <span class="comment">#2 = Field        #16.#37;        //  com/xxo/demo/util/JavapDemo.num:I</span></span><br><span class="line">const <span class="comment">#3 = double       175.0d;</span></span><br><span class="line">const <span class="comment">#5 = Method       #38.#39;        //  java/lang/Double.valueOf:(D)Ljava/lang/Double; const #6 = Field        #16.#40;        //  com/xxo/demo/util/JavapDemo.height:Ljava/lang/Double;</span></span><br><span class="line">const <span class="comment">#7 = Field        #16.#41;        //  com/xxo/demo/util/JavapDemo.name:Ljava/lang/String;</span></span><br><span class="line">const <span class="comment">#8 = String       #42;    //  abc</span></span><br><span class="line">const <span class="comment">#9 = class        #43;    //  java/lang/StringBuilder</span></span><br><span class="line">const <span class="comment">#10 = Method      #9.#36; //  java/lang/StringBuilder."&lt;init&gt;":()V</span></span><br><span class="line">const <span class="comment">#11 = Method      #9.#44; //  java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span></span><br><span class="line">const <span class="comment">#12 = Method      #9.#45; //  java/lang/StringBuilder.toString:()Ljava/lang/String;</span></span><br><span class="line">const <span class="comment">#13 = Field       #46.#47;        //  java/lang/System.out:Ljava/io/PrintStream;</span></span><br><span class="line">const <span class="comment">#14 = Method      #48.#49;        //  java/io/PrintStream.println:(Ljava/lang/String;)V</span></span><br><span class="line">const <span class="comment">#15 = String      #50;    //  momo</span></span><br><span class="line">const <span class="comment">#16 = class       #51;    //  com/xxo/demo/util/JavapDemo</span></span><br><span class="line">const <span class="comment">#17 = class       #52;    //  java/lang/Object</span></span><br><span class="line">const <span class="comment">#18 = Asciz       num;</span></span><br><span class="line">const <span class="comment">#19 = Asciz       I;</span></span><br><span class="line">const <span class="comment">#20 = Asciz       name;</span></span><br><span class="line">const <span class="comment">#21 = Asciz       Ljava/lang/String;;</span></span><br><span class="line">const <span class="comment">#22 = Asciz       height;</span></span><br><span class="line">const <span class="comment">#23 = Asciz       Ljava/lang/Double;;</span></span><br><span class="line">const <span class="comment">#24 = Asciz       map;</span></span><br><span class="line">const <span class="comment">#25 = Asciz       Ljava/util/HashMap;;</span></span><br><span class="line">const <span class="comment">#26 = Asciz       &lt;init&gt;;</span></span><br><span class="line">const <span class="comment">#27 = Asciz       ()V;</span></span><br><span class="line">const <span class="comment">#28 = Asciz       Code;</span></span><br><span class="line">const <span class="comment">#29 = Asciz       LineNumberTable;</span></span><br><span class="line">const <span class="comment">#30 = Asciz       (I)V;</span></span><br><span class="line">const <span class="comment">#31 = Asciz       main;</span></span><br><span class="line">const <span class="comment">#32 = Asciz       ([Ljava/lang/String;)V;</span></span><br><span class="line">const <span class="comment">#33 = Asciz       &lt;clinit&gt;;</span></span><br><span class="line">const <span class="comment">#34 = Asciz       SourceFile;</span></span><br><span class="line">const <span class="comment">#35 = Asciz       JavapDemo.java;</span></span><br><span class="line">const <span class="comment">#36 = NameAndType #26:#27;//  "&lt;init&gt;":()V</span></span><br><span class="line">const <span class="comment">#37 = NameAndType #18:#19;//  num:I</span></span><br><span class="line">const <span class="comment">#38 = class       #53;    //  java/lang/Double</span></span><br><span class="line">const <span class="comment">#39 = NameAndType #54:#55;//  valueOf:(D)Ljava/lang/Double;</span></span><br><span class="line">const <span class="comment">#40 = NameAndType #22:#23;//  height:Ljava/lang/Double;</span></span><br><span class="line">const <span class="comment">#41 = NameAndType #20:#21;//  name:Ljava/lang/String;</span></span><br><span class="line">const <span class="comment">#42 = Asciz       abc;</span></span><br><span class="line">const <span class="comment">#43 = Asciz       java/lang/StringBuilder;</span></span><br><span class="line">const <span class="comment">#44 = NameAndType #56:#57;//  append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span></span><br><span class="line">const <span class="comment">#45 = NameAndType #58:#59;//  toString:()Ljava/lang/String;</span></span><br><span class="line">const <span class="comment">#46 = class       #60;    //  java/lang/System</span></span><br><span class="line">const <span class="comment">#47 = NameAndType #61:#62;//  out:Ljava/io/PrintStream;</span></span><br><span class="line">const <span class="comment">#48 = class       #63;    //  java/io/PrintStream</span></span><br><span class="line">const <span class="comment">#49 = NameAndType #64:#65;//  println:(Ljava/lang/String;)V</span></span><br><span class="line">const <span class="comment">#50 = Asciz       momo;</span></span><br><span class="line">const <span class="comment">#51 = Asciz       com/xxo/demo/util/JavapDemo;</span></span><br><span class="line">const <span class="comment">#52 = Asciz       java/lang/Object;</span></span><br><span class="line">const <span class="comment">#53 = Asciz       java/lang/Double;</span></span><br><span class="line">const <span class="comment">#54 = Asciz       valueOf;</span></span><br><span class="line">const <span class="comment">#55 = Asciz       (D)Ljava/lang/Double;;</span></span><br><span class="line">const <span class="comment">#56 = Asciz       append;</span></span><br><span class="line">const <span class="comment">#57 = Asciz       (Ljava/lang/String;)Ljava/lang/StringBuilder;;</span></span><br><span class="line">const <span class="comment">#58 = Asciz       toString;</span></span><br><span class="line">const <span class="comment">#59 = Asciz       ()Ljava/lang/String;;</span></span><br><span class="line">const <span class="comment">#60 = Asciz       java/lang/System;</span></span><br><span class="line">const <span class="comment">#61 = Asciz       out;</span></span><br><span class="line">const <span class="comment">#62 = Asciz       Ljava/io/PrintStream;;</span></span><br><span class="line">const <span class="comment">#63 = Asciz       java/io/PrintStream;</span></span><br><span class="line">const <span class="comment">#64 = Asciz       println;</span></span><br><span class="line">const <span class="comment">#65 = Asciz       (Ljava/lang/String;)V;</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">public static java.lang.String name;</span><br><span class="line"></span><br><span class="line">protected java.lang.Double height;</span><br><span class="line"></span><br><span class="line">public com/xxo.demo.util.JavapDemo(int);</span><br><span class="line">  Code:</span><br><span class="line">   Stack=3, Locals=2, Args_size=2</span><br><span class="line">   0:   aload_0</span><br><span class="line">   1:   invokespecial   <span class="comment">#1; //Method java/lang/Object."&lt;init&gt;":()V</span></span><br><span class="line">   4:   aload_0</span><br><span class="line">   5:   bipush  10</span><br><span class="line">   7:   putfield        <span class="comment">#2; //Field num:I</span></span><br><span class="line">   10:  aload_0</span><br><span class="line">   11:  ldc2_w  <span class="comment">#3; //double 175.0d</span></span><br><span class="line">   14:  invokestatic    <span class="comment">#5; //Method java/lang/Double.valueOf:(D)Ljava/lang/Double;</span></span><br><span class="line">   17:  putfield        <span class="comment">#6; //Field height:Ljava/lang/Double;</span></span><br><span class="line">   20:  aload_0</span><br><span class="line">   21:  iload_1</span><br><span class="line">   22:  putfield        <span class="comment">#2; //Field num:I</span></span><br><span class="line">   25:  <span class="built_in">return</span></span><br><span class="line">  LineNumberTable:</span><br><span class="line">   line 16: 0</span><br><span class="line">   line 10: 4</span><br><span class="line">   line 12: 10</span><br><span class="line">   line 17: 20</span><br><span class="line">   line 18: 25</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public static void main(java.lang.String[]);</span><br><span class="line">  Code:</span><br><span class="line">   Stack=2, Locals=4, Args_size=1</span><br><span class="line">   0:   getstatic       <span class="comment">#7; //Field name:Ljava/lang/String;</span></span><br><span class="line">   3:   astore_1</span><br><span class="line">   4:   ldc     <span class="comment">#8; //String abc</span></span><br><span class="line">   6:   astore_2</span><br><span class="line">   7:   new     <span class="comment">#9; //class java/lang/StringBuilder</span></span><br><span class="line">   10:  dup</span><br><span class="line">   11:  invokespecial   <span class="comment">#10; //Method java/lang/StringBuilder."&lt;init&gt;":()V</span></span><br><span class="line">   14:  aload_1</span><br><span class="line">   15:  invokevirtual   <span class="comment">#11; //Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span></span><br><span class="line">   18:  aload_2</span><br><span class="line">   19:  invokevirtual   <span class="comment">#11; //Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span></span><br><span class="line">   22:  invokevirtual   <span class="comment">#12; //Method java/lang/StringBuilder.toString:()Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   25:  astore_3</span><br><span class="line">   26:  getstatic       <span class="comment">#13; //Field java/lang/System.out:Ljava/io/PrintStream;</span></span><br><span class="line">   29:  aload_3</span><br><span class="line">   30:  invokevirtual   <span class="comment">#14; //Method java/io/PrintStream.println:(Ljava/lang/String;)V</span></span><br><span class="line">   33:  <span class="built_in">return</span></span><br><span class="line">  LineNumberTable:</span><br><span class="line">   line 21: 0</span><br><span class="line">   line 22: 4</span><br><span class="line">   line 23: 7</span><br><span class="line">   line 24: 26</span><br><span class="line">   line 25: 33</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">static &#123;&#125;;</span><br><span class="line">  Code:</span><br><span class="line">   Stack=1, Locals=0, Args_size=0 //</span><br><span class="line">   0:   ldc     <span class="comment">#15; //String momo</span></span><br><span class="line">   2:   putstatic       <span class="comment">#7; //Field name:Ljava/lang/String;</span></span><br><span class="line">   5:   <span class="built_in">return</span></span><br><span class="line">  LineNumberTable:</span><br><span class="line">   line 11: 0</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>本篇博客就不一一讲解字节码指令的具体含义了，在后面的一篇博客”<a href="http://blog.xiaoxiaomo.com/2016/04/01/Java-%E5%AD%97%E8%8A%82%E7%A0%81%E6%8C%87%E4%BB%A4/">java-字节码</a>“，会详细的讲解字节码指令的具体含义。</p>
+</blockquote>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/01/Java-字节码指令/" rel="next" title="Java-字节码指令">
+    上一篇：Java-字节码指令
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/03/31/Java-类文件结构/" rel="next" title="Java-类文件结构">
+    下一篇：Java-类文件结构
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java-工具javap讲解" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

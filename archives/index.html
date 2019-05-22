@@ -1,0 +1,1453 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>归档 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    
+
+<nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（归档）</span>
+        
+
+        
+    </div>
+</nav>
+
+
+
+    <ul class="collapsible mt-0" data-collapsible="accordion">
+        
+        
+            <li>
+                <div class="collapsible-header active">
+                    <i class="fa fa-archive"></i>2019
+                </div>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        
+                            <a href="/2019/04/01/监控-jmxtrans+influxdb+Grafana/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2019-04-01T07:11:20.000Z">2019-04-01</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                监控--jmxtrans+influxdb+Grafana
+                            </a>
+                        
+                            <a href="/2019/03/15/Java-ConcurrentHashMap笔记整理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2019-03-15T11:09:21.000Z">2019-03-15</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--ConcurrentHashMap笔记整理
+                            </a>
+                        
+                            <a href="/2019/03/13/Java-线程安全与不安全&同步异步和锁/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2019-03-13T14:39:37.000Z">2019-03-13</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--线程安全与不安全&同步异步和锁
+                            </a>
+                        
+                            <a href="/2019/03/12/Java-HashMap笔记整理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2019-03-12T03:59:27.000Z">2019-03-12</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--HashMap笔记整理
+                            </a>
+                        
+                    </div>
+                </div>
+            </li>
+        
+            <li>
+                <div class="collapsible-header ">
+                    <i class="fa fa-archive"></i>2018
+                </div>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        
+                            <a href="/2018/05/29/Kerberos-给CDH集群添加Kerberos认证/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2018-05-29T03:58:26.000Z">2018-05-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Kerberos-给CDH集群添加Kerberos认证
+                            </a>
+                        
+                            <a href="/2018/03/11/Cloudera-Manager-新版本中的警告/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2018-03-11T04:09:09.000Z">2018-03-11</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cloudera Manager--新版本中的警告
+                            </a>
+                        
+                    </div>
+                </div>
+            </li>
+        
+            <li>
+                <div class="collapsible-header ">
+                    <i class="fa fa-archive"></i>2017
+                </div>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        
+                            <a href="/2017/12/14/SparkException-Could-not-find-CoarseGrainedScheduler-or-it-has-been-stopped/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-12-14T03:14:37.000Z">2017-12-14</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                SparkException: Could not find CoarseGrainedScheduler or it has been stopped.
+                            </a>
+                        
+                            <a href="/2017/11/29/Cloudera-Manager-Yarn用户资源隔离配置/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-29T09:54:50.000Z">2017-11-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cloudera Manager--Yarn用户资源隔离配置
+                            </a>
+                        
+                            <a href="/2017/11/29/Hive-Hive元数据HDFS路径异常/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-29T06:14:29.000Z">2017-11-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hive--Hive元数据HDFS路径异常
+                            </a>
+                        
+                            <a href="/2017/11/22/Cloudera-Manager-升级Kafka/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-22T06:41:29.000Z">2017-11-22</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cloudera Manager--升级Kafka
+                            </a>
+                        
+                            <a href="/2017/11/21/Linux-gcc-g-离线安装/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-21T09:25:50.000Z">2017-11-21</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--gcc/g++离线安装
+                            </a>
+                        
+                            <a href="/2017/11/21/Cassandra-用户密码设置/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-21T09:25:05.000Z">2017-11-21</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cassandra--用户密码设置
+                            </a>
+                        
+                            <a href="/2017/11/16/Cassandra-Java-API/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-16T06:58:56.000Z">2017-11-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cassandra--Java API
+                            </a>
+                        
+                            <a href="/2017/11/16/Cassandra-CQL/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-16T06:58:26.000Z">2017-11-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cassandra--CQL
+                            </a>
+                        
+                            <a href="/2017/11/16/Cassandra-配置文件讲解/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-16T06:54:48.000Z">2017-11-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cassandra--配置文件讲解
+                            </a>
+                        
+                            <a href="/2017/11/16/Cassandra-搭建单节点和集群/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-16T06:53:15.000Z">2017-11-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cassandra--搭建单节点和集群
+                            </a>
+                        
+                            <a href="/2017/11/15/Cassandra-概述与相关介绍/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-11-15T02:58:08.000Z">2017-11-15</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cassandra--概述与相关介绍
+                            </a>
+                        
+                            <a href="/2017/09/08/OWL-监控系统实战七上线运行/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-09-08T04:25:44.000Z">2017-09-08</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战七上线运行
+                            </a>
+                        
+                            <a href="/2017/08/28/OWL-监控系统实战六插件开发/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-08-28T03:47:07.000Z">2017-08-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战六插件开发
+                            </a>
+                        
+                            <a href="/2017/08/28/OWL-监控系统实战五二次开发/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-08-28T03:46:55.000Z">2017-08-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战五二次开发
+                            </a>
+                        
+                            <a href="/2017/08/28/OWL-监控系统实战四认识OpenTSDB/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-08-28T03:46:42.000Z">2017-08-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战四认识OpenTSDB
+                            </a>
+                        
+                            <a href="/2017/08/28/OWL-监控系统实战三源码阅读/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-08-28T03:46:17.000Z">2017-08-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战三源码阅读
+                            </a>
+                        
+                            <a href="/2017/08/28/OWL-监控系统实战二搭建梳理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-08-28T03:46:03.000Z">2017-08-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战二搭建梳理
+                            </a>
+                        
+                            <a href="/2017/08/28/OWL-监控系统实战一平台概述/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-08-28T02:25:44.000Z">2017-08-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                OWL--监控系统实战一平台概述
+                            </a>
+                        
+                            <a href="/2017/07/30/Hadoop-快速搭建大数据开发环境/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-07-30T03:23:48.000Z">2017-07-30</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--快速搭建大数据开发环境
+                            </a>
+                        
+                            <a href="/2017/07/06/SparkStreaming-相关介绍/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-07-06T01:59:32.000Z">2017-07-06</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--相关介绍
+                            </a>
+                        
+                            <a href="/2017/07/05/Spark-从RDD的角度来看Spark内部原理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-07-05T07:29:08.000Z">2017-07-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark--从RDD的角度来看Spark内部原理
+                            </a>
+                        
+                            <a href="/2017/07/05/Spark-从Spark组件来看Spark的执行流程/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-07-05T02:19:25.000Z">2017-07-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark--从Spark组件来看Spark的执行流程
+                            </a>
+                        
+                            <a href="/2017/06/29/SparkStreaming-应用与实战-六/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-29T09:45:48.000Z">2017-06-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--应用与实战(六)
+                            </a>
+                        
+                            <a href="/2017/06/29/SparkStreaming-应用与实战-五/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-29T07:18:59.000Z">2017-06-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--应用与实战(五)
+                            </a>
+                        
+                            <a href="/2017/06/10/SparkStreaming-应用与实战-四/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-10T09:21:49.000Z">2017-06-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--应用与实战(四)
+                            </a>
+                        
+                            <a href="/2017/06/10/SparkStreaming-应用与实战-三/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-10T09:03:10.000Z">2017-06-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--应用与实战(三)
+                            </a>
+                        
+                            <a href="/2017/06/10/SparkStreaming-应用与实战-二/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-10T08:56:00.000Z">2017-06-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--应用与实战(二)
+                            </a>
+                        
+                            <a href="/2017/06/10/SparkStreaming-应用与实战-一/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-10T08:37:10.000Z">2017-06-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Spark Streaming--应用与实战(一)
+                            </a>
+                        
+                            <a href="/2017/06/07/Linux-Linux相关系列博客/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-06-07T07:20:19.000Z">2017-06-07</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Linux相关系列博客
+                            </a>
+                        
+                            <a href="/2017/03/29/HBase-服务异常排查/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-03-29T14:46:43.000Z">2017-03-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                HBase--服务异常排查
+                            </a>
+                        
+                            <a href="/2017/03/26/Cloudera-Manager-升级/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-03-26T14:09:09.000Z">2017-03-26</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cloudera Manager--升级
+                            </a>
+                        
+                            <a href="/2017/03/11/Kylin-some-of-the-anomalies/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-03-11T05:50:29.000Z">2017-03-11</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Some of the anomalies about kylin
+                            </a>
+                        
+                            <a href="/2017/03/10/Kylin-about-the-installation/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2017-03-10T03:29:22.000Z">2017-03-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                About the installation of kylin
+                            </a>
+                        
+                    </div>
+                </div>
+            </li>
+        
+            <li>
+                <div class="collapsible-header ">
+                    <i class="fa fa-archive"></i>2016
+                </div>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        
+                            <a href="/2016/11/12/HBase-强制删除表/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-11-12T15:05:53.000Z">2016-11-12</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                HBase--强制删除表
+                            </a>
+                        
+                            <a href="/2016/11/11/VirtualBox-网络配置/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-11-11T14:44:19.000Z">2016-11-11</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                VirtualBox--网络配置
+                            </a>
+                        
+                            <a href="/2016/11/06/Oozie-安装配置及注意事项/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-11-06T07:29:07.000Z">2016-11-06</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Oozie--安装配置及注意事项
+                            </a>
+                        
+                            <a href="/2016/10/19/Sentry-通过Cloudera-Manager配置Sentry/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-10-18T16:30:59.000Z">2016-10-19</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Sentry--通过Cloudera Manager配置Sentry
+                            </a>
+                        
+                            <a href="/2016/10/18/Sentry-Sentry无法授权的问题/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-10-18T15:32:09.000Z">2016-10-18</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Sentry--Sentry无法授权的问题
+                            </a>
+                        
+                            <a href="/2016/10/16/SBT-Error-during-sbt-execution-Error-retrieving-required-libraries/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-10-16T13:21:20.000Z">2016-10-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                SBT--Error during sbt execution: Error retrieving required libraries
+                            </a>
+                        
+                            <a href="/2016/10/16/SBT-入门并在IDEA中使用/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-10-16T13:05:11.000Z">2016-10-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                SBT--入门并在IDEA中使用
+                            </a>
+                        
+                            <a href="/2016/08/24/Cloudera-CDH5-x-x集群IP更改/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-08-24T04:46:39.000Z">2016-08-24</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Cloudera--CDH5.x.x集群IP更改
+                            </a>
+                        
+                            <a href="/2016/08/13/未知数/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-08-13T08:17:35.000Z">2016-08-13</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                未知数
+                            </a>
+                        
+                            <a href="/2016/08/06/Hive-执行流程和源码解析/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-08-06T05:45:44.000Z">2016-08-06</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hive--执行流程和源码解析
+                            </a>
+                        
+                            <a href="/2016/07/08/Hadoop-MapReduce源码分析/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-07-07T16:25:47.000Z">2016-07-08</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--MapReduce源码分析
+                            </a>
+                        
+                            <a href="/2016/07/03/Hadoop-MapReduce详解/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-07-02T16:00:53.000Z">2016-07-03</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--MapReduce详解
+                            </a>
+                        
+                            <a href="/2016/06/26/Hadoop-HDFS之读写流程/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-26T02:40:50.000Z">2016-06-26</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--HDFS之读写流程
+                            </a>
+                        
+                            <a href="/2016/06/26/Hadoop-HDFS之DataNode/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-26T02:40:16.000Z">2016-06-26</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--HDFS之DataNode
+                            </a>
+                        
+                            <a href="/2016/06/25/Hadoop-HDFS之NameNode/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-25T02:39:27.000Z">2016-06-25</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--HDFS之NameNode
+                            </a>
+                        
+                            <a href="/2016/06/23/HBase-Shell/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-23T15:22:51.000Z">2016-06-23</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                HBase--Shell
+                            </a>
+                        
+                            <a href="/2016/06/10/Storm-DRPC/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-10T07:43:47.000Z">2016-06-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Storm--DRPC
+                            </a>
+                        
+                            <a href="/2016/06/10/Storm-故障容忍和消息可靠性/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-10T02:47:15.000Z">2016-06-10</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Storm--故障容忍和消息可靠性
+                            </a>
+                        
+                            <a href="/2016/06/09/Storm-并行度/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-09T11:16:19.000Z">2016-06-09</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Storm--并行度
+                            </a>
+                        
+                            <a href="/2016/06/08/Storm-实时数据处理框架/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-08T14:41:58.000Z">2016-06-08</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Storm--实时数据处理框架
+                            </a>
+                        
+                            <a href="/2016/06/07/算法-Paxos深入理解/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-07T00:18:21.000Z">2016-06-07</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                算法--Paxos深入理解
+                            </a>
+                        
+                            <a href="/2016/06/05/HBase-读写数据/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-05T04:09:35.000Z">2016-06-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                HBase--读写数据
+                            </a>
+                        
+                            <a href="/2016/06/04/HBase-伪分布和集群模式/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-04T06:39:01.000Z">2016-06-04</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                HBase--伪分布和集群模式
+                            </a>
+                        
+                            <a href="/2016/06/02/HBase-PleaseHoldException和TableNotDisabledException/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-06-02T13:16:02.000Z">2016-06-02</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                HBase--PleaseHoldException和TableNotDisabledException
+                            </a>
+                        
+                            <a href="/2016/05/28/Hive-数据类型与表/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-28T07:49:38.000Z">2016-05-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hive--数据类型与表
+                            </a>
+                        
+                            <a href="/2016/05/27/Hive-概述与使用/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-27T15:12:49.000Z">2016-05-27</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hive--概述与使用
+                            </a>
+                        
+                            <a href="/2016/05/23/Flume-负载均衡和故障转移/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-23T10:56:36.000Z">2016-05-23</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Flume--负载均衡和故障转移
+                            </a>
+                        
+                            <a href="/2016/05/22/Flume-集群及项目实战/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-22T12:56:24.000Z">2016-05-22</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Flume--集群及项目实战
+                            </a>
+                        
+                            <a href="/2016/05/22/Flume-日志收集/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-22T09:07:00.000Z">2016-05-22</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Flume--日志收集
+                            </a>
+                        
+                            <a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-20T15:19:35.000Z">2016-05-20</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Idea/Eclipse--Windows下调试Hadoop
+                            </a>
+                        
+                            <a href="/2016/05/19/Flume-kafka-source启动异常/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-19T14:02:24.000Z">2016-05-19</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Flume--kafka source启动异常
+                            </a>
+                        
+                            <a href="/2016/05/16/游记-晴空万里的阳台山/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-16T15:50:04.000Z">2016-05-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                游记--晴空万里的阳台山
+                            </a>
+                        
+                            <a href="/2016/05/14/Kafka-Consumer消费者/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-14T10:21:01.000Z">2016-05-14</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Kafka--Consumer消费者
+                            </a>
+                        
+                            <a href="/2016/05/14/Kafka-数据迁移/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-14T01:53:25.000Z">2016-05-14</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Kafka--集群及API操作
+                            </a>
+                        
+                            <a href="/2016/05/14/Kafka-集群及API操作/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-14T01:53:25.000Z">2016-05-14</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Kafka--集群及API操作
+                            </a>
+                        
+                            <a href="/2016/05/13/Kafka-分布式消息队列/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-13T13:31:34.000Z">2016-05-13</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Kafka--分布式消息队列
+                            </a>
+                        
+                            <a href="/2016/05/09/Hadoop-Ganglia集群监控/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-08T16:17:39.000Z">2016-05-09</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--Ganglia集群监控
+                            </a>
+                        
+                            <a href="/2016/05/09/Hadoop-2-0集群/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-08T16:09:39.000Z">2016-05-09</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--2.0集群
+                            </a>
+                        
+                            <a href="/2016/05/08/Hadoop-2-0伪分布式安装/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-08T14:30:26.000Z">2016-05-08</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--2.0伪分布式安装
+                            </a>
+                        
+                            <a href="/2016/05/05/Zookeeper-概述及应用/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-05T14:32:31.000Z">2016-05-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Zookeeper--概述及应用
+                            </a>
+                        
+                            <a href="/2016/05/05/Zookeeper-集群启动报错记录/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-05T11:13:01.000Z">2016-05-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Zookeeper--集群启动报错记录
+                            </a>
+                        
+                            <a href="/2016/05/05/Zookeeper-集群搭建/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-05T06:30:11.000Z">2016-05-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Zookeeper--集群搭建
+                            </a>
+                        
+                            <a href="/2016/05/02/Redis-优化详解/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-05-02T12:00:05.000Z">2016-05-02</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Redis--优化详解
+                            </a>
+                        
+                            <a href="/2016/04/28/Redis-集群/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-28T14:14:24.000Z">2016-04-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Redis--集群
+                            </a>
+                        
+                            <a href="/2016/04/28/Redis-主从复制/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-28T12:50:28.000Z">2016-04-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Redis--主从复制
+                            </a>
+                        
+                            <a href="/2016/04/28/Redis-安全策略/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-28T02:54:05.000Z">2016-04-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Redis--安全策略
+                            </a>
+                        
+                            <a href="/2016/04/28/Redis-持久化方案及备份/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-28T02:53:38.000Z">2016-04-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Redis--持久化方案及备份
+                            </a>
+                        
+                            <a href="/2016/04/27/Redis-基本命令及Java操作/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-27T11:37:21.000Z">2016-04-27</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Redis--基本命令及Java操作
+                            </a>
+                        
+                            <a href="/2016/04/26/Java-数据库连接池/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-26T14:25:03.000Z">2016-04-26</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--数据库连接池
+                            </a>
+                        
+                            <a href="/2016/04/25/Java-NIO之通道-文件通道/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-25T01:27:05.000Z">2016-04-25</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--NIO之通道(文件通道)
+                            </a>
+                        
+                            <a href="/2016/04/23/Java-NIO之通道/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-23T02:53:26.000Z">2016-04-23</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--NIO之通道
+                            </a>
+                        
+                            <a href="/2016/04/22/Java-NIO之缓冲区进阶/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-22T08:44:47.000Z">2016-04-22</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--NIO之缓冲区进阶
+                            </a>
+                        
+                            <a href="/2016/04/20/Linux-Maven和nexus私服搭建/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-20T06:35:49.000Z">2016-04-20</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Maven和nexus私服搭建
+                            </a>
+                        
+                            <a href="/2016/04/16/Java-NIO之缓冲区/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-16T08:45:04.000Z">2016-04-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java-NIO之缓冲区
+                            </a>
+                        
+                            <a href="/2016/04/16/Java-NIO之概述/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-16T05:54:55.000Z">2016-04-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java-NIO之概述
+                            </a>
+                        
+                            <a href="/2016/04/13/Java-网络编程InetAddr和URL/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-13T07:50:24.000Z">2016-04-13</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--网络编程InetAddr和URL
+                            </a>
+                        
+                            <a href="/2016/04/12/Java-网络编程TCP和UDP/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-12T01:36:45.000Z">2016-04-12</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--网络编程TCP和UDP
+                            </a>
+                        
+                            <a href="/2016/04/11/Hadoop-HDFS架构和Shell/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-11T14:14:10.000Z">2016-04-11</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop-HDFS架构和Shell
+                            </a>
+                        
+                            <a href="/2016/04/09/Hadoop-1-0伪分布式安装/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-09T02:55:13.000Z">2016-04-09</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--1.0伪分布式安装
+                            </a>
+                        
+                            <a href="/2016/04/09/Hadoop-安装前环境准备/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-09T01:16:06.000Z">2016-04-09</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--安装前环境准备
+                            </a>
+                        
+                            <a href="/2016/04/09/VMware-CentOS6-5安装/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-09T01:08:50.000Z">2016-04-09</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                VMware--CentOS6.5安装
+                            </a>
+                        
+                            <a href="/2016/04/08/Hadoop-简介/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-08T14:13:49.000Z">2016-04-08</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Hadoop--简介
+                            </a>
+                        
+                            <a href="/2016/04/05/Scala-IO操作/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-05T13:10:21.000Z">2016-04-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--IO操作
+                            </a>
+                        
+                            <a href="/2016/04/02/Scala-继承/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-02T11:43:10.000Z">2016-04-02</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--继承
+                            </a>
+                        
+                            <a href="/2016/04/01/Java-字节码指令/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-04-01T01:07:54.000Z">2016-04-01</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java-字节码指令
+                            </a>
+                        
+                            <a href="/2016/03/31/Java-工具javap讲解/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-31T06:17:44.000Z">2016-03-31</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java-工具javap讲解
+                            </a>
+                        
+                            <a href="/2016/03/31/Java-类文件结构/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-31T03:20:49.000Z">2016-03-31</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java-类文件结构
+                            </a>
+                        
+                            <a href="/2016/03/30/Scala-包/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-30T11:26:20.000Z">2016-03-30</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--包
+                            </a>
+                        
+                            <a href="/2016/03/29/Scala-对象/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-28T16:10:58.000Z">2016-03-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--对象
+                            </a>
+                        
+                            <a href="/2016/03/28/Scala-类/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-28T11:06:53.000Z">2016-03-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--类
+                            </a>
+                        
+                            <a href="/2016/03/27/Java-内部类/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-27T04:59:55.000Z">2016-03-27</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Java--内部类
+                            </a>
+                        
+                            <a href="/2016/03/26/Scala-映射和元祖/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-26T07:33:53.000Z">2016-03-26</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--映射和元祖
+                            </a>
+                        
+                            <a href="/2016/03/26/Scala-数组/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-26T02:19:15.000Z">2016-03-26</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--数组
+                            </a>
+                        
+                            <a href="/2016/03/25/Scala-控制结构和函数/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-25T14:04:26.000Z">2016-03-25</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--控制结构和函数
+                            </a>
+                        
+                            <a href="/2016/03/25/Scala-基础入门/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-25T10:34:53.000Z">2016-03-25</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Scala--基础入门
+                            </a>
+                        
+                            <a href="/2016/03/21/Linux-RPM软件包管理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-21T01:26:50.000Z">2016-03-21</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--RPM软件包管理
+                            </a>
+                        
+                            <a href="/2016/03/19/Linux-awk命令详解/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-19T03:32:22.000Z">2016-03-19</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--awk命令详解
+                            </a>
+                        
+                            <a href="/2016/03/17/Linux-grep和正则表达式/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-17T06:50:55.000Z">2016-03-17</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--grep和正则表达式
+                            </a>
+                        
+                            <a href="/2016/03/13/Linux-Shell函数及进阶/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-13T14:51:22.000Z">2016-03-13</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Shell函数及进阶
+                            </a>
+                        
+                            <a href="/2016/03/12/Linux-Shell循环结构/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-12T12:44:50.000Z">2016-03-12</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Shell循环结构
+                            </a>
+                        
+                            <a href="/2016/03/06/Linux-Shell条件判断及算术运算/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-06T12:40:07.000Z">2016-03-06</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Shell条件判断及算术运算
+                            </a>
+                        
+                            <a href="/2016/03/05/Linux-Shell编程入门/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-03-05T05:30:20.000Z">2016-03-05</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Shell编程入门
+                            </a>
+                        
+                            <a href="/2016/02/29/Linux-磁盘管理及挂载/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-29T06:46:59.000Z">2016-02-29</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--磁盘管理及挂载
+                            </a>
+                        
+                            <a href="/2016/02/28/Linux-常用VI-VIM命令/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-28T02:22:30.000Z">2016-02-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--常用VI/VIM命令
+                            </a>
+                        
+                            <a href="/2016/02/25/Linux-Mysql源码安装及配置/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-25T09:15:15.000Z">2016-02-25</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--MySQL源码安装及配置
+                            </a>
+                        
+                            <a href="/2016/02/23/Linux-软件安装之Redis/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-23T01:16:23.000Z">2016-02-23</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--软件安装之Redis
+                            </a>
+                        
+                            <a href="/2016/02/22/Linux-软件安装之Mysql/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-22T06:14:37.000Z">2016-02-22</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--软件安装之MySQL
+                            </a>
+                        
+                            <a href="/2016/02/18/Linux-系统进程管理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-18T06:15:15.000Z">2016-02-18</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--系统进程管理
+                            </a>
+                        
+                            <a href="/2016/02/16/Linux-操作系统及常用命令/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-16T06:10:57.000Z">2016-02-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--操作系统及常用命令
+                            </a>
+                        
+                            <a href="/2016/02/16/Linux-跟文件系统/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-16T01:24:50.000Z">2016-02-16</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--跟文件系统
+                            </a>
+                        
+                            <a href="/2016/02/14/Linux-基本配置修改/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-14T01:19:57.000Z">2016-02-14</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--基本配置修改
+                            </a>
+                        
+                            <a href="/2016/02/11/Linux-Yum源码安装配置/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-02-11T06:12:06.000Z">2016-02-11</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--Yum源码安装配置
+                            </a>
+                        
+                            <a href="/2016/01/28/Linux-压缩及归档/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-01-28T11:12:00.000Z">2016-01-28</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--压缩及归档
+                            </a>
+                        
+                            <a href="/2016/01/27/Linux-文本管理类命令/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-01-27T07:05:48.000Z">2016-01-27</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--文本管理类命令
+                            </a>
+                        
+                            <a href="/2016/01/22/Linux-软件安装之JDK/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-01-22T01:39:25.000Z">2016-01-22</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--软件安装之JDK
+                            </a>
+                        
+                            <a href="/2016/01/18/Linux-用户和组管理/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-01-18T07:00:36.000Z">2016-01-18</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                Linux--用户和组管理
+                            </a>
+                        
+                            <a href="/2016/01/15/VMware-克隆虚拟机后网络问题/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-01-15T12:44:35.000Z">2016-01-15</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                VMware--克隆虚拟机后网络问题
+                            </a>
+                        
+                            <a href="/2016/01/15/VMware-网络配置/" class="collection-item grey-text text-darken-1">
+                                <time datetime="2016-01-15T07:59:17.000Z">2016-01-15</time>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                VMware--网络配置
+                            </a>
+                        
+                    </div>
+                </div>
+            </li>
+        
+    </ul>
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

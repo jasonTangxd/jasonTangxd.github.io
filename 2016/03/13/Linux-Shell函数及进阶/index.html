@@ -1,0 +1,798 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Linux--Shell函数及进阶 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Linux--Shell函数及进阶"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Linux--Shell函数及进阶</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-03-13T14:51:22.000Z"><a href="/2016/03/13/Linux-Shell函数及进阶/">2016-03-13</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+            <a href="/tags/Shell/" class="chip red lighten-1">Shell</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#自定义函数"><span class="section table-of-contents-text">自定义函数</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#帮助命令"><span class="section table-of-contents-text">帮助命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#date"><span class="section table-of-contents-text">date</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#read"><span class="section table-of-contents-text">read</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#declare"><span class="section table-of-contents-text">declare</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#字符串操作"><span class="section table-of-contents-text">字符串操作</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#数组"><span class="section table-of-contents-text">数组</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#后台模式运行脚本"><span class="section table-of-contents-text">后台模式运行脚本</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#标准输入-输出"><span class="section table-of-contents-text">标准输入/输出</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#crontab定时器"><span class="section table-of-contents-text">crontab定时器</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本篇博客主要讲解<code>Shell函数</code>，及其<code>Shell编程相关的一些命令</code>。如对Shell基本用户不够清楚可查看博客<a href="http://blog.xiaoxiaomo.com/2016/03/05/Linux-Shell%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8/" title="Linux--Shell编程入门">Shell编程入门</a>、<a href="http://blog.xiaoxiaomo.com/2016/03/06/Linux-Shell%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD%E5%8F%8A%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97/" title="Linux-Shell条件判断及算术运算/">Shell条件判断及算术运算</a>、<a href="http://blog.xiaoxiaomo.com/2016/03/12/Linux-Shell%E5%BE%AA%E7%8E%AF%E7%BB%93%E6%9E%84/" title="Linux--Shell循环结构">Shell循环结构</a>。</p>
+<a id="more"></a>
+<h2 id="自定义函数"><a href="#自定义函数" class="headerlink" title="自定义函数"></a>自定义函数</h2><ol>
+<li>有利于代码的重用性</li>
+<li>函数传递参数</li>
+<li>函数的返回值，只能是数字</li>
+</ol>
+<blockquote>
+<p><strong>function</strong> 函数名(){<br>　　//…<br>}</p>
+</blockquote>
+<p>引用自定义函数文件时，使用source  func.sh</p>
+<ul>
+<li>eg : 事例一 一个简单的方法调用</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#simple function</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">sayHi</span></span>()&#123;</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"<span class="variable">$0</span>,say Hi!"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sayHi</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<blockquote>
+<p>./func.sh,say Hi!</p>
+</blockquote>
+<ul>
+<li>eg : 事例二，写一个脚本后在另一个脚本中调用</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[momo1@momo1 shell]$ cat function.sh </span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">main</span></span>()&#123;</span><br><span class="line">	<span class="built_in">echo</span> <span class="string">" <span class="variable">$0</span>  main function start..... <span class="variable">$1</span> "</span></span><br><span class="line">&#125;</span><br><span class="line">main</span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ cat functionTest.sh </span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> function.sh</span><br><span class="line"></span><br><span class="line">main <span class="variable">$1</span></span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ ./functionTest.sh Shell_Function</span><br><span class="line"> ./functionTest.sh  main <span class="keyword">function</span> start.....  </span><br><span class="line"> ./functionTest.sh  main <span class="keyword">function</span> start..... Shell_Function</span><br></pre></td></tr></table></figure>
+<h2 id="帮助命令"><a href="#帮助命令" class="headerlink" title="帮助命令"></a>帮助命令</h2><ul>
+<li>linux中的命令可以分为两种：help/man</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">内建命令:<span class="built_in">command</span> is a shell <span class="built_in">builtin</span></span><br><span class="line">外部命令:显示具体的路径</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如何区分命令属于哪一种</li>
+</ul>
+<blockquote>
+<p>type command<br>内建命令使用：help command<br>外部命令使用：man command</p>
+</blockquote>
+<ul>
+<li>eg ： 实例</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[momo1@momo1 shell]$ <span class="built_in">type</span> <span class="built_in">cd</span>  <span class="comment">#内部命令</span></span><br><span class="line"><span class="built_in">cd</span> is a shell <span class="built_in">builtin</span></span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ <span class="built_in">type</span> date  <span class="comment">#外部命令</span></span><br><span class="line">date is /bin/date</span><br></pre></td></tr></table></figure>
+<h2 id="date"><a href="#date" class="headerlink" title="date"></a>date</h2><ul>
+<li>显示当前时间</li>
+</ul>
+<blockquote>
+<p>格式化输出 +%Y-%m-%d<br>格式%s表示自1970-01-01 00:00:00以来的秒数<br>指定时间输出  –date=’2009-01-01 11:11:11’<br>指定时间输出  –date=’3 days ago’</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[momo1@momo1 shell]$ date</span><br><span class="line">2016年 04月 19日 星期二 17:55:18 CST</span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ date +%Y-%m-%d</span><br><span class="line">2016-04-19</span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ date +%s</span><br><span class="line">1461059756</span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ date +%Y-%m-%d --date=<span class="string">'2016-04-19 11:11:11'</span></span><br><span class="line">2016-04-17</span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ date +%Y-%m-%d --date=<span class="string">'3 days ago'</span></span><br><span class="line">2016-04-16</span><br><span class="line"></span><br><span class="line">[momo1@momo1 shell]$ date +%Y-%m-%d --date=<span class="string">'-3 days ago'</span></span><br><span class="line">2016-04-22</span><br></pre></td></tr></table></figure>
+<h2 id="read"><a href="#read" class="headerlink" title="read"></a>read</h2><p>read命令接收标准输入（键盘）的输入，或者其他文件描述符的输入。得到输入后，read命令将数据放入一个标准变量中。<br>格式</p>
+<blockquote>
+<p>read VAR_NAME</p>
+</blockquote>
+<p>read如果后面不指定变量，那么read命令会将接收到的数据放置在环境变量REPLY中<br>read -p “Enter your name:” VAR_NAME<br>read -t 5 -p “enter your name:” VAR_NAME<br>read -s -p “Enter your password: “ pass</p>
+<h2 id="declare"><a href="#declare" class="headerlink" title="declare"></a>declare</h2><p>用来限定变量的属性</p>
+<blockquote>
+<p>-r 只读<br>-i 整数：某些算术计算允许在被声明为整数的变量中完成，而不需要特别使用expr或let来完成。<br>-a 数组</p>
+</blockquote>
+<h2 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">获取长度：$&#123;#VAR_NAME&#125;</span><br><span class="line">字符串截取</span><br><span class="line">$&#123;variable:offset:length&#125;或者$&#123;variable:offset&#125;</span><br><span class="line">取尾部的指定个数的字符</span><br><span class="line"> $&#123;variable: -length&#125;：注意冒号后面有空格</span><br><span class="line">大小写转换</span><br><span class="line">小--&gt;大：$&#123;variable^^&#125;</span><br><span class="line">大--&gt;小：$&#123;variable,,&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><blockquote>
+<p>定义：<strong>declare -a</strong>：表示定义普通数组<br>特点：</p>
+<ol>
+<li>支持稀疏格式</li>
+<li>仅支持一维数组</li>
+</ol>
+</blockquote>
+<ul>
+<li>数组赋值方式</li>
+</ul>
+<ol>
+<li>一次对一个元素赋值a[0]=$RANDOM</li>
+<li>一次对多个元素赋值a=(a b c d)</li>
+<li>按索引进行赋值a=([0]=a [3]=b [1]=c)</li>
+<li>使用read命令read -a ARRAY_NAME</li>
+</ol>
+<ul>
+<li>查看元素</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&#123;a&#125;：#查看数组的第一个元素</span><br><span class="line">$&#123;a[index]&#125;：#查看数组指定角标的元素</span><br><span class="line">$&#123;a[*]&#125;或者$&#123;a[@]&#125;：#查看数组的所有元素</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取数组的长度</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$&#123;#a[*]&#125; | $&#123;#a[@]&#125; ：#元素长度</span><br><span class="line">$&#123;#a[0]&#125; ：#获取数组内元素的长度</span><br><span class="line"></span><br><span class="line">注意：$&#123;#a[0]&#125;表示获取数组中的第一个元素的长度，等于$&#123;#a&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>从数组中获取某一片段之内的元素</li>
+</ul>
+<blockquote>
+<p>格式： ${a[@]:offset:length}<br>offset：偏移的元素个数<br>length：取出的元素的个数</p>
+</blockquote>
+<p>${a[@]:offset:length}：取出偏移量后的指定个数的元素<br>${a[@]:offset}：取出数组中偏移量后的所有元素</p>
+<ul>
+<li>数组删除元素：</li>
+</ul>
+<p>unset a[index]</p>
+<ul>
+<li>eg ： 事例</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160419092105.png" alt=""></p>
+<h2 id="后台模式运行脚本"><a href="#后台模式运行脚本" class="headerlink" title="后台模式运行脚本"></a>后台模式运行脚本</h2><p>在脚本后面加一个&amp;<br>test.sh &amp;<br>这样的话虽然可以在后台运行，但是当用户注销(logout)或者网络断开时,终端会收到Linux HUP信号(hangup)信号从而关闭其所有子进程<br>nohup命令<br>不挂断的运行命令，忽略所有挂断(hangup)信号<br>使用nohup test.sh &amp;<br>nohup会忽略进程的hangup挂断信号，所以关闭当前会话窗口不会停止这个进程的执行。<br>nohup会在当前执行的目录生成一个nohup.out日志文件</p>
+<h2 id="标准输入-输出"><a href="#标准输入-输出" class="headerlink" title="标准输入/输出"></a>标准输入/输出</h2><blockquote>
+<p>标准输入、输出、错误可以使用文件描述符0、1、2引用</p>
+</blockquote>
+<ul>
+<li>使用重定向可以把信息重定向到其他位置</li>
+</ul>
+<ol>
+<li>ls &gt;file 或者 ls 1&gt;file（ls &gt;&gt;file）</li>
+<li>lk 2&gt;file(lk是一个错误命令)</li>
+<li>ls &gt;file 2&gt;&amp;1</li>
+<li>ls &gt; /dev/null(把输出信息重定向到无底洞)</li>
+</ol>
+<p>例子：command &gt;/dev/null 2&gt;&amp;1</p>
+<h2 id="crontab定时器"><a href="#crontab定时器" class="headerlink" title="crontab定时器"></a>crontab定时器</h2><ul>
+<li><strong>linux下的定时任务</strong></li>
+</ul>
+<blockquote>
+<p>编辑使用crontab  -e ，一共6列，分别是:分 时 日 月 周 命令<br>查看使用crontab -l<br>删除任务crontab -r</p>
+</blockquote>
+<ul>
+<li><strong>查看crontab执行日志</strong></li>
+</ul>
+<blockquote>
+<p>tail -f /var/log/cron<br>tail -f /var/spool/mail/root(查看crontab最近的执行情况)</p>
+</blockquote>
+<ul>
+<li><strong>查看cron服务状态</strong></li>
+</ul>
+<blockquote>
+<p>service crond status</p>
+</blockquote>
+<ul>
+<li><strong>启动cron服务</strong></li>
+</ul>
+<blockquote>
+<p>service crond start</p>
+</blockquote>
+<ul>
+<li>注意：必须打开rsyslog服务cron文件中才会有执行日志(service rsyslog status)</li>
+<li>附件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">编辑crontab，实现秒级执行任务</span><br><span class="line">crontab -e</span><br><span class="line">* * * * * /bin/date &gt;&gt;/tmp/date.txt</span><br><span class="line">* * * * * sleep 10; /bin/date &gt;&gt;/tmp/date.txt</span><br><span class="line">* * * * * sleep 20; /bin/date &gt;&gt;/tmp/date.txt</span><br><span class="line">* * * * * sleep 30; /bin/date &gt;&gt;/tmp/date.txt</span><br><span class="line">* * * * * sleep 40; /bin/date &gt;&gt;/tmp/date.txt</span><br><span class="line">* * * * * sleep 50; /bin/date &gt;&gt;/tmp/date.txt</span><br><span class="line"></span><br><span class="line">另外一种秒执行任务思路</span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">while</span> : ;<span class="keyword">do</span></span><br><span class="line">	/root/scripts.sh 2&gt;/dev/null &amp;</span><br><span class="line">	sleep 3</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">基本格式 : </span><br><span class="line">*　　*　　*　　*　　*　　command </span><br><span class="line">分　时　日　月　周　命令 </span><br><span class="line">第1列表示分钟1～59 每分钟用*或者 */1表示 </span><br><span class="line">第2列表示小时1～23（0表示0点） </span><br><span class="line">第3列表示日期1～31 </span><br><span class="line">第4列表示月份1～12 </span><br><span class="line">第5列标识号星期0～6（0表示星期天） </span><br><span class="line">第6列要运行的命令 </span><br><span class="line">crontab文件的一些例子： </span><br><span class="line">30 21 * * * /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">上面的例子表示每晚的21:30重启apache。 </span><br><span class="line">45 4 1,10,22 * * /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">上面的例子表示每月1、10、22日的4 : 45重启apache。 </span><br><span class="line">10 1 * * 6,0 /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">上面的例子表示每周六、周日的1 : 10重启apache。 </span><br><span class="line">0,30 18-23 * * * /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">上面的例子表示在每天18 : 00至23 : 00之间每隔30分钟重启apache。 </span><br><span class="line">0 23 * * 6 /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">上面的例子表示每星期六的11 : 00 pm重启apache。 </span><br><span class="line">* */1 * * * /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">每一小时重启apache </span><br><span class="line">* 23-7/1 * * * /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">晚上11点到早上7点之间，每隔一小时重启apache </span><br><span class="line">0 11 4 * mon-wed /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">每月的4号与每周一到周三的11点重启apache </span><br><span class="line">0 4 1 jan * /usr/local/etc/rc.d/lighttpd restart </span><br><span class="line">一月一号的4点重启apache </span><br><span class="line">名称 : crontab </span><br><span class="line">使用权限 : 所有使用者 </span><br><span class="line">使用方式 : </span><br><span class="line">crontab file [-u user]-用指定的文件替代目前的crontab。 </span><br><span class="line">crontab-[-u user]-用标准输入替代目前的crontab. </span><br><span class="line">crontab-1[user]-列出用户目前的crontab. </span><br><span class="line">crontab-e[user]-编辑用户目前的crontab. </span><br><span class="line">crontab-d[user]-删除用户目前的crontab. </span><br><span class="line">crontab-c dir- 指定crontab的目录。 </span><br><span class="line">crontab文件的格式：M H D m d cmd. </span><br><span class="line">M: 分钟（0-59）。 </span><br><span class="line">H：小时（0-23）。 </span><br><span class="line">D：天（1-31）。 </span><br><span class="line">m: 月（1-12）。 </span><br><span class="line">d: 一星期内的天（0~6，0为星期天）。 </span><br><span class="line">cmd要运行的程序，程序被送入sh执行，这个shell只有USER,HOME,SHELL这三个环境变量 </span><br><span class="line">说明 : </span><br><span class="line">crontab 是用来让使用者在固定时间或固定间隔执行程序之用，换句话说，也就是类似使用者的时程表。-u user 是指设定指定 </span><br><span class="line">user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设 </span><br><span class="line">定自己的时程表。 </span><br><span class="line">参数 : </span><br><span class="line">crontab -e : 执行文字编辑器来设定时程表，内定的文字编辑器是 VI，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数 </span><br><span class="line">来指定使用那个文字编辑器(比如说 setenv VISUAL joe) </span><br><span class="line">crontab -r : 删除目前的时程表 </span><br><span class="line">crontab -l : 列出目前的时程表 </span><br><span class="line">crontab file [-u user]-用指定的文件替代目前的crontab。 </span><br><span class="line">时程表的格式如下 : </span><br><span class="line">f1 f2 f3 f4 f5 program </span><br><span class="line">其中 f1 是表示分钟，f2 表示小时，f3 表示一个月份中的第几日，f4 表示月份，f5 表示一个星期中的第几天。program 表示要执 </span><br><span class="line">行的程序。 </span><br><span class="line">当 f1 为 * 时表示每分钟都要执行 program，f2 为 * 时表示每小时都要执行程序，其馀类推 </span><br><span class="line">当 f1 为 a-b 时表示从第 a 分钟到第 b 分钟这段时间内要执行，f2 为 a-b 时表示从第 a 到第 b 小时都要执行，其馀类推 </span><br><span class="line">当 f1 为 */n 时表示每 n 分钟个时间间隔执行一次，f2 为 */n 表示每 n 小时个时间间隔执行一次，其馀类推</span><br><span class="line">当 f1 为 a, b, c,... 时表示第 a, b, c,... 分钟要执行，f2 为 a, b, c,... 时表示第 a, b, c...个小时要执行，其馀类推 </span><br><span class="line">使用者也可以将所有的设定先存放在档案 file 中，用 crontab file 的方式来设定时程表。 </span><br><span class="line">例子 : </span><br><span class="line">#每天早上7点执行一次 /bin/ls : </span><br><span class="line">0 7 * * * /bin/ls </span><br><span class="line">在 12 月内, 每天的早上 6 点到 12 点中，每隔3个小时执行一次 /usr/bin/backup : </span><br><span class="line">0 6-12/3 * 12 * /usr/bin/backup </span><br><span class="line">周一到周五每天下午 5:00 寄一封信给 alex@domain.name : </span><br><span class="line">0 17 * * 1-5 mail -s &quot;hi&quot; alex@domain.name &lt; /tmp/maildata </span><br><span class="line">每月每天的午夜 0 点 20 分, 2 点 20 分, 4 点 20 分....执行 echo &quot;haha&quot; </span><br><span class="line">20 0-23/2 * * * echo &quot;haha&quot; </span><br><span class="line">注意 : </span><br><span class="line">当程序在你所指定的时间执行后，系统会寄一封信给你，显示该程序执行的内容，若是你不希望收到这样的信，请在每一行空一格之 </span><br><span class="line">后加上 &gt; /dev/null 2&gt;&amp;1 即可 </span><br><span class="line">例子2 : </span><br><span class="line">#每天早上6点10分 </span><br><span class="line">10 6 * * * date </span><br><span class="line">#每两个小时 </span><br><span class="line">0 */2 * * * date </span><br><span class="line">#晚上11点到早上8点之间每两个小时，早上8点 </span><br><span class="line">0 23-7/2，8 * * * date </span><br><span class="line">#每个月的4号和每个礼拜的礼拜一到礼拜三的早上11点 </span><br><span class="line">0 11 4 * mon-wed date </span><br><span class="line">#1月份日早上4点 </span><br><span class="line">0 4 1 jan * date </span><br><span class="line">范例 </span><br><span class="line">$crontab -l 列出用户目前的crontab.</span><br></pre></td></tr></table></figure>
+
+                
+<p class="red-link-context">
+    <a href="/2016/03/17/Linux-grep和正则表达式/" rel="next" title="Linux--grep和正则表达式">
+    上一篇：Linux--grep和正则表达式
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/03/12/Linux-Shell循环结构/" rel="next" title="Linux--Shell循环结构">
+    下一篇：Linux--Shell循环结构
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Linux--Shell函数及进阶" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

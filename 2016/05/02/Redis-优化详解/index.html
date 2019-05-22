@@ -1,0 +1,738 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Redis--优化详解 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Redis--优化详解"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Redis--优化详解</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-05-02T12:00:05.000Z"><a href="/2016/05/02/Redis-优化详解/">2016-05-02</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#优化的一些建议"><span class="section table-of-contents-text">优化的一些建议</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#优化实例分析"><span class="section table-of-contents-text">优化实例分析</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#管道性能测试"><span class="section table-of-contents-text">管道性能测试</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#hash的应用"><span class="section table-of-contents-text">hash的应用</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Instagram内存优化"><span class="section table-of-contents-text">Instagram内存优化</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#启动时WARNING优化"><span class="section table-of-contents-text">启动时WARNING优化</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　本片博客，刚开始会讲解一下redis的<strong>基本优化</strong>，然后会举一些优化<strong>示例代码或实例</strong>。最后讲解一下，默认启动redis时，所报的一些<strong>警示错误</strong>。</p>
+<h2 id="优化的一些建议"><a href="#优化的一些建议" class="headerlink" title="优化的一些建议"></a>优化的一些建议</h2><ol>
+<li><p><strong>尽量使用短的key</strong><br>当然在精简的同时，不要完了key的“见名知意”。对于value有些也可精简，比如性别使用0、1。</p>
+</li>
+<li><p><strong>避免使用keys *</strong><br><code>keys *</code>, 这个命令是阻塞的，即操作执行期间，其它任何命令在你的实例中都无法执行。当redis中key数据量小时到无所谓，数据量大就很糟糕了。所以我们应该避免去使用这个命令。可以去使用<a href="http://www.redis.cn/commands/scan.html" target="_blank" rel="noopener">SCAN</a>,来代替。</p>
+</li>
+<li><p><strong>在存到Redis之前先把你的数据压缩下</strong><br>redis为每种数据类型都提供了两种内部编码方式，在不同的情况下redis会自动调整合适的编码方式。</p>
+</li>
+<li><p><strong>设置 </strong>key<strong> 有效期</strong><br>我们应该尽可能的利用key有效期。比如一些临时数据（短信校验码），过了有效期Redis就会自动为你清除！</p>
+<a id="more"></a>
+</li>
+<li><p><strong>选择回收策略(maxmemory-policy)</strong><br><strong>当 Redis 的实例空间被填满了之后，将会尝试回收一部分key</strong>。根据你的使用方式，强烈建议使用 <strong>volatile-lru（默认）</strong> 策略——前提是你对key已经设置了超时。但如果你运行的是一些类似于 cache 的东西，并且没有对 key 设置超时机制，可以考虑使用 <strong>allkeys-lru</strong> 回收机制，<a href="http://redis.io/topics/lru-cache#eviction-policies" target="_blank" rel="noopener">具体讲解查看</a> 。maxmemory-samples 3 是说每次进行淘汰的时候 会随机抽取3个key 从里面淘汰最不经常使用的（默认选项）</p>
+<blockquote>
+<p>maxmemory-policy 六种方式 :<br>volatile-lru：只对设置了过期时间的key进行LRU（默认值）<br>allkeys-lru ： 是从所有key里 删除 不经常使用的key<br>volatile-random：随机删除即将过期key<br>allkeys-random：随机删除<br>volatile-ttl ： 删除即将过期的<br>noeviction ： 永不过期，返回错误</p>
+</blockquote>
+</li>
+<li><p>使用bit位级别操作和byte字节级别操作来减少不必要的内存使用。</p>
+<blockquote>
+<p><strong>bit位级别操作</strong>：GETRANGE, SETRANGE, GETBIT and SETBIT<br><strong>byte字节级别操作</strong>：GETRANGE and SETRANGE</p>
+</blockquote>
+</li>
+<li><p>尽可能地使用hashes哈希存储。</p>
+</li>
+<li><p>当业务场景不需要数据持久化时，关闭所有的持久化方式可以获得最佳的性能。</p>
+</li>
+<li><p>想要一次添加多条数据的时候可以使用管道。</p>
+</li>
+<li><p><strong>限制redis的内存大小</strong>（64位系统不限制内存，32位系统默认最多使用3GB内存）<br>数据量不可预估，并且内存也有限的话，尽量限制下redis使用的内存大小，这样可以避免redis使用swap分区或者出现OOM错误。（使用swap分区，性能较低，如果限制了内存，当到达指定内存之后就不能添加数据了，否则会报OOM错误。可以设置maxmemory-policy，内存不足时删除数据。）</p>
+</li>
+<li><p>SLOWLOG [get/reset/len]</p>
+<blockquote>
+<p>slowlog-log-slower-than 它决定要对执行时间大于多少微秒(microsecond，1秒 = 1,000,000 微秒)的命令进行记录。<br>slowlog-max-len 它决定 slowlog 最多能保存多少条日志，当发现redis性能下降的时候可以查看下是哪些命令导致的。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="优化实例分析"><a href="#优化实例分析" class="headerlink" title="优化实例分析"></a>优化实例分析</h2><h3 id="管道性能测试"><a href="#管道性能测试" class="headerlink" title="管道性能测试"></a>管道性能测试</h3><p><strong>redis的管道功能在命令行中没有，但是redis是支持管道的，在java的客户端(jedis)中是可以使用的</strong>：</p>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160427172349.png" alt="redis管道"></p>
+<ul>
+<li>示例代码<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注：具体耗时，和自身电脑有关(博主是在虚拟机中运行的数据)</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 不使用管道初始化1W条数据</span></span><br><span class="line"><span class="comment"> * 耗时：3079毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">NOTUsePipeline</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Jedis jedis = JedisUtil.getJedis();</span><br><span class="line">    <span class="keyword">long</span> start_time = System.currentTimeMillis();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;</span><br><span class="line">        jedis.set(<span class="string">"aa_"</span>+i, i+<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(System.currentTimeMillis()-start_time);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 使用管道初始化1W条数据</span></span><br><span class="line"><span class="comment"> * 耗时：255毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">usePipeline</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Jedis jedis = JedisUtil.getJedis();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> start_time = System.currentTimeMillis();</span><br><span class="line">    Pipeline pipelined = jedis.pipelined();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;</span><br><span class="line">        pipelined.set(<span class="string">"cc_"</span>+i, i+<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    pipelined.sync();<span class="comment">//执行管道中的命令</span></span><br><span class="line">    System.out.println(System.currentTimeMillis()-start_time);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="hash的应用"><a href="#hash的应用" class="headerlink" title="hash的应用"></a>hash的应用</h3><p>　　<strong>示例</strong>：我们要存储一个用户信息对象数据，包含以下信息：<br>key为用户ID，value为用户对象（姓名，年龄，生日等）如果用普通的key/value结构来存储，主要有以下2种存储方式：</p>
+<ol>
+<li><p>将用户ID作为查找key,把其他信息封装成一个对象以<strong>序列化的方式存储</strong><br>缺点：增加了序列化/反序列化的开销，引入复杂适应系统（Complex adaptive system，简称<a href="https://www.douban.com/group/topic/19342736/" target="_blank" rel="noopener">CAS</a>）修改其中一项信息时，需要把整个对象取回，并且修改操作需要对并发进行保护。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160502234207.png" alt="方法一"></p>
+</li>
+<li><p>用户信息<strong>对象有多少成员就存成多少个key-value对</strong><br>虽然省去了序列化开销和并发问题，但是用户ID为重复存储。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160502234523.png" alt="方法二"></p>
+</li>
+</ol>
+<ul>
+<li>Redis提供的Hash很好的解决了这个问题，<strong>提供了直接存取这个Map成员的接口</strong>。<strong>Key仍然是用户ID, value是一个Map</strong>，这个Map的key是成员的属性名，value是属性值。(<em> <strong>内部实现</strong>：Redis Hashd的Value内部有2种不同实现，Hash的成员比较少时Redis为了节省内存会采用类似一维数组的方式来紧凑存储，而不会采用真正的HashMap结构，对应的value redisObject的encoding为zipmap,当成员数量增大时会自动转成真正的HashMap,此时encoding为ht</em> )。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160502235040.png" alt="hash存储"></li>
+</ul>
+<h3 id="Instagram内存优化"><a href="#Instagram内存优化" class="headerlink" title="Instagram内存优化"></a>Instagram内存优化</h3><p><code>Instagram</code>可能大家都已熟悉，当前火热的拍照App，月活跃用户3亿。四年前Instagram所存图片3亿多时需要解决一个问题：想知道每一张照片的作者是谁（通过图片ID反查用户UID），并且要求查询速度要相当的块，如果把它放到内存中使用String结构做key-value:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HSET <span class="string">"mediabucket:1155"</span> <span class="string">"1155315"</span> <span class="string">"939"</span></span><br><span class="line">HGET <span class="string">"mediabucket:1155"</span> <span class="string">"1155315"</span></span><br><span class="line"><span class="string">"939"</span></span><br></pre></td></tr></table></figure>
+<p><strong>测试</strong>：1百万数据会用掉70MB内存，3亿张照片就会用掉21GB的内存。当时(四年前)最好是一台EC2的 high-memory 机型就能存储（17GB或者34GB的，68GB的太浪费了）,想把它放到16G机型中还是不行的。</p>
+<ul>
+<li>Instagram的开发者向Redis的开发者之一Pieter Noordhuis询问优化方案，得到的回复是<strong>使用Hash结构</strong>。具体的做法就是将数据分段，每一段使用一个Hash结构存储.<br>由于Hash结构会在单个Hash元素在不足一定数量时进行压缩存储，所以可以大量节约内存。这一点在上面的String结构里是不存在的。而这个一定数量是由配置文件中的hash-zipmap-max-entries参数来控制的。<strong>经过实验，将hash-zipmap-max-entries设置为1000时，性能比较好，超过1000后HSET命令就会导致CPU消耗变得非常大</strong>。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HSET <span class="string">"mediabucket:1155"</span> <span class="string">"1155315"</span> <span class="string">"939"</span></span><br><span class="line">HGET <span class="string">"mediabucket:1155"</span> <span class="string">"1155315"</span></span><br><span class="line"><span class="string">"939"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>测试</strong>：1百万消耗16MB的内存。总内存使用也降到了5GB。当然我们还可以优化，去掉<code>mediabucket:</code>key长度减少了12个字节。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HSET <span class="string">"1155"</span> <span class="string">"315"</span> <span class="string">"939"</span></span><br><span class="line">HGET <span class="string">"1155"</span> <span class="string">"315"</span></span><br><span class="line"><span class="string">"939"</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="启动时WARNING优化"><a href="#启动时WARNING优化" class="headerlink" title="启动时WARNING优化"></a>启动时WARNING优化</h2><p>在我们启动redis时，默认会出现如下三个警告：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160502211355.png" alt="启动redis"></p>
+<ul>
+<li>一、修改<strong>linux</strong>中<strong>TCP</strong>监听的最大容纳数量<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WARNING: The TCP backlog setting of 511 cannot be enforced because </span><br><span class="line">/proc/sys/net/core/somaxconn is <span class="built_in">set</span> to the lower value of 128.</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>在高并发环境下你需要一个高backlog值来避免慢客户端连接问题</strong>。注意Linux内核默默地将这个值减小到<code>/proc/sys/net/core/somaxconn</code>的值，所以需要确认增大somaxconn和tcp_max_syn_backlog两个值来达到想要的效果。<br>echo 511 &gt; /proc/sys/net/core/somaxconn<br><strong>注意</strong>：这个参数并不是限制redis的最大链接数。如果想限制redis的最大连接数需要修改maxclients，默认最大连接数为10000</p>
+<ul>
+<li>二、修改linux内核内存分配策略<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">错误日志：WARNING overcommit_memory is <span class="built_in">set</span> to 0! Background save may fail under low memory condition. </span><br><span class="line">To fix this issue add <span class="string">'vm.overcommit_memory = 1'</span> to /etc/sysctl.conf and <span class="keyword">then</span> reboot or </span><br><span class="line">run the <span class="built_in">command</span> <span class="string">'sysctl vm.overcommit_memory=1'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>原因：<br><strong>redis在备份数据的时候，会fork出一个子进程，理论上child进程所占用的内存和parent是一样的，比如parent占用的内存为8G，这个时候也要同样分配8G的内存给child,如果内存无法负担，往往会造成redis服务器的down机或者IO负载过高，效率下降</strong>。所以内存分配策略应该设置为 1（表示内核允许分配所有的物理内存，而不管当前的内存状态如何）。<br>内存分配策略有三种<br>可选值：0、1、2。<br>0， 表示内核将检查是否有足够的可用内存供应用进程使用；如果有足够的可用内存，内存申请允许；否则，内存申请失败，并把错误返回给应用进程。<br>1， 不管需要多少内存，都允许申请。<br>2， 只允许分配物理内存和交换内存的大小(交换内存一般是物理内存的一半)。</p>
+<ul>
+<li>三、关闭Transparent Huge Pages(THP)<br>THP会造成内存锁影响redis性能，建议关闭<blockquote>
+<p>Transparent HugePages ：用来提高内存管理的性能<br>Transparent Huge Pages在32位的RHEL 6中是不支持的<br>执行命令 <code>echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled</code><br>把这条命令添加到这个文件中/etc/rc.local</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>参考资料<br><a href="http://www.infoq.com/cn/articles/tq-redis-memory-usage-optimization-storage" target="_blank" rel="noopener">http://www.infoq.com/cn/articles/tq-redis-memory-usage-optimization-storage</a><br><a href="http://blog.nosqlfan.com/html/3379.html" target="_blank" rel="noopener">http://blog.nosqlfan.com/html/3379.html</a></li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/05/05/Zookeeper-集群搭建/" rel="next" title="Zookeeper--集群搭建">
+    上一篇：Zookeeper--集群搭建
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/28/Redis-集群/" rel="next" title="Redis--集群">
+    下一篇：Redis--集群
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Redis--优化详解" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Redis--持久化方案及备份 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Redis--持久化方案及备份"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Redis--持久化方案及备份</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-28T02:53:38.000Z"><a href="/2016/04/28/Redis-持久化方案及备份/">2016-04-28</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#持久化之RDB"><span class="section table-of-contents-text">持久化之RDB</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#持久化之AOF"><span class="section table-of-contents-text">持久化之AOF</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#动态切换redis持久方式"><span class="section table-of-contents-text">动态切换redis持久方式</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#config命令"><span class="section table-of-contents-text">config命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#修改持久化、日志路径"><span class="section table-of-contents-text">修改持久化、日志路径</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　<strong>redis支持两种方式的持久化，可以单独使用或者结合起来使用</strong>。第一种：<strong>RDB方式</strong>redis默认的持久化方式，第二种：<strong>AOF方式</strong>，需要手动修改配置。下面我们来看一下两种持久化方式以及持久化中所注意的一些问题。</p>
+<h2 id="持久化之RDB"><a href="#持久化之RDB" class="headerlink" title="持久化之RDB"></a>持久化之RDB</h2><p><strong>rdb方式的持久化是通过快照完成的，当符合一定条件时redis会自动将内存中的所有数据执行快照操作并存储到硬盘上</strong>。默认存储在dump.rdb文件中(文件名在配置文件中dbfilename)，默认打开可以到启动的目录去查看，注意： <strong>dump.rdb是在哪儿启动redis，就会在哪儿生成rdb文件</strong>。</p>
+<ul>
+<li><strong>dump.rdb</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@momo1 ~]<span class="comment"># cd /usr/local/redis/</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># ll</span></span><br><span class="line">总用量 156</span><br><span class="line">-rw-rw-r--.  1 root root 34339 12月 18 23:19 00-RELEASENOTES</span><br><span class="line">-rw-rw-r--.  1 root root    53 12月 18 23:19 BUGS</span><br><span class="line">-rw-rw-r--.  1 root root  1805 12月 18 23:19 CONTRIBUTING</span><br><span class="line">-rw-rw-r--.  1 root root  1487 12月 18 23:19 COPYING</span><br><span class="line">drwxrwxr-x.  6 root root  4096 4月  27 19:40 deps</span><br><span class="line">-rw-r--r--.  1 root root    36 4月  29 01:20 dump.rdb   <span class="comment">##dump.rdb</span></span><br><span class="line">-rw-rw-r--.  1 root root    11 12月 18 23:19 INSTALL</span><br><span class="line">-rw-rw-r--.  1 root root   151 12月 18 23:19 Makefile</span><br><span class="line">-rw-rw-r--.  1 root root  4223 12月 18 23:19 MANIFESTO</span><br><span class="line">-rw-rw-r--.  1 root root  5201 12月 18 23:19 README</span><br><span class="line">-rw-rw-r--.  1 root root 41561 4月  27 19:53 redis.conf</span><br><span class="line">-rwxrwxr-x.  1 root root   271 12月 18 23:19 runtest</span><br><span class="line">-rwxrwxr-x.  1 root root   280 12月 18 23:19 runtest-cluster</span><br><span class="line">-rwxrwxr-x.  1 root root   281 12月 18 23:19 runtest-sentinel</span><br><span class="line">-rw-rw-r--.  1 root root  7113 4月  29 00:26 sentinel.conf</span><br><span class="line">drwxrwxr-x.  2 root root  4096 4月  27 19:41 src</span><br><span class="line">drwxrwxr-x. 10 root root  4096 12月 18 23:19 tests</span><br><span class="line">drwxrwxr-x.  5 root root  4096 12月 18 23:19 utils</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol>
+<li><p><strong>redis进行快照的时机</strong>（在配置文件redis.conf中）</p>
+<blockquote>
+<ol>
+<li>save 900 1：表示900秒内至少一个键被更改则进行快照。</li>
+<li>save 300 10</li>
+<li>save 60 10000</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>redis实现快照的过程</strong></p>
+<blockquote>
+<ol>
+<li>redis使用fork函数复制一份当前进程的副本(子进程)</li>
+<li>父进程继续接收并处理客户端发来的命令，而子进程开始将内存中的数据写入硬盘中的临时文件</li>
+<li>当子进程写入完所有数据后会用该临时文件替换旧的RDB文件，至此，一次快照操作完成。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>手动执行save或者bgsave命令让redis执行快照</strong>。</p>
+<blockquote>
+<ol>
+<li><code>save</code>是由主进程进行快照操作，会阻塞其它请求。</li>
+<li><code>bgsave</code>是由redis执行fork函数复制出一个子进程来进行快照操作。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>文件修复</strong>：redis-check-dump</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ /]<span class="comment"># redis-check-dump dump.rdb </span></span><br><span class="line">==== Processed 5 valid opcodes (<span class="keyword">in</span> 45 bytes) ===================================</span><br><span class="line">CRC64 checksum is OK</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<ul>
+<li><p><strong>rdb的优缺点</strong><br><strong>优点</strong>：由于存储的有数据快照文件，恢复数据很方便。<br><strong>缺点</strong>：会丢失最后一次快照以后更改的所有数据。</p>
+</li>
+<li><p><strong>注意</strong></p>
+</li>
+</ul>
+<ol>
+<li>redis在进行快照的过程中不会修改RDB文件，只有快照结束后才会将旧的文件替换成新的，也就是说<strong>任何时候RDB文件都是完整的</strong>。</li>
+<li>我们可以通过定时备份RDB文件来实现redis数据库的备份。</li>
+<li>RDB文件是经过压缩的二进制文件，占用的空间会小于内存中的数据，更加利于传输。</li>
+</ol>
+<ul>
+<li>示例代码：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> a 123</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> b 456</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) <span class="string">"b"</span></span><br><span class="line">2) <span class="string">"a"</span></span><br><span class="line">127.0.0.1:6379&gt; shutdown</span><br><span class="line">not connected&gt; <span class="built_in">exit</span></span><br><span class="line"><span class="comment">###注意此时有值，关掉退出然后我们切换一下目录后再启动，就会是一个新的rdb文件，无值</span></span><br><span class="line"></span><br><span class="line">[root@momo1 redis]<span class="comment"># cd /home/up/</span></span><br><span class="line">[root@momo1 up]<span class="comment"># redis-server /etc/redis.conf </span></span><br><span class="line">[root@momo1 up]<span class="comment"># redis-cli </span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">(empty list or <span class="built_in">set</span>)</span><br><span class="line">127.0.0.1:6379&gt; shutdown</span><br><span class="line">not connected&gt; <span class="built_in">exit</span></span><br><span class="line">[root@momo1 up]<span class="comment"># ll</span></span><br><span class="line">总用量 1348</span><br><span class="line">-rw-r--r--. 1 root root      18 4月  29 04:04 dump.rdb</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="持久化之AOF"><a href="#持久化之AOF" class="headerlink" title="持久化之AOF"></a>持久化之AOF</h2><p><strong>aof方式的持久化是通过日志文件的方式</strong>。默认情况下redis没有开启aof，可以通过参数appendonly参数开启。<code>appendonly yes</code><br>aof文件的保存位置和rdb文件的位置相同，都是dir参数设置的，默认的文件名是appendonly.aof，可以通过appendfilename参数修改<br>appendfilename appendonly.aof</p>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160428202257.png" alt="appendonly.aof"><br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160428202509.png" alt="aof同步的时机"></p>
+<ol>
+<li><p><strong>redis写命令同步的时机</strong></p>
+<blockquote>
+<ol>
+<li>appendfsync always 每次都会执行</li>
+<li>appendfsync everysec 默认 每秒执行一次同步操作（推荐，默认）</li>
+<li>appendfsync no不主动进行同步，由操作系统来做，30秒一次</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>aof日志文件重写</strong></p>
+<blockquote>
+<ol>
+<li>auto-aof-rewrite-percentage 100(当目前aof文件大小超过上一次重写时的aof文件大小的百分之多少时会再次进行重写，如果之前没有重写，则以启动时的aof文件大小为依据)</li>
+<li>auto-aof-rewrite-min-size 64mb</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>手动执行bgrewriteaof进行重写</strong></p>
+<blockquote>
+<p>重写的过程只和内存中的数据有关，和之前的aof文件无关。<strong>即针对数据库中当前数据进行重新整理成redis语句</strong></p>
+</blockquote>
+</li>
+<li><p><strong>文件修复</strong>：redis-check-aof</p>
+</li>
+</ol>
+<ul>
+<li>示例代码：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 在rdb是持久化下游三个keys</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) <span class="string">"d"</span></span><br><span class="line">2) <span class="string">"a"</span></span><br><span class="line">3) <span class="string">"b"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## </span></span><br><span class="line">[root@momo1 redis]<span class="comment"># vim redis.conf #修改appendonly yes</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-server ./redis.conf </span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">(empty list or <span class="built_in">set</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="动态切换redis持久方式"><a href="#动态切换redis持久方式" class="headerlink" title="动态切换redis持久方式"></a>动态切换redis持久方式</h2><blockquote>
+<p>从 <strong><code>RDB</code></strong> 切换到 <strong><code>AOF</code></strong>（<em>支持Redis 2.2及以上</em>）</p>
+</blockquote>
+<ul>
+<li><p><strong>问题</strong>： 在很多情况下，默认使用了rdb持久化方式，如果我们再开启aof持久化方式，就会发现一个问题 ： 原先的redis数据丢失了!</p>
+</li>
+<li><p><strong>主要原因</strong>： redis的aof持久化方式是最安全的，如果开启aof之后，<strong>redis会优先选择aof的方式</strong>，而appendonly.aof文件此时还是空文件于是之前的数据就丢失了。</p>
+</li>
+<li><p><strong>解决办法</strong>： 使用config命令，<strong>首先动态修改配置，然后再修改配置文件！</strong></p>
+<blockquote>
+<ol>
+<li>cinfig set appendonly yes</li>
+<li>config set save “”（可选，如果开启了aof可以选择关闭rdb）</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>总结：</strong></p>
+</li>
+</ul>
+<ol>
+<li>当redis启动时，如果rdb持久化和aof持久化都打开了，那么程序会优先使用aof方式来恢复数据集，因为aof方式所保存的数据通常是最完整的。如果aof文件丢失了，则启动之后数据库内容为空。</li>
+<li>如果想把正在运行的redis数据库，从RDB切换到AOF，<strong>先使用动态切换方式，再修改配置文件，重启数据库</strong>。(不能自己修改配置文件，重启数据库，否则数据库中数据就为空了。)</li>
+<li><strong>如果我们失误操作，没有动态切换数据为空了，我们应该尽快手动kill掉redis进程，然后删掉aof备份文件改掉配置后重新动态切换。</strong></li>
+</ol>
+<ul>
+<li><p>示例代码：动态切换</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; config <span class="built_in">set</span> appendonly yes</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; mget a b d</span><br><span class="line">1) <span class="string">"123"</span></span><br><span class="line">2) <span class="string">"123"</span></span><br><span class="line">3) <span class="string">"999"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">####然后我们来看一下appendonly.aof文件内容</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># vim appendonly.aof </span></span><br><span class="line">*2</span><br><span class="line"><span class="variable">$6</span></span><br><span class="line">SELECT</span><br><span class="line"><span class="variable">$1</span></span><br><span class="line">0</span><br><span class="line">*3</span><br><span class="line"><span class="variable">$3</span></span><br><span class="line">SET</span><br><span class="line"><span class="variable">$1</span></span><br><span class="line">d   <span class="comment">##d的值</span></span><br><span class="line"><span class="variable">$3</span>  <span class="comment">##长度为3</span></span><br><span class="line">999 <span class="comment">##值为999</span></span><br><span class="line">*3</span><br><span class="line"><span class="variable">$3</span></span><br><span class="line">SET</span><br><span class="line"><span class="variable">$1</span></span><br><span class="line">b</span><br><span class="line"><span class="variable">$3</span></span><br><span class="line">123</span><br><span class="line">*3</span><br><span class="line"><span class="variable">$3</span></span><br><span class="line">SET</span><br><span class="line"><span class="variable">$1</span></span><br><span class="line">a</span><br><span class="line"><span class="variable">$3</span></span><br><span class="line">123</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例代码：如果我们失误操作，没有动态切换数据为空了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@momo1 redis]<span class="comment"># vim redis.conf #修改appendonly yes此时没有动态切换</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-server ./redis.conf ##启动</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-cli      ##此时有数据</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">(empty list or <span class="built_in">set</span>)</span><br><span class="line"></span><br><span class="line">[root@momo1 redis]<span class="comment"># ps -ef|grep redis  ##重开一个端口kill进程</span></span><br><span class="line">root       6399      1  0 04:20 ?        00:00:00 redis-server *:6379      </span><br><span class="line">root       6402   5794  0 04:20 pts/2    00:00:00 redis-cli</span><br><span class="line">root       6413   6113  0 04:21 pts/3    00:00:00 grep redis</span><br><span class="line">[root@momo1 redis]<span class="comment"># kill -9 6399   </span></span><br><span class="line">[root@momo1 redis]<span class="comment"># rm -rf appendonly.aof ##删掉appendonly.aof</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># vim redis.conf   ##再次改回no</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-server ./redis.conf ##启动</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *               <span class="comment">##数据还在，万幸</span></span><br><span class="line">1) <span class="string">"d"</span></span><br><span class="line">2) <span class="string">"b"</span></span><br><span class="line">3) <span class="string">"a"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="config命令"><a href="#config命令" class="headerlink" title="config命令"></a>config命令</h2><ul>
+<li><p>1、使用<code>config set</code>可以动态设置参数信息，服务器重启之后就失效了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">config <span class="built_in">set</span> appendonly yes</span><br><span class="line">config <span class="built_in">set</span> save <span class="string">"90 1 30 10 60 100"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>2、使用config get可以查看所有可以使用config set命令设置的参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; config get *  <span class="comment">##这里我省略了很多</span></span><br><span class="line">  1) <span class="string">"dbfilename"</span>      <span class="comment">##rdb存储文件</span></span><br><span class="line">  2) <span class="string">"dump.rdb"</span></span><br><span class="line">  9) <span class="string">"logfile"</span>         <span class="comment">##日志文件</span></span><br><span class="line"> 10) <span class="string">""</span>                <span class="comment">##可重新配置</span></span><br><span class="line"> 11) <span class="string">"pidfile"</span>         <span class="comment">##pid文件</span></span><br><span class="line"> 12) <span class="string">"/var/run/redis.pid"</span></span><br><span class="line"> 13) <span class="string">"maxmemory"</span></span><br><span class="line"> 14) <span class="string">"0"</span></span><br><span class="line"> 15) <span class="string">"maxmemory-samples"</span></span><br><span class="line"> 16) <span class="string">"5"</span></span><br><span class="line"> 17) <span class="string">"timeout"</span></span><br><span class="line"> 18) <span class="string">"0"</span></span><br><span class="line"> 40) <span class="string">"3000"</span></span><br><span class="line"> 41) <span class="string">"lua-time-limit"</span></span><br><span class="line"> 42) <span class="string">"5000"</span></span><br><span class="line"> 43) <span class="string">"slowlog-log-slower-than"</span> </span><br><span class="line"> 44) <span class="string">"10000"</span></span><br><span class="line"> 45) <span class="string">"latency-monitor-threshold"</span></span><br><span class="line"> 46) <span class="string">"0"</span></span><br><span class="line"> 47) <span class="string">"slowlog-max-len"</span></span><br><span class="line"> 48) <span class="string">"128"</span></span><br><span class="line"> 49) <span class="string">"port"</span>         <span class="comment">##端口</span></span><br><span class="line"> 50) <span class="string">"6379"</span></span><br><span class="line"> 51) <span class="string">"tcp-backlog"</span></span><br><span class="line"> 52) <span class="string">"511"</span></span><br><span class="line"> 53) <span class="string">"databases"</span>   <span class="comment">##支持数据库</span></span><br><span class="line"> 54) <span class="string">"16"</span></span><br><span class="line"> 75) <span class="string">"cluster-node-timeout"</span>  <span class="comment">##集群的一些信息</span></span><br><span class="line"> 76) <span class="string">"15000"</span></span><br><span class="line"> 77) <span class="string">"cluster-migration-barrier"</span></span><br><span class="line"> 78) <span class="string">"1"</span></span><br><span class="line"> 79) <span class="string">"cluster-slave-validity-factor"</span></span><br><span class="line"> 80) <span class="string">"10"</span></span><br><span class="line"> 81) <span class="string">"repl-diskless-sync-delay"</span></span><br><span class="line"> 82) <span class="string">"5"</span></span><br><span class="line"> 83) <span class="string">"cluster-require-full-coverage"</span></span><br><span class="line"> 84) <span class="string">"yes"</span></span><br><span class="line"> 85) <span class="string">"no-appendfsync-on-rewrite"</span></span><br><span class="line"> 86) <span class="string">"no"</span></span><br><span class="line"> 87) <span class="string">"slave-serve-stale-data"</span></span><br><span class="line"> 88) <span class="string">"yes"</span></span><br><span class="line"> 89) <span class="string">"slave-read-only"</span></span><br><span class="line"> 90) <span class="string">"yes"</span></span><br><span class="line"> 91) <span class="string">"stop-writes-on-bgsave-error"</span></span><br><span class="line"> 92) <span class="string">"yes"</span></span><br><span class="line"> 93) <span class="string">"daemonize"</span>     <span class="comment">##是否开启daemonize</span></span><br><span class="line"> 94) <span class="string">"yes"</span></span><br><span class="line"> 95) <span class="string">"rdbcompression"</span></span><br><span class="line"> 96) <span class="string">"yes"</span></span><br><span class="line"> 97) <span class="string">"rdbchecksum"</span></span><br><span class="line"> 98) <span class="string">"yes"</span></span><br><span class="line"> 99) <span class="string">"activerehashing"</span></span><br><span class="line">100) <span class="string">"yes"</span></span><br><span class="line">101) <span class="string">"repl-disable-tcp-nodelay"</span></span><br><span class="line">102) <span class="string">"no"</span></span><br><span class="line">103) <span class="string">"repl-diskless-sync"</span></span><br><span class="line">104) <span class="string">"no"</span></span><br><span class="line">105) <span class="string">"aof-rewrite-incremental-fsync"</span></span><br><span class="line">106) <span class="string">"yes"</span></span><br><span class="line">107) <span class="string">"aof-load-truncated"</span></span><br><span class="line">108) <span class="string">"yes"</span></span><br><span class="line">109) <span class="string">"appendonly"</span>    <span class="comment">##</span></span><br><span class="line">110) <span class="string">"no"</span></span><br><span class="line">111) <span class="string">"dir"</span>           <span class="comment">##dir 目录,可修改</span></span><br><span class="line">112) <span class="string">"/root"</span></span><br><span class="line">117) <span class="string">"save"</span>         <span class="comment">##rdb持久化点</span></span><br><span class="line">118) <span class="string">"900 1 300 10 60 10000"</span></span><br><span class="line">119) <span class="string">"loglevel"</span>     <span class="comment">##日志级别</span></span><br><span class="line">120) <span class="string">"notice"</span></span><br><span class="line">124) <span class="string">"0"</span></span><br><span class="line">125) <span class="string">"slaveof"</span>　　<span class="comment">##主从</span></span><br><span class="line">129) <span class="string">"bind"</span>　     <span class="comment">##bind ip</span></span><br><span class="line">130) <span class="string">""</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>3、 使用config rewrite命令对启动 Redis 服务器时所指定的 redis.conf 文件进行改写(Redis 2.8 及以上版本才可以使用)，主要是把使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">config <span class="built_in">set</span>动态指定的命令保存到配置文件中。</span><br><span class="line">config rewrite</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意：</p>
+</li>
+</ul>
+<p>　　config rewrite命令对 redis.conf 文件的重写是<code>原子性的</code>， 并且是一致的：<em>如果重写出错或重写期间服务器崩溃， 那么重写失败， 原有 redis.conf 文件不会被修改。 如果重写成功， 那么 redis.conf 文件为重写后的新文件</em>。</p>
+<h2 id="修改持久化、日志路径"><a href="#修改持久化、日志路径" class="headerlink" title="修改持久化、日志路径"></a>修改持久化、日志路径</h2><p>现在我们知道（<a href="http://blog.xiaoxiaomo.com/2016/03/23/Linux-软件安装之Redis/">如不清楚下面安装方式，点击阅读博客</a>），持久化的目录默认为<code>./</code> ， logfile “”没有开启：</p>
+<ul>
+<li><strong>如果我们通过注册服务方式安装</strong>： 然后<code>service redis start</code>启动，持久化文件默认为更目录<code>“/”</code>；</li>
+<li><p><strong>如果我们通过快速安装</strong>： 然后<code>直接启动或指定配置文件</code>启动，持久化文件是和你启动时目录有关，即在哪儿启动就在那儿生成文件，这样有可能出现数据丢失！</p>
+</li>
+<li><p><strong>修改持久化、日志路径：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###########1、创建目录存储redis，博主在/data/创建redis目录来存放数据###</span></span><br><span class="line">mkdir /data/redis </span><br><span class="line"><span class="built_in">kill</span> -9 redis进程号或shutdown redis<span class="comment">#关掉redis进程</span></span><br><span class="line"></span><br><span class="line"><span class="comment">###########2、修改日志文件、dump文件路径###########</span></span><br><span class="line">logfile <span class="string">"/data/redis/redis.log"</span></span><br><span class="line">dir /data/redis/</span><br><span class="line"></span><br><span class="line"><span class="comment">###########3、移动之前dump文件到新目录##########</span></span><br><span class="line">mv /dump.rdb /data/redis/ <span class="comment">#我这里之前dump文件在根目录下</span></span><br><span class="line"></span><br><span class="line"><span class="comment">###########4、启动redis、查看数据正常##########</span></span><br><span class="line">[root@iZ94r8hgrjcZ usr]<span class="comment"># service redis start ##启动redis</span></span><br><span class="line">Starting Redis server...</span><br><span class="line">[root@iZ94r8hgrjcZ redis]<span class="comment"># pwd  </span></span><br><span class="line">/data/redis</span><br><span class="line">[root@iZ94r8hgrjcZ redis]<span class="comment"># ll         ##以生成日志文件</span></span><br><span class="line">total 8</span><br><span class="line">-rw-r--r-- 1 root root   62 Apr 30 11:51 dump.rdb</span><br><span class="line">-rw-r--r-- 1 root root 2206 Apr 30 13:04 redis.log</span><br><span class="line">[root@iZ94r8hgrjcZ redis]<span class="comment"># redis-cli  ##数据正常</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">//......</span><br><span class="line"></span><br><span class="line">////////<span class="comment">##########如果还想测试aof#############</span></span><br><span class="line">127.0.0.1:6379&gt; config <span class="built_in">set</span> appendonly yes <span class="comment">##1、动态修改持久化</span></span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">[root@iZ94r8hgrjcZ redis]<span class="comment"># vim /etc/redis/6379.conf ##2、修改配置appendonly yes</span></span><br><span class="line">[root@iZ94r8hgrjcZ redis]<span class="comment"># ll   ##3、查看数据正常</span></span><br><span class="line">total 12</span><br><span class="line">-rw-r--r-- 1 root root  132 Apr 30 13:20 appendonly.aof</span><br><span class="line">-rw-r--r-- 1 root root   62 Apr 30 11:51 dump.rdb</span><br><span class="line">-rw-r--r-- 1 root root 2937 Apr 30 13:20 redis.log</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/28/Redis-安全策略/" rel="next" title="Redis--安全策略">
+    上一篇：Redis--安全策略
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/27/Redis-基本命令及Java操作/" rel="next" title="Redis--基本命令及Java操作">
+    下一篇：Redis--基本命令及Java操作
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Redis--持久化方案及备份" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>HBase--服务异常排查 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="HBase--服务异常排查"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>HBase--服务异常排查</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-03-29T14:46:43.000Z"><a href="/2017/03/29/HBase-服务异常排查/">2017-03-29</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#潜在的危机"><span class="section table-of-contents-text">潜在的危机</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#紧绷的神经"><span class="section table-of-contents-text">紧绷的神经</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#初尝甜果"><span class="section table-of-contents-text">初尝甜果</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#水落石出"><span class="section table-of-contents-text">水落石出</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <h2 id="潜在的危机"><a href="#潜在的危机" class="headerlink" title="潜在的危机"></a>潜在的危机</h2><ul>
+<li>就在某一天下午，刚去公司楼下逛了一圈，悠哉悠哉的回到自己的工位上，几个同事就找过来了。说HBase服务巨慢，立即调出日志，晕，全是插入请求超时的日志。立即调出HBase监控，发现HBase一些可疑的信息！<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #61, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #54, waiting for some tasks to finish. Expected max=0, tasksInProgress=6</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #18, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #62, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #46, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #70, waiting for some tasks to finish. Expected max=0, tasksInProgress=4</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #45, waiting for some tasks to finish. Expected max=0, tasksInProgress=6</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #47, waiting for some tasks to finish. Expected max=0, tasksInProgress=15</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INFO org.apache.hadoop.hbase.regionserver.wal.FSHLog: Slow sync cost: 204 ms, current pipeline: [DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-47fdd2fe-7722-47d9-9518-151b49a59fc7,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-f55c19d9-5494-47d0-a97b-5d0d07fc8a95,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-4413d571-cab8-4b5f-bc7f-9cf11d2ec2e8,DISK]]</span><br><span class="line">INFO org.apache.hadoop.hbase.regionserver.wal.FSHLog: Slow sync cost: 148 ms, current pipeline: [DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-47fdd2fe-7722-47d9-9518-151b49a59fc7,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-f55c19d9-5494-47d0-a97b-5d0d07fc8a95,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-4413d571-cab8-4b5f-bc7f-9cf11d2ec2e8,DISK]]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="紧绷的神经"><a href="#紧绷的神经" class="headerlink" title="紧绷的神经"></a>紧绷的神经</h2><ul>
+<li><p>看来情况有点严重！发现读写请求剧增，咨询情况，发现时有一个业务之前业务问题导致关键性数据不正常，在进行HBase大量读写操作更新数据！！！赶紧让他们停掉，缓一缓，看看具体原因，停掉后hbase正常了一下。一会儿，异常信息又来了！汗！！看来这个只是其中原因之一，但是上面第一个异常信息没有了，第二个警告减少。HBase服务正常（只是有大量警告）！！！<br><img src="https://img.xiaoxiaomo.com/blog/img/20170329225042.png" alt=""></p>
+</li>
+<li><p>这是什么原因呢？不是hbase的问题，hbase服务前面还有一层负载“edware 负载均衡 -&gt;waf -&gt;  nginx ”，中间还有一个HBase接口服务。然后发了封邮件给运维让他帮着排查一下是否与负载有关，当然这个希望不大，于是紧接着就检查HBase接口服务。</p>
+</li>
+<li>通过top命令查看服务，我插CPU直接到200%多了，内存也用完了，怎么突然占用这么多内存？大对象？？<br><img src="https://img.xiaoxiaomo.com/blog/img/20170329225043.png" alt=""></li>
+</ul>
+<h2 id="初尝甜果"><a href="#初尝甜果" class="headerlink" title="初尝甜果"></a>初尝甜果</h2><ol>
+<li>查看JVM参数设置，也没啥问题，于是打印查看GC日志，希望能从中发现问题：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nohup java -server -Xms6144m -Xmx6144m  -XX:SurvivorRatio=<span class="number">2</span> -XX:PermSize=<span class="number">256</span>m -XX:MaxPermSize=<span class="number">256</span>m -XX:+UseG1GC  </span><br><span class="line">-XX:InitiatingHeapOccupancyPercent=<span class="number">50</span>  -XX:-UseSplitVerifier -XX:+PrintGCDateStamps -XX:+PrintGCDetails </span><br><span class="line">-Xloggc:/data/dubbox/hservice/logs/gc.<span class="built_in">log</span> -jar ./$JAR_NAME &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li>GC日志如下：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">2017-03-07T15:01:14.767+0800: 7.071: [GC pause (young), 0.0502650 secs]</span><br><span class="line">   [Parallel Time: 18.1 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 306.0M(306.0M)-&gt;0.0B(268.0M) Survivors: 0.0B-&gt;38.0M Heap: 307.0M(6144.0M)-&gt;38.8M(6144.0M)]</span><br><span class="line">2017-03-07T15:01:28.113+0800: 20.417: [GC pause (young), 0.0183790 secs]</span><br><span class="line">   [Parallel Time: 9.2 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 268.0M(268.0M)-&gt;0.0B(282.0M) Survivors: 38.0M-&gt;24.0M Heap: 306.8M(6144.0M)-&gt;24.8M(6144.0M)]</span><br><span class="line">2017-03-07T15:01:45.162+0800: 37.466: [GC pause (young), 0.0114490 secs]</span><br><span class="line">   [Parallel Time: 6.0 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 282.0M(282.0M)-&gt;0.0B(334.0M) Survivors: 24.0M-&gt;22.0M Heap: 306.8M(6144.0M)-&gt;22.3M(6144.0M)]</span><br><span class="line">2017-03-07T15:02:03.528+0800: 55.832: [GC pause (young), 0.0143630 secs]</span><br><span class="line">   [Parallel Time: 7.2 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 334.0M(334.0M)-&gt;0.0B(1986.0M) Survivors: 22.0M-&gt;28.0M Heap: 356.3M(6144.0M)-&gt;28.2M(6144.0M)]</span><br><span class="line">2017-03-07T15:02:23.174+0800: 75.478: [GC pause (young), 0.2785950 secs]</span><br><span class="line">   [Parallel Time: 268.8 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 212.0M(212.0M)-&gt;0.0B(242.0M) Survivors: 590.0M-&gt;64.0M Heap: 802.1M(6144.0M)-&gt;556.7M(6144.0M)]</span><br><span class="line">2017-03-07T15:02:28.132+0800: 80.435: [GC pause (young), 0.0534540 secs]</span><br><span class="line">   [Parallel Time: 50.9 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 220.0M(220.0M)-&gt;0.0B(354.0M) Survivors: 110.0M-&gt;116.0M Heap: 1038.4M(6144.0M)-&gt;887.4M(6144.0M)]</span><br><span class="line">2017-03-07T15:02:34.622+0800: 86.926: [GC pause (young), 0.0927160 secs]</span><br><span class="line">   [Parallel Time: 89.4 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 426.0M(426.0M)-&gt;0.0B(510.0M) Survivors: 200.0M-&gt;212.0M Heap: 1610.4M(6144.0M)-&gt;1311.4M(6144.0M)]</span><br><span class="line">2017-03-07T15:02:45.490+0800: 97.793: [GC pause (young), 0.1458780 secs]</span><br><span class="line">   [Parallel Time: 141.0 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 566.0M(566.0M)-&gt;0.0B(606.0M) Survivors: 316.0M-&gt;304.0M Heap: 2359.5M(6144.0M)-&gt;1943.5M(6144.0M)]</span><br><span class="line">/////几秒钟就上来了，停不下来了</span><br><span class="line">2017-03-07T15:03:01.747+0800: 114.050: [GC pause (young), 0.1641290 secs]</span><br><span class="line">   [Parallel Time: 157.9 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 700.0M(700.0M)-&gt;0.0B(760.0M) Survivors: 412.0M-&gt;408.0M Heap: 3441.2M(6144.0M)-&gt;2946.2M(6144.0M)]</span><br><span class="line">2017-03-07T15:03:15.536+0800: 127.840: [GC pause (young) (initial-mark), 0.1768610 secs]</span><br><span class="line">   [Parallel Time: 169.8 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 932.0M(932.0M)-&gt;0.0B(966.0M) Survivors: 432.0M-&gt;452.0M Heap: 4532.2M(6144.0M)-&gt;3837.2M(6144.0M)]</span><br><span class="line">2017-03-07T15:03:26.259+0800: 138.563: [GC pause (young) (initial-mark), 0.1677280 secs]</span><br><span class="line">   [Parallel Time: 160.8 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 654.0M(654.0M)-&gt;0.0B(532.0M) Survivors: 508.0M-&gt;438.0M Heap: 5016.6M(6144.0M)-&gt;4554.6M(6144.0M)]</span><br><span class="line">2017-03-07T15:03:44.313+0800: 156.616: [GC pause (young) (initial-mark) (to-space exhausted), 0.2589990 secs]</span><br><span class="line">   [Parallel Time: 234.0 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 200.0M(200.0M)-&gt;0.0B(244.0M) Survivors: 106.0M-&gt;62.0M Heap: 6007.4M(6144.0M)-&gt;5946.0M(6144.0M)]</span><br><span class="line">2017-03-07T15:03:45.374+0800: 157.678: [GC pause (young) (to-space exhausted), 1.7079930 secs]</span><br><span class="line">   [Parallel Time: 1572.6 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 196.0M(244.0M)-&gt;0.0B(306.0M) Survivors: 62.0M-&gt;0.0B Heap: 6142.0M(6144.0M)-&gt;6142.0M(6144.0M)]</span><br><span class="line">////这个内存增长的也太猛了，停不下来了</span><br><span class="line">2017-03-07T15:04:10.598+0800: 182.902: [GC pause (young) (to-space exhausted), 1.0087070 secs]</span><br><span class="line">   [Parallel Time: 905.9 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 204.0M(204.0M)-&gt;0.0B(258.0M) Survivors: 102.0M-&gt;48.0M Heap: 6038.3M(6144.0M)-&gt;6112.3M(6144.0M)]</span><br><span class="line">2017-03-07T15:04:11.725+0800: 184.029: [GC pause (young) (to-space exhausted), 0.6503080 secs]</span><br><span class="line">   [Parallel Time: 614.5 ms, GC Workers: 28]</span><br><span class="line">   [Eden: 28.0M(258.0M)-&gt;0.0B(306.0M) Survivors: 48.0M-&gt;0.0B Heap: 6140.3M(6144.0M)-&gt;6140.3M(6144.0M)]</span><br><span class="line">////下面彻底回收不了了</span><br><span class="line">2017-03-07T15:04:12.376+0800: 184.680: [GC pause (young), 0.0118450 secs]</span><br><span class="line">   [Parallel Time: 10.4 ms, GC Workers: 28]</span><br><span class="line">      [GC Worker Start (ms): Min: 184680.1, Avg: 184680.3, Max: 184680.6, Diff: 0.5]</span><br><span class="line">      [Ext Root Scanning (ms): Min: 1.1, Avg: 1.5, Max: 2.0, Diff: 0.9, Sum: 41.8]</span><br><span class="line">      [SATB Filtering (ms): Min: 0.0, Avg: 0.0, Max: 0.1, Diff: 0.1, Sum: 0.1]</span><br><span class="line">      [Update RS (ms): Min: 7.8, Avg: 8.2, Max: 8.5, Diff: 0.6, Sum: 228.5]</span><br><span class="line">         [Processed Buffers: Min: 3, Avg: 15.1, Max: 31, Diff: 28, Sum: 424]</span><br><span class="line">      [Scan RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]</span><br><span class="line">      [Code Root Scanning (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]</span><br><span class="line">      [Object Copy (ms): Min: 0.0, Avg: 0.1, Max: 0.3, Diff: 0.3, Sum: 2.2]</span><br><span class="line">      [Termination (ms): Min: 0.0, Avg: 0.2, Max: 0.4, Diff: 0.4, Sum: 5.3]</span><br><span class="line">      [GC Worker Other (ms): Min: 0.0, Avg: 0.0, Max: 0.1, Diff: 0.1, Sum: 0.9]</span><br><span class="line">      [GC Worker Total (ms): Min: 9.7, Avg: 10.0, Max: 10.2, Diff: 0.5, Sum: 278.8]</span><br><span class="line">      [GC Worker End (ms): Min: 184690.2, Avg: 184690.3, Max: 184690.4, Diff: 0.2]</span><br><span class="line">   [Code Root Fixup: 0.0 ms]</span><br><span class="line">   [Code Root Migration: 0.0 ms]</span><br><span class="line">   [Clear CT: 0.5 ms]</span><br><span class="line">   [Other: 0.9 ms]</span><br><span class="line">      [Choose CSet: 0.0 ms]</span><br><span class="line">      [Ref Proc: 0.7 ms]</span><br><span class="line">      [Ref Enq: 0.0 ms]</span><br><span class="line">      [Free CSet: 0.0 ms]</span><br><span class="line">   [Eden: 0.0B(306.0M)-&gt;0.0B(306.0M) Survivors: 0.0B-&gt;0.0B Heap: 6140.3M(6144.0M)-&gt;6140.3M(6144.0M)]</span><br><span class="line"> [Times: user=0.22 sys=0.00, real=0.01 secs]</span><br><span class="line">2017-03-07T15:04:12.389+0800: 184.693: [GC pause (young), 0.0034990 secs]</span><br><span class="line">   [Parallel Time: 2.2 ms, GC Workers: 28]</span><br><span class="line">      [GC Worker Start (ms): Min: 184692.9, Avg: 184693.0, Max: 184693.2, Diff: 0.3]</span><br><span class="line">      [Ext Root Scanning (ms): Min: 1.1, Avg: 1.4, Max: 1.6, Diff: 0.4, Sum: 38.7]</span><br><span class="line">      [SATB Filtering (ms): Min: 0.0, Avg: 0.0, Max: 0.1, Diff: 0.1, Sum: 0.1]</span><br><span class="line">      [Update RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]</span><br><span class="line">         [Processed Buffers: Min: 0, Avg: 0.0, Max: 1, Diff: 1, Sum: 1]</span><br><span class="line">      [Scan RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]</span><br><span class="line">      [Code Root Scanning (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]</span><br><span class="line">      [Object Copy (ms): Min: 0.0, Avg: 0.1, Max: 0.3, Diff: 0.2, Sum: 2.2]</span><br><span class="line">      [Termination (ms): Min: 0.0, Avg: 0.3, Max: 0.5, Diff: 0.5, Sum: 7.4]</span><br><span class="line">      [GC Worker Other (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.3]</span><br><span class="line">      [GC Worker Total (ms): Min: 1.6, Avg: 1.7, Max: 1.9, Diff: 0.2, Sum: 48.6]</span><br><span class="line">      [GC Worker End (ms): Min: 184694.8, Avg: 184694.8, Max: 184694.8, Diff: 0.0]</span><br><span class="line">   [Code Root Fixup: 0.0 ms]</span><br><span class="line">   [Code Root Migration: 0.0 ms]</span><br><span class="line">   [Clear CT: 0.4 ms]</span><br><span class="line">   [Other: 0.8 ms]</span><br><span class="line">      [Choose CSet: 0.0 ms]</span><br><span class="line">      [Ref Proc: 0.7 ms]</span><br><span class="line">      [Ref Enq: 0.0 ms]</span><br><span class="line">      [Free CSet: 0.0 ms]</span><br><span class="line">   [Eden: 0.0B(306.0M)-&gt;0.0B(306.0M) Survivors: 0.0B-&gt;0.0B Heap: 6140.3M(6144.0M)-&gt;6140.3M(6144.0M)]</span><br><span class="line"> [Times: user=0.05 sys=0.00, real=0.00 secs]</span><br><span class="line">2017-03-07T15:04:12.404+0800: 184.708: [Full GC</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>从上面GC日志，显然发现了问题，内存猛增，并且后面无法回收，同时运维邮件反馈和通过自己测试也排查掉了网络问题。现在总算有点眉目了，锁定异常到HBase接口服务，很可能就是大对象，还有可能一些锁等问题导致。</p>
+<ol start="2">
+<li><p>通过<strong>jstack</strong>，观察线程状状态，看看锁是否被释放等</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# jps  ##查看PID</span><br><span class="line">110132 hservice.jar</span><br><span class="line">[root@xiaoxiaomo ~]# jstack 110132 &gt; jstack110132.log  ###日志中并没有什么锁信息</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过<strong>jmap</strong>查看，但是不直观，只能去获取一下dump文件，然后下载到本地然后通过<a href="http://www.eclipse.org/mat/downloads.php" target="_blank" rel="noopener">dump分析工具分析</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@xiaoxiaomo ~]# jmap 110132 &gt; jmap110132 .log</span><br><span class="line">[root@xiaoxiaomo ~]# jmap -dump:format=b,file=dump2.bin 110132</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ul>
+<li><p>刚开始dump下来的文件太大了，差不多6G,笔记本总共内存才8g,dump文件没法打开，第二次弄了个小的，打开软件，运行<br><img src="https://img.xiaoxiaomo.com/blog/img/20170329225044.png" alt=""></p>
+</li>
+<li><p>就是这样一个dump分析工具<br><img src="https://img.xiaoxiaomo.com/blog/img/20170329225045.png" alt=""></p>
+</li>
+<li><p>左键点击饼图–&gt;Java Basics，Thread Details 就是我们比较熟悉的了<br><img src="https://img.xiaoxiaomo.com/blog/img/20170329225046.png" alt=""></p>
+</li>
+<li><p>我们主要看的是：Thread Overview and Stacks<br><img src="https://img.xiaoxiaomo.com/blog/img/20170325201212.png" alt=""></p>
+<blockquote>
+<p>我想到这儿，问提基本上就解决了一大半了吧，通过这里就能找到相应的表，然后找到接口调用方。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="水落石出"><a href="#水落石出" class="headerlink" title="水落石出"></a>水落石出</h2><ul>
+<li>找到调用方，发现是他们当天正好写了一个监控HBase的程序发布到线上，监控的方法是通过scan，看是否请求正常！！！就是这个东东，scan的startKey是00,endKey是99，然而他们HBase表的rowke前缀就是数字，这不一下返回了大对象吗！！，然后暂时帮他们设置了一个固定的rowKey让他们换成了get,观察GC，正常！</li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2017/06/07/Linux-Linux相关系列博客/" rel="next" title="Linux--Linux相关系列博客">
+    上一篇：Linux--Linux相关系列博客
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/03/26/Cloudera-Manager-升级/" rel="next" title="Cloudera Manager--升级">
+    下一篇：Cloudera Manager--升级
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="HBase--服务异常排查" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Java--NIO之缓冲区进阶 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Java--NIO之缓冲区进阶"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Java--NIO之缓冲区进阶</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2016-04-22T08:44:47.000Z"><a href="/2016/04/22/Java-NIO之缓冲区进阶/">2016-04-22</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#缓冲区的创建"><span class="section table-of-contents-text">缓冲区的创建</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#复制缓冲区"><span class="section table-of-contents-text">复制缓冲区</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#字节缓冲区"><span class="section table-of-contents-text">字节缓冲区</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#字节顺序"><span class="section table-of-contents-text">字节顺序</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#直接缓冲区"><span class="section table-of-contents-text">直接缓冲区</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#视图缓冲区"><span class="section table-of-contents-text">视图缓冲区</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#数据元素视图"><span class="section table-of-contents-text">数据元素视图</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#无符号数存取"><span class="section table-of-contents-text">无符号数存取</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#内存映射缓冲区"><span class="section table-of-contents-text">内存映射缓冲区</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　上一篇<a href="http://blog.xiaoxiaomo.com/2016/04/16/Java-NIO之缓冲区/" title="Java-NIO之缓冲区">http://blog.xiaoxiaomo.com/2016/04/16/Java-NIO之缓冲区/</a>讲了基本的缓冲区概念、属性以及部分操作。本片博客，主要讲解<code>缓冲区的创建、复制和字节缓冲区</code>。</p>
+<h2 id="缓冲区的创建"><a href="#缓冲区的创建" class="headerlink" title="缓冲区的创建"></a>缓冲区的创建</h2><p>　　对于这一讨论，我们将以 CharBuffer 类为例，但是对于其它六种主要的缓冲区类也是适用的：IntBuffer，DoubleBuffer，ShortBuffer，LongBuffer，FloatBuffer，和 ByteBuffer。下面是<strong>创建一个缓冲区</strong>的关键函数，对所有的缓冲区类通用（要按照需要替换类名）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBuffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">CharSequence</span>, <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing </span></span><br><span class="line">	<span class="comment">//这些都是静态方法。</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">allocate</span><span class="params">(<span class="keyword">int</span> capacity)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(<span class="keyword">char</span> [] array)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(<span class="keyword">char</span> [] array, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasArray</span><span class="params">( )</span> </span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">char</span> [] <span class="title">array</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">arrayOffset</span><span class="params">( )</span> </span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>新的缓冲区是由分配或包装操作创建的。</p>
+<ol>
+<li>分配操作：创建一个缓冲区对象并分配一个<strong>私有的空间</strong>来储存容量大小的数据元素。</li>
+<li>包装操作创建一个缓冲区对象但是<strong>不分配任何空间来储存数据元素</strong>。它使用您所提供的数组作为存储空间来储存缓冲区中的数据元素。</li>
+</ol>
+<ul>
+<li>实例一</li>
+</ul>
+<blockquote>
+<p>要分配一个容量为 100 个 char 变量的 Charbuffer:<br>CharBuffer charBuffer = CharBuffer.allocate (100);<br>这段代码隐含地从堆空间中分配了一个 char 型数组作为备份存储器来储存 100 个 char变量。</p>
+</blockquote>
+<ul>
+<li>实例二</li>
+</ul>
+<blockquote>
+<p>如果您想提供您自己的数组用做缓冲区的备份存储器，请调用 wrap()函数：<br>char [] myArray = new char [100];<br>CharBuffer charbuffer = CharBuffer.wrap (myArray);<br>这段代码构造了一个新的缓冲区对象，但数据元素会存在于数组中。</p>
+<p>这意味着通过调用put()函数造成的对缓冲区的改动会直接影响这个数组，而且对这个数组的任何改动也会对这个缓冲区对象可见。<br>带有 offset 和 length 作为参数的 wrap()函数版本则会构造一个按照您提供的 offset 和 length 参数值初始化位置和上界的缓冲区。如下：<br>CharBuffer charbuffer = CharBuffer.wrap (myArray, 12, 42);<br>创建了一个position值为12，limit值为54(12+42)，容量为myArray.length的缓冲区。</p>
+</blockquote>
+<ul>
+<li>wrap方法使用一个现有的数组作为缓冲区备份。<code>其实缓冲区都需要这样一个真正存放数据的地方</code>，我们可以看看<code>allocate方法</code>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ByteBuffer <span class="title">allocate</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">if</span> (capacity &lt; <span class="number">0</span>)  </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();  </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> HeapByteBuffer(capacity, capacity);  </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">//HeapByteBuffer</span></span><br><span class="line"><span class="comment">//用父类的构造函数来初始化。</span></span><br><span class="line"><span class="comment">//第一个参数：mark，-1表示undefined，</span></span><br><span class="line"><span class="comment">//第二个参数：position</span></span><br><span class="line"><span class="comment">//第三个参数：limit</span></span><br><span class="line"><span class="comment">//第四个参数：capacity，</span></span><br><span class="line"><span class="comment">//第五个参数：数组，</span></span><br><span class="line"><span class="comment">//第六个参数：数组的偏移。 </span></span><br><span class="line">HeapByteBuffer(<span class="keyword">int</span> cap, <span class="keyword">int</span> lim) &#123;</span><br><span class="line">	<span class="keyword">super</span>(-<span class="number">1</span>, <span class="number">0</span>, lim, cap, <span class="keyword">new</span> <span class="keyword">byte</span>[cap], <span class="number">0</span>);</span><br><span class="line">    <span class="comment">/* </span></span><br><span class="line"><span class="comment">    hb = new byte[cap]; </span></span><br><span class="line"><span class="comment">    offset = 0; </span></span><br><span class="line"><span class="comment">    */</span>  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>我们还应该看到一个函数，hasArray(),这说明并非所有的缓冲区都包含一个数组，那么什么样的缓冲区不包含数组呢？<code>答案是直接缓冲区。通过allocate和wrap创建的缓冲区都是间接的</code>，事实上缓冲区都必须又一个存放数据的地方。</p>
+<ol>
+<li>如果是直接缓冲区，我们是不能获取到数组的，所以array方法不能在直接缓冲区中调用，否则抛出<code>UnsupportedOperationException</code>异常。当然，如果是只读的缓冲区，我们也不能调用array方法或者是arrayOffset方法。 </li>
+<li><p><code>arrayOffset</code>方法是返回作为备份数组的起始下标。这就说明，并非一个数组必须是所有元素都在缓冲区内，而是可以拆分的。但是这里还没讲到，所以，以上提到的缓冲区，如果使用arrayOffset方法，返回都是0. </p>
+</li>
+<li><p>为了方便，我们的CharBuffer提供了几个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBuffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">CharSequence</span>, <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(CharSequence csq)</span> </span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(CharSequence csq, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可以这样用，CharBuffer charBuffer = CharBuffer.wrap (“Hello World”);这对于字符集码和正则表达式处理都是很方便的。 </p>
+<h2 id="复制缓冲区"><a href="#复制缓冲区" class="headerlink" title="复制缓冲区"></a>复制缓冲区</h2><p>这里的复制，仅仅是复制缓冲区，而不是数据。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBuffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">CharSequence</span>, <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing </span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> CharBuffer <span class="title">duplicate</span><span class="params">( )</span></span>; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> CharBuffer <span class="title">asReadOnlyBuffer</span><span class="params">( )</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> CharBuffer <span class="title">slice</span><span class="params">( )</span></span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><strong>duplicate() 函数创建了一个与原始缓冲区相似的新缓冲区。两个缓冲区共享数据元素</strong>，拥有同样的容量，<strong>但</strong>每个缓冲区拥有各自的位置，上界和标记属性。对一个缓冲区内的数据元素所做的改变会反映在另外一个缓冲区上。这一<code>副本缓冲区</code>具有与原始缓冲区同样的数据视图。如果原始的缓冲区为只读，或者为直接缓冲区，<code>新的缓冲区将继承这些属性</code>。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer buffer = CharBuffer.allocate (<span class="number">8</span>);</span><br><span class="line">buffer.position (<span class="number">3</span>).limit (<span class="number">6</span>).mark( ).position (<span class="number">5</span>);</span><br><span class="line">CharBuffer dupeBuffer = buffer.duplicate( );</span><br><span class="line">buffer.clear( );</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160422173903.png" alt="复制一个缓冲区"></p>
+<ol start="2">
+<li><p><strong>asReadOnlyBuffer() 函数来生成一个只读的缓冲区视图</strong>。这与duplicate()相同，除了这个新的缓冲区不允许使用 put()，并且其 isReadOnly()函数将会返回true。对这一只读缓冲区的put()函数的调用尝试会导致抛出<code>ReadOnlyBufferException</code> 异常。</p>
+</li>
+<li><p><strong>slice() 创建一个从原始缓冲区的当前位置开始的新缓冲区</strong>，并且<code>其容量是原始缓冲区的剩余元素数量</code>（<em>limit-position</em>）。这个新缓冲区与原始缓冲区共享一段数据元素子序列。分割出来的缓冲区也会继承只读和直接属性 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer buffer = CharBuffer.allocate (<span class="number">8</span>);</span><br><span class="line">buffer.position (<span class="number">3</span>).limit (<span class="number">5</span>);</span><br><span class="line">CharBuffer sliceBuffer = buffer.slice( );</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160422174632.png" alt="创建分割缓冲区"></p>
+<p>要创建一个映射到数组位置 12-20（9 个元素）的 buffer 对象，应使用下面的代码实现。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> [] myBuffer = <span class="keyword">new</span> <span class="keyword">char</span> [<span class="number">100</span>];</span><br><span class="line">CharBuffer cb = CharBuffer.wrap (myBuffer);</span><br><span class="line">cb.position(<span class="number">12</span>).limit(<span class="number">21</span>);</span><br><span class="line">CharBuffer sliced = cb.slice( );</span><br></pre></td></tr></table></figure></p>
+<h2 id="字节缓冲区"><a href="#字节缓冲区" class="headerlink" title="字节缓冲区"></a>字节缓冲区</h2><h3 id="字节顺序"><a href="#字节顺序" class="headerlink" title="字节顺序"></a>字节顺序</h3><p>非字节类型的基本类型，除了布尔型都是由组合在一起的几个字节组成的。这些数据类型及其大小：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160422175920.png" alt="基本数据类型及其大小"></p>
+<ol>
+<li><p>每个基本数据类型都是以连续字节序列的形式存储在内存中。例如，32 位的 int 值0x037fb4c7（十进制的 58,700,999）有两种存储方式。<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160422190129.png" alt="大端字节顺序"> <img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160422190210.png" alt="小端字节顺序"><br><strong>多字节数值被存储在内存中的方式一般被称为 endian-ness（字节顺序）</strong>。数字数值的最高字节——big end（大端），位于低位地址那么系统就是大端字节顺序，反则小端。</p>
+</li>
+<li><p><strong>字节顺序的问题甚至胜过CPU硬件设计</strong>。当Internet的设计者为互联各种类型的计算机而设计网际协议（IP）时，他们意识到了在具有不同内部字节顺序的系统间传递数值数据的问题。因此，<code>IP协议规定了使用大端的网络字节顺序概念</code>。</p>
+</li>
+<li><p><code>在 java.nio 中，字节顺序由 ByteOrder 类封装</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.nio;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ByteOrder</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> ByteOrder BIG_ENDIAN; <span class="comment">//大端</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> ByteOrder LITTLE_ENDIAN; <span class="comment">//小端</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ByteOrder <span class="title">nativeOrder</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果您需要知道 JVM 运行的硬件平台的固有字节顺序，请调用静态类函数，nativeOrder()。它将返回两个已确定常量中的一个。</p>
+<p>4 . 每个缓冲区类都具有一个能够通过调用 order()查询的当前字节顺序设定。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBuffer</span> <span class="keyword">extends</span> <span class="title">Buffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">implements</span> <span class="title">Comparable</span>, <span class="title">CharSequence</span></span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">final</span> ByteOrder <span class="title">order</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>ByteOrder 返回两个常量之一。对于除了 ByteOrder 之外的其他缓冲区类，字节顺序是一个只读属性，并且可能根据缓冲区的建立方式而采用不同的值。</p>
+<p>5 . ByteBuffer 类有所不同：<strong>默认字节顺序总是 ByteBuffer.BIG_ENDIAN，</strong>无论系统的固有字节顺序是什么。ByteBuffer 的字符顺序设定可以随时通过调用以 ByteOrder.BIG_ENDIAN 或ByteOrder.LITTL_ENDIAN 为参数的 order()函数来改变。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ByteBuffer</span> <span class="keyword">extends</span> <span class="title">Buffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">implements</span> <span class="title">Comparable</span></span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">final</span> ByteOrder <span class="title">order</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> ByteBuffer <span class="title">order</span> <span class="params">(ByteOrder bo)</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>现在知道了字节顺序，那么字节缓冲区转换为其他缓冲区，也就清楚了。<br>比如，我们有一个4字节缓冲区 0x01  0x23  0x45  0x67<br>转换为一个IntBuffer，那么，根据字节顺序，如果是大端，直接就是 0x1234567<br>如果是小端顺序，那么读出来就是 0x67452301<br>注意：视图缓冲区一旦创建，字节顺序是不可改变的。视图缓冲区后面讲到</p>
+</blockquote>
+<h3 id="直接缓冲区"><a href="#直接缓冲区" class="headerlink" title="直接缓冲区"></a>直接缓冲区</h3><ol>
+<li><p><code>allocate和wrap创建的都是间接缓冲区</code>。<strong>间接缓冲区</strong>，就是在操作系统和JVM之间其实有一层，我们如果对一个间接缓冲区使用，那么首先是要在操作系统层次创建一个临时缓冲区，然后copy过去，再操作，在删除临时缓冲区。这都很麻烦。通常有如下几步：</p>
+<blockquote>
+<p>1.创建一个临时的直接 ByteBuffer 对象。<br>2.将非直接缓冲区的内容复制到临时缓冲中<br>3.使用临时缓冲区执行低层次 I/O 操作。<br>4.临时缓冲区对象离开作用域，并最终成为被回收的无用数据。 </p>
+</blockquote>
+</li>
+<li><p>直接缓冲区时 I/O 的最佳选择，但可能比创建非直接缓冲区要花费更高的成本。直接缓冲区使用的内存是通过调用本地操作系统方面的代码分配的，绕过了标准 JVM 堆栈。建立和销毁直接缓冲区会明显比具有堆栈的缓冲区更加破费，这取决于主操作系统以及 JVM 实现。直接缓冲区的内存区域不受无用存储单元收集支配，因为它们位于标准 JVM 堆栈之外。</p>
+</li>
+<li><p>使用直接缓冲区或非直接缓冲区的性能权衡会因JVM，操作系统，以及代码设计而产生巨大差异。</p>
+</li>
+<li><p>使用 allocateDirect方法就可以获得直接缓冲区。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ByteBuffer <span class="title">allocateDirect</span> <span class="params">(<span class="keyword">int</span> capacity)</span> </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isDirect</span><span class="params">( )</span></span>; </span><br><span class="line"><span class="comment">//isDirect对于直接缓冲区的非字节视图缓冲区，也可能返回true</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="视图缓冲区"><a href="#视图缓冲区" class="headerlink" title="视图缓冲区"></a>视图缓冲区</h3><p>字节缓冲区是所有缓冲类型的基础。我们在通道中，网络中文件流中四处传递字节缓冲区。但是，一旦进入应用，我们就要通过视图缓冲区来解读具体的数据了。字节缓冲区提供了很多这样的API。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ByteBuffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing </span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> CharBuffer <span class="title">asCharBuffer</span><span class="params">( )</span></span>; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ShortBuffer <span class="title">asShortBuffer</span><span class="params">( )</span></span>; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> IntBuffer <span class="title">asIntBuffer</span><span class="params">( )</span></span>; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> LongBuffer <span class="title">asLongBuffer</span><span class="params">( )</span></span>; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> FloatBuffer <span class="title">asFloatBuffer</span><span class="params">( )</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> DoubleBuffer <span class="title">asDoubleBuffer</span><span class="params">( )</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>前面提到过从ByteBuffer到IntBuffer的转换。其实这种转换，是一种解释包装。<br>所以需要提供一个顺序，然后按照顺序和类型，转换成另外一种视图，而原始数据其实是不变的。<br>例如，我们可以这样；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer byteBuffer = </span><br><span class="line">    ByteBuffer.allocate(<span class="number">7</span>).order(ByteOrder.BIG_ENDIAN);</span><br><span class="line">CharBuffer charBuffer = byteBuffer.asCharBuffer();</span><br></pre></td></tr></table></figure></p>
+<p>注意，java中char是占两个字节的。我们的转换可以看下图：<br><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160422200211.png" alt="一个 ByteBuffer 的 CharBuffer 视图"></p>
+<p>新的charBuffer视图其实还是使用的原来的缓冲区的数据，只是这时的元素变成了2个字节的char了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.nio.Buffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteOrder;</span><br><span class="line"><span class="keyword">import</span> java.nio.CharBuffer;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBufferView</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(Buffer buffer)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"pos="</span>+buffer.position()+<span class="string">", limit="</span>+ </span><br><span class="line">				buffer.limit() + <span class="string">", capacity="</span>+buffer.capacity()</span><br><span class="line">				+<span class="string">":'"</span> + buffer.toString()+<span class="string">"'"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">		<span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		ByteBuffer byteBuffer = ByteBuffer.allocate(<span class="number">8</span>).order(ByteOrder.BIG_ENDIAN);</span><br><span class="line">		CharBuffer charBuffer = byteBuffer.asCharBuffer();</span><br><span class="line">		</span><br><span class="line">		byteBuffer.put(<span class="number">0</span>,(<span class="keyword">byte</span>)<span class="number">0</span>);</span><br><span class="line">		byteBuffer.put(<span class="number">1</span>,(<span class="keyword">byte</span>)<span class="string">'H'</span>);</span><br><span class="line">		byteBuffer.put(<span class="number">2</span>,(<span class="keyword">byte</span>)<span class="number">0</span>);</span><br><span class="line">		byteBuffer.put(<span class="number">3</span>,(<span class="keyword">byte</span>)<span class="string">'e'</span>);</span><br><span class="line">		byteBuffer.put(<span class="number">4</span>,(<span class="keyword">byte</span>)<span class="number">0</span>);</span><br><span class="line">		byteBuffer.put(<span class="number">5</span>,(<span class="keyword">byte</span>)<span class="string">'l'</span>);</span><br><span class="line">		byteBuffer.put(<span class="number">6</span>,(<span class="keyword">byte</span>)<span class="number">0</span>);</span><br><span class="line">                  byteBuffer.put(<span class="number">7</span>,(<span class="keyword">byte</span>)<span class="string">'l'</span>);</span><br><span class="line">                  byteBuffer.put(<span class="number">8</span>,(<span class="keyword">byte</span>)<span class="number">0</span>);</span><br><span class="line">                  byteBuffer.put(<span class="number">9</span>,(<span class="keyword">byte</span>)<span class="string">'o'</span>);</span><br><span class="line">		</span><br><span class="line">		CharBufferView.print(byteBuffer);</span><br><span class="line">		CharBufferView.print(charBuffer);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>结果：<br>pos=0, limit=10, capacity=10:’java.nio.HeapByteBuffer[pos=0 lim=10 cap=10]’<br>pos=0, limit=5, capacity=5:’Hello’<br>可以看到，转换为视图后，limit和capacity都变了。 </li>
+</ul>
+<h3 id="数据元素视图"><a href="#数据元素视图" class="headerlink" title="数据元素视图"></a>数据元素视图</h3><p>上面的视图使用了一个视图类来转换。在ByteBuffer中，我们可以直接获取不同视图的元素。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ByteBuffer</span></span></span><br><span class="line"><span class="class"><span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">Comparable</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">char</span> <span class="title">getChar</span><span class="params">( )</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">char</span> <span class="title">getChar</span> <span class="params">(<span class="keyword">int</span> index)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">short</span> <span class="title">getShort</span><span class="params">( )</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">short</span> <span class="title">getShort</span> <span class="params">(<span class="keyword">int</span> index)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getInt</span><span class="params">( )</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getInt</span> <span class="params">(<span class="keyword">int</span> index)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">getLong</span><span class="params">( )</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">getLong</span> <span class="params">(<span class="keyword">int</span> index)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">float</span> <span class="title">getFloat</span><span class="params">( )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">float</span> <span class="title">getFloat</span> <span class="params">(<span class="keyword">int</span> index)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">getDouble</span><span class="params">( )</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">getDouble</span> <span class="params">(<span class="keyword">int</span> index)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putChar</span> <span class="params">(<span class="keyword">char</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putChar</span> <span class="params">(<span class="keyword">int</span> index, <span class="keyword">char</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putShort</span> <span class="params">(<span class="keyword">short</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putShort</span> <span class="params">(<span class="keyword">int</span> index, <span class="keyword">short</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putInt</span> <span class="params">(<span class="keyword">int</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putInt</span> <span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putLong</span> <span class="params">(<span class="keyword">long</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putLong</span> <span class="params">(<span class="keyword">int</span> index, <span class="keyword">long</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putFloat</span> <span class="params">(<span class="keyword">float</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putFloat</span> <span class="params">(<span class="keyword">int</span> index, <span class="keyword">float</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putDouble</span> <span class="params">(<span class="keyword">double</span> value)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ByteBuffer <span class="title">putDouble</span> <span class="params">(<span class="keyword">int</span> index, <span class="keyword">double</span> value)</span></span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这些操作一看便知。前面也提过其实就是根据大端小端的字节顺序，和这些数据类型的长度来组织数据。这里需要注意的是:如果get或者是put时，数据不足，或者空间不够，都会发生异常。如果不是用putXX的方法，直接getXX，那么可能产生意想不到的问题。 </p>
+<h3 id="无符号数存取"><a href="#无符号数存取" class="headerlink" title="无符号数存取"></a>无符号数存取</h3><p>对于java来说，没有无符号数处理（除了char）。为此，书中给出一个程序，用来处理无符号数缓冲区。<br>其基本原理是，使用比要存取的数据类型更大的数据类型来存放这个数，同时使用与运算强制设置符号位为0，剩余的位就可以作为数据而不是符号位了。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Unsigned</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">short</span> <span class="title">getUnsignedByte</span> <span class="params">(ByteBuffer bb)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((<span class="keyword">short</span>)(bb.get( ) &amp; <span class="number">0xff</span>)); </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">putUnsignedByte</span> <span class="params">(ByteBuffer bb, <span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">    bb.put ((<span class="keyword">byte</span>)(value &amp; <span class="number">0xff</span>));</span><br><span class="line"> &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//这里省略了其他部分。这样我们就可以看到带符号的</span></span><br></pre></td></tr></table></figure>
+<h3 id="内存映射缓冲区"><a href="#内存映射缓冲区" class="headerlink" title="内存映射缓冲区"></a>内存映射缓冲区</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">映射缓冲区是与文件存储的数据元素关联的字节缓冲区，它通过内存映射来访问。映射缓 </span><br><span class="line">冲区通常是直接存取内存的，只能通过 FileChannel 类创建。映射缓冲区的用法和直接缓冲 </span><br><span class="line">区类似，但是 MappedByteBuffer 对象具有许多文件存取独有的特征。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参考资料 :<br><a href="http://download.csdn.net/detail/tang__xuandong/9500450" title="Java NIO" target="_blank" rel="noopener">《Java NIO》-(<em>Developing High Performance Applications</em>)</a></li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2016/04/23/Java-NIO之通道/" rel="next" title="Java--NIO之通道">
+    上一篇：Java--NIO之通道
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2016/04/20/Linux-Maven和nexus私服搭建/" rel="next" title="Linux--Maven和nexus私服搭建">
+    下一篇：Linux--Maven和nexus私服搭建
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="Java--NIO之缓冲区进阶" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

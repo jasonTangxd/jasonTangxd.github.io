@@ -1,0 +1,779 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>OWL--监控系统实战六插件开发 | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="OWL--监控系统实战六插件开发"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>OWL--监控系统实战六插件开发</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2017-08-28T03:47:07.000Z"><a href="/2017/08/28/OWL-监控系统实战六插件开发/">2017-08-28</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hadoop/" class="chip red lighten-1">Hadoop</a>
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+            <a href="/tags/Golang/" class="chip red lighten-1">Golang</a>
+        
+            <a href="/tags/运维/" class="chip red lighten-1">运维</a>
+        
+            <a href="/tags/OWL/" class="chip red lighten-1">OWL</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#监控系统实战七插件开发"><span class="section table-of-contents-text">监控系统实战七插件开发</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#开发owl插件的思路"><span class="section table-of-contents-text">开发owl插件的思路</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Hadoop插件的思路"><span class="section table-of-contents-text">Hadoop插件的思路</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#常见的Hadoop监控平台"><span class="section table-of-contents-text">常见的Hadoop监控平台</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#收集的方式"><span class="section table-of-contents-text">收集的方式</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#jmx数据的解析"><span class="section table-of-contents-text">jmx数据的解析</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#具体的实现"><span class="section table-of-contents-text">具体的实现</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#结构体的定义"><span class="section table-of-contents-text">结构体的定义</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#http请求与json转换"><span class="section table-of-contents-text">http请求与json转换</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#解析数据"><span class="section table-of-contents-text">解析数据</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#数据单位换算"><span class="section table-of-contents-text">数据单位换算</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#参数的设置"><span class="section table-of-contents-text">参数的设置</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#效果"><span class="section table-of-contents-text">效果</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　该篇博客主要讲解：</p>
+<ol>
+<li>开发owl插件的思路</li>
+<li>开发一个Hadoop的owl插件的思路</li>
+<li>Hadoop owl插件的具体实现</li>
+</ol>
+<h2 id="监控系统实战七插件开发"><a href="#监控系统实战七插件开发" class="headerlink" title="监控系统实战七插件开发"></a>监控系统实战七插件开发</h2><a id="more"></a>
+<h3 id="开发owl插件的思路"><a href="#开发owl插件的思路" class="headerlink" title="开发owl插件的思路"></a>开发owl插件的思路</h3><ol>
+<li><p>写插件之前，先看一看owl里面已有的插件代码，看明白了就可以写自己的插件了<br> <img src="https://img.xiaoxiaomo.com/blog/img/owl41.jpg" alt="owl插件"></p>
+</li>
+<li><p>下面以check_mysql为例，看看源码：</p>
+<ul>
+<li><p>main.go 主要就是组装参数，然后调用<code>FetchData</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	app := cli.NewApp()</span><br><span class="line">	app.Name = <span class="string">"check_mysql"</span></span><br><span class="line">	app.Version = <span class="string">"0.1"</span></span><br><span class="line">	app.Usage = <span class="string">"mysql performance metric collector"</span></span><br><span class="line">	app.Authors = []cli.Author&#123;</span><br><span class="line">		cli.Author&#123;</span><br><span class="line">			Name:  <span class="string">"yingsong"</span>,</span><br><span class="line">			Email: <span class="string">"wyingsong@163.com"</span>,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	app.Copyright = <span class="string">"2011 (c) TalkingData.com"</span></span><br><span class="line">	app.Flags = []cli.Flag&#123;</span><br><span class="line">		cli.StringFlag&#123;</span><br><span class="line">			Name:        <span class="string">"host"</span>,</span><br><span class="line">			Value:       <span class="string">"127.0.0.1"</span>,</span><br><span class="line">			Usage:       <span class="string">"Connect to host."</span>,</span><br><span class="line">			EnvVar:      <span class="string">"mysql_host"</span>,</span><br><span class="line">			Destination: &amp;host,</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="comment">// ......</span></span><br><span class="line">	&#125;</span><br><span class="line">	app.Action = FetchData</span><br><span class="line">	app.Run(os.Args)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>mysql.go 就是组装Metric信息<br><img src="https://img.xiaoxiaomo.com/blog/img/owl39.jpg" alt="mysql插件"></p>
+</li>
+<li>key.go 就是定义具体的实体类型</li>
+</ul>
+</li>
+<li><p>看完代码后，大概知道怎么写了，然后运行起来看看效果</p>
+</li>
+</ol>
+<ul>
+<li><p>插件怎么运行？</p>
+<ul>
+<li>进入插件目录然后<code>go build</code>，会出来一个可执行的文件，然后放入到指定目录(agent执行文件同级的plugins/目录下)就okay.<br><img src="https://img.xiaoxiaomo.com/blog/img/owl42.jpg" alt="插件存放位置"></li>
+</ul>
+</li>
+<li><p>具体的调用和插件metrics的输出在agent task.go里面<br> <img src="https://img.xiaoxiaomo.com/blog/img/owl40.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="Hadoop插件的思路"><a href="#Hadoop插件的思路" class="headerlink" title="Hadoop插件的思路"></a>Hadoop插件的思路</h3><h4 id="常见的Hadoop监控平台"><a href="#常见的Hadoop监控平台" class="headerlink" title="常见的Hadoop监控平台"></a>常见的Hadoop监控平台</h4><ul>
+<li>常见的发行版<code>CDH</code>，监控管理平台<code>cloudera manager</code>，或则Ganglia等。就展示了各种信息（内存，cpu…）</li>
+<li><strong>所以Hadoop平台的信息，肯定是可以采集的</strong>。我们要做的就是和它一样，<code>做一个属于自己的cloudera manager</code><br><img src="https://img.xiaoxiaomo.com/blog/img/owl47.jpg" alt=""></li>
+</ul>
+<h4 id="收集的方式"><a href="#收集的方式" class="headerlink" title="收集的方式"></a>收集的方式</h4><ul>
+<li>怎么收集hadoop平台的metrics信息？有两种方式</li>
+</ul>
+<ol>
+<li><p>通过实现接口方式，然后重写<code>putMetrics</code>等方法，就像源码中的FileSink,Ganglia等</p>
+<ul>
+<li>下图示例是写入文件，我们要做的就是写入到opentsdb里面就行</li>
+<li><img src="https://img.xiaoxiaomo.com/blog/img/owl48.jpg" alt=""></li>
+<li>写完后打包成jar，放到hadoop平台。然后修改metrics2配置文件</li>
+<li><img src="https://img.xiaoxiaomo.com/blog/img/owl49.jpg" alt=""></li>
+</ul>
+</li>
+<li><p>通过jmx信息收集平台信息</p>
+<ul>
+<li>一般地址是<strong><a href="http://ip:port/jmx" target="_blank" rel="noopener">http://ip:port/jmx</a></strong>，比如NameNode服务jmx信息：</li>
+<li><img src="https://img.xiaoxiaomo.com/blog/img/owl50.jpg" alt=""></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>上面两种方式选择哪一种？第一种方式直接写入到opentsdb但是还得去维护一下owl MySQL的元数据信息，第二种方式直接写插件收集就行，下面的示例选择的是第二中方式。</li>
+</ul>
+<h4 id="jmx数据的解析"><a href="#jmx数据的解析" class="headerlink" title="jmx数据的解析"></a>jmx数据的解析</h4><ol>
+<li><p>我们可以看见jmx是一个超级大的json，仅仅DataNode就有40个items，而且每一个json不是那么有规律。<br><img src="https://img.xiaoxiaomo.com/blog/img/owl51.jpg" alt=""></p>
+</li>
+<li><p>我把全部json看了一遍，发现并不是所有都是我们需要的数据，像下面这种即使解析后放入到owl也是没有意义的，没法计算！<br><img src="https://img.xiaoxiaomo.com/blog/img/owl52.jpg" alt=""></p>
+</li>
+<li><p>我们只需要解析出我们想要的数据就行，就这样开发了一个自己的<code>cloudera manager</code><br><img src="https://img.xiaoxiaomo.com/blog/img/owl56.jpg" alt=""></p>
+</li>
+<li><p>于是可以通过定义一些模板的方式，去获取想要的数据。</p>
+<ul>
+<li>因为发现<code>modelerType</code>是唯一的，模板中我们就可以通过该值去json中匹配，然后解析对应的json</li>
+<li>解析对应的json，我们也可以定义成一个实体出来，而且还可以在里面赛选需要的字段</li>
+</ul>
+</li>
+<li><p>最终的数据是要转换成metrics结构的数据</p>
+<ul>
+<li>metrics name ：我们也需要定义出来一个通用的规则，方便统一管理和代码的编写</li>
+<li>metrics type ：我们也要考虑到每一个字段统计的方式不同，的和字段绑定在一起，所以可以定义到上面json解析的字段实体中</li>
+<li>metrics tags ：这个我们可以获取json中，jsonK以“tag.”开头的数据</li>
+<li>metrics value：这个得考虑到hadoop平台中的一些单位的统一，有GB、MB、纳秒等</li>
+</ul>
+</li>
+</ol>
+<h3 id="具体的实现"><a href="#具体的实现" class="headerlink" title="具体的实现"></a>具体的实现</h3><h4 id="结构体的定义"><a href="#结构体的定义" class="headerlink" title="结构体的定义"></a>结构体的定义</h4><ol>
+<li>结构肯定是一个map结构的（modelerType，json字段对应的实体）：map[string]interface{}</li>
+<li>json字段对应的实体（json字段，metrics type）最终结构：map[string]map[string]string<br><img src="https://img.xiaoxiaomo.com/blog/img/owl53.jpg" alt=""></li>
+<li>发现实体代码有点多copy麻烦，自己写了一个工具类生成的代码，<code>metrics type</code>在源码里面都有具体的类型可以参考。</li>
+</ol>
+<h4 id="http请求与json转换"><a href="#http请求与json转换" class="headerlink" title="http请求与json转换"></a>http请求与json转换</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http get请求</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">httpGet</span><span class="params">(url <span class="keyword">string</span>)</span> <span class="params">(*simplejson.Json, error)</span></span> &#123;</span><br><span class="line">	resp, err := http.Get(url)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logs.Error(<span class="string">"http get请求异常"</span>,err)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span> , err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">	<span class="keyword">return</span> simplejson.NewFromReader(resp.Body)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取beans</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getMap</span><span class="params">(url <span class="keyword">string</span>)</span> []<span class="title">map</span>[<span class="title">string</span>]<span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">	json, err := httpGet(url)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logs.Error(<span class="string">"获取beans失败"</span>,err)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	beans, err := json.Get(<span class="string">"beans"</span>).Array()</span><br><span class="line">	maps := <span class="built_in">make</span>([]<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;, <span class="built_in">len</span>(beans))</span><br><span class="line">	<span class="keyword">for</span> i,_ := <span class="keyword">range</span> beans  &#123;</span><br><span class="line">		mapInfo, err := json.Get(<span class="string">"beans"</span>).GetIndex(i).Map()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			logs.Error(<span class="string">"beans转map异常"</span>,err)</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">		maps[i] = mapInfo</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> maps</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="解析数据"><a href="#解析数据" class="headerlink" title="解析数据"></a>解析数据</h4><ul>
+<li><p>通过定义的<code>modelerType</code>去匹配json的字段value</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings.HasPrefix(maps[<span class="string">"modelerType"</span>].(<span class="keyword">string</span>),prefix)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解析jmx tags</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    metrics: &#123;</span></span><br><span class="line"><span class="comment">        metric:prefix.map.k(排除tag开头的map.k)</span></span><br><span class="line"><span class="comment">        Value:map.v</span></span><br><span class="line"><span class="comment">        tags:&#123;tag开头的map.k,map.v,service:service&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// 如果是Master,sub=AssignmentManger这种样式的我们就用tag.Context来作为metric前缀</span></span><br><span class="line"><span class="comment">// HBase的modelerType比较特殊</span></span><br><span class="line"><span class="keyword">if</span> strings.Contains(prefix,<span class="string">",sub="</span>) &#123;</span><br><span class="line">    prefix = maps[<span class="string">"tag.Context"</span>].(<span class="keyword">string</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取tags and 组装tags</span></span><br><span class="line">tags := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line"><span class="keyword">for</span> k,v :=<span class="keyword">range</span> maps &#123;</span><br><span class="line">    <span class="keyword">if</span> strings.HasPrefix( k,<span class="string">"tag."</span> )  &amp;&amp; v != <span class="literal">nil</span> &#123;</span><br><span class="line">        tags[strings.ToLower(strings.TrimPrefix( k,<span class="string">"tag."</span> ))] = v.(<span class="keyword">string</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _,v := <span class="keyword">range</span> strings.Split(maps[<span class="string">"name"</span>].(<span class="keyword">string</span>),<span class="string">","</span>) &#123;</span><br><span class="line">    splits := strings.Split(v, <span class="string">":"</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(splits) == <span class="number">2</span> &#123;</span><br><span class="line">        tags[strings.Split(splits[<span class="number">1</span>],<span class="string">"="</span>)[<span class="number">0</span>]]=strings.Split(splits[<span class="number">1</span>],<span class="string">"="</span>)[<span class="number">1</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>组装metrics信息</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k,m :=<span class="keyword">range</span> fields &#123;</span><br><span class="line">    <span class="keyword">if</span> maps[k] != <span class="literal">nil</span> &#123;</span><br><span class="line">        data = <span class="built_in">append</span>(data, Metric&#123;</span><br><span class="line">            Metric:   prefix+<span class="string">"."</span>+k,</span><br><span class="line">            DataType: m,</span><br><span class="line">            Value:    conversionBytes(k,maps[k]),</span><br><span class="line">            Tags: tags,</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="数据单位换算"><a href="#数据单位换算" class="headerlink" title="数据单位换算"></a>数据单位换算</h4><ul>
+<li>大小转换为KB，时间转换为毫秒秒<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">conversionBytes</span><span class="params">( k <span class="keyword">string</span>, v <span class="keyword">interface</span>&#123;&#125; )</span> <span class="title">interface</span></span>&#123;&#125;&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// MB</span></span><br><span class="line">	<span class="keyword">if</span> strings.HasSuffix(k,<span class="string">"M"</span>) || strings.HasSuffix(k,<span class="string">"MB"</span>)&#123;</span><br><span class="line">		vf, err := v.(json.Number).Float64()</span><br><span class="line">		<span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; vf &gt; <span class="number">0</span>&#123;</span><br><span class="line">			v = vf*MB</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// GB</span></span><br><span class="line">	<span class="keyword">if</span> strings.HasSuffix(k,<span class="string">"GB"</span>) &#123;</span><br><span class="line">		vf, err := v.(json.Number).Float64()</span><br><span class="line">		<span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; vf &gt; <span class="number">0</span>&#123;</span><br><span class="line">			v = vf*GB</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 纳秒</span></span><br><span class="line">	<span class="keyword">if</span> strings.Contains(k,<span class="string">"NanosAvgTime"</span>)&#123;</span><br><span class="line">		vf, err := v.(json.Number).Float64()</span><br><span class="line">		<span class="keyword">if</span> err == <span class="literal">nil</span> &#123;</span><br><span class="line">			v = vf/NANOS</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> v</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="参数的设置"><a href="#参数的设置" class="headerlink" title="参数的设置"></a>参数的设置</h4><ol>
+<li>第一个参数就是url，即指定到具体的jmx信息</li>
+<li>第二个参数service，就是服务的映射，你需要具体解析那些服务<br><img src="https://img.xiaoxiaomo.com/blog/img/owl54.jpg" alt=""></li>
+<li>插件的配置<br><img src="https://img.xiaoxiaomo.com/blog/img/owl55.jpg" alt=""></li>
+</ol>
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><ul>
+<li>看看效果吧！这就是我们自己的<strong>cloudera manager</strong><br><img src="https://img.xiaoxiaomo.com/blog/img/owl43.jpg" alt=""><br><img src="https://img.xiaoxiaomo.com/blog/img/owl44.jpg" alt=""><br><img src="https://img.xiaoxiaomo.com/blog/img/owl45.jpg" alt=""><br><img src="https://img.xiaoxiaomo.com/blog/img/owl46.jpg" alt=""></li>
+</ul>
+<ul>
+<li>参考：<a href="https://www.datadoghq.com/blog/collecting-hadoop-metrics/" target="_blank" rel="noopener">https://www.datadoghq.com/blog/collecting-hadoop-metrics/</a></li>
+</ul>
+
+                
+<p class="red-link-context">
+    <a href="/2017/09/08/OWL-监控系统实战七上线运行/" rel="next" title="OWL--监控系统实战七上线运行">
+    上一篇：OWL--监控系统实战七上线运行
+  </a>
+</p>
+
+
+
+<p class="red-link-context">
+    <a href="/2017/08/28/OWL-监控系统实战五二次开发/" rel="next" title="OWL--监控系统实战五二次开发">
+    下一篇：OWL--监控系统实战五二次开发
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="OWL--监控系统实战六插件开发" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

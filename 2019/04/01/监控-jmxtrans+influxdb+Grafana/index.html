@@ -1,0 +1,776 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>监控--jmxtrans+influxdb+Grafana | 路途遥远 | 勿忘初心</title>
+    <meta name="author" content="小小默">
+    
+    <meta name="description" content="小小默&#39;s Blog | 主要以Hadoop/Spark、机器学习、人工智能相关技术博客为主！博客尽量精简，尽量易懂！">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="监控--jmxtrans+influxdb+Grafana"/>
+    <meta property="og:site_name" content="小小默&#39;s Blog"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="小小默&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="green">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">小小默&#39;s Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav green darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="https://img.xiaoxiaomo.com/blog/img/head1.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">小小默</p>
+                        <p class="desc">java/大数据/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav green darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/技术/">
+                    技术 <span class="right">126 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/异常/">
+                    异常 <span class="right">8 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/导航/">
+                    导航 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/随笔/">
+                    随笔 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/游记/">
+                    游记 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper green">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/技术/">技术</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>监控--jmxtrans+influxdb+Grafana</h1>
+    
+
+
+            </div>
+            <time class="red-link-context" datetime="2019-04-01T07:11:20.000Z"><a href="/2019/04/01/监控-jmxtrans+influxdb+Grafana/">2019-04-01</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+            <a href="/tags/监控/" class="chip red lighten-1">监控</a>
+        
+            <a href="/tags/jmxtrans/" class="chip red lighten-1">jmxtrans</a>
+        
+            <a href="/tags/influxDB/" class="chip red lighten-1">influxDB</a>
+        
+            <a href="/tags/Grafana/" class="chip red lighten-1">Grafana</a>
+        
+    </div>
+
+
+            <div class="toc red-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#influxDB安装"><span class="section table-of-contents-text">influxDB安装</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装grafana"><span class="section table-of-contents-text">安装grafana</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装jmxtrans"><span class="section table-of-contents-text">安装jmxtrans</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#收集HBase-Jmx"><span class="section table-of-contents-text">收集HBase Jmx</span></a></li></ol>
+</div>
+
+
+            <div class="entry red-link-context">
+                <p>　　这里主要梳理一下大数据常用的监控组件的组合使用，<strong><code>jmxtrans</code>+<code>influxdb</code>+<code>Grafana</code></strong>。jmxtrans用于收集服务的jmx信息（通过配置json文件），然后入库到influxDB。<br>　　通过配置Grafana，把influxDB里面的数据通过web展示出来。<br>　　我这里主要做一些简单的安装，然后<strong>以HBase为例做收集存储展示</strong>，<em>更多详细的内容，会在后面的内容分享</em>。</p>
+<h2 id="influxDB安装"><a href="#influxDB安装" class="headerlink" title="influxDB安装"></a>influxDB安装</h2><ol>
+<li><p>下载地址：<a href="https://portal.influxdata.com/downloads/#influxdb" target="_blank" rel="noopener">https://portal.influxdata.com/downloads/#influxdb</a></p>
+<ul>
+<li>我这里通过wget下载1.7.5的版本</li>
+<li>wget <a href="https://dl.influxdata.com/influxdb/releases/influxdb-1.7.5.x86_64.rpm" target="_blank" rel="noopener">https://dl.influxdata.com/influxdb/releases/influxdb-1.7.5.x86_64.rpm</a> </li>
+</ul>
+</li>
+<li><p>安装</p>
+<ul>
+<li>sudo yum localinstall influxdb-1.7.5.x86_64.rpm</li>
+</ul>
+</li>
+<li><p>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 ~]# service influxdb start</span><br><span class="line">Starting influxdb...</span><br><span class="line">influxdb process was started [ OK ]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<ol start="4">
+<li><p>配置文件</p>
+<ul>
+<li>默认配置文件：/etc/influxdb/influxdb.conf</li>
+<li>默认日志文件：/var/log/influxdb/influxd.log</li>
+<li>配置文件详解：<a href="https://www.cnblogs.com/guyeshanrenshiwoshifu/p/9188368.html" target="_blank" rel="noopener">https://www.cnblogs.com/guyeshanrenshiwoshifu/p/9188368.html</a></li>
+<li>可以修改mete、data、wal-dir目录（<strong>注意修改的目录需要有influxdb用户的写入权限，我这里修改到app目录了</strong>），</li>
+</ul>
+</li>
+<li><p>重要的目录</p>
+<ul>
+<li>服务启动后生成以下目录：<blockquote>
+<p>data 存放最终存储的数据，文件以.tsm结尾<br>meta 存放数据库元数据<br>wal 存放预写日志文件<br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana01.png" alt="influxdb 数据目录"></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>客户端操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 ~]# /usr/bin/influx</span><br><span class="line">Connected to http://localhost:8086 version 1.7.5</span><br><span class="line">InfluxDB shell version: 1.7.5</span><br><span class="line">Enter an InfluxQL query</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>6.1. 查看创建database<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; show databases;</span><br><span class="line">name: databases</span><br><span class="line">name</span><br><span class="line">----</span><br><span class="line">_internal</span><br><span class="line">&gt; </span><br><span class="line">&gt; </span><br><span class="line">&gt; create database hbaseJmx;</span><br><span class="line">&gt; show databases;</span><br><span class="line">name: databases</span><br><span class="line">name</span><br><span class="line">----</span><br><span class="line">_internal</span><br><span class="line">hbaseJmx</span><br></pre></td></tr></table></figure></p>
+<p>6.2. 查看<code>measurements</code>，这个理解成表的概念<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;</span><br><span class="line">&gt; use hbaseJmx</span><br><span class="line">Using database hbaseJmx</span><br><span class="line">&gt; show measurements;</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装grafana"><a href="#安装grafana" class="headerlink" title="安装grafana"></a>安装grafana</h2><ol>
+<li><p>下载安装<br>下载：<a href="https://grafana.com/grafana/download?platform=linux" target="_blank" rel="noopener">https://grafana.com/grafana/download?platform=linux</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">安装：yum localinstall grafana-5.4.2-1.x86_64.rpm</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重要配置及目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">配置文件：/etc/sysconfig/grafana-server</span><br><span class="line">环境变量文件：/etc/grafana/grafana.ini</span><br><span class="line"></span><br><span class="line">日志文件：/var/log/grafana/grafana.log</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可以在 <code>/etc/sysconfig/grafana-server</code> 文件中修改日志目录，数据目录和其他一些环境变量。<br>数据库：<br>默认配置指定的数据库 sqlite3 在 <code>/var/lib/grafana/grafana.db</code></p>
+<ol start="3">
+<li><p>启动grafana服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 ~]# service grafana-server start</span><br><span class="line">Starting Grafana Server: ... [确定]</span><br></pre></td></tr></table></figure>
+<p> <img src="https://img.xiaoxiaomo.com/blog/img/jigrafana02.png" alt="grafana 数据目录"></p>
+</li>
+<li>插件安装（略）</li>
+</ol>
+<ul>
+<li>插件网址 <a href="https://grafana.com/plugins?type=panel" target="_blank" rel="noopener">https://grafana.com/plugins?type=panel</a></li>
+</ul>
+<ol start="5">
+<li>访问</li>
+</ol>
+<ul>
+<li>网页访问，<code>端口号3000，账号密码都是admin</code><br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana03.png" alt="grafana web"></li>
+</ul>
+<h2 id="安装jmxtrans"><a href="#安装jmxtrans" class="headerlink" title="安装jmxtrans"></a>安装jmxtrans</h2><ol>
+<li><p>官网：<a href="http://www.jmxtrans.org/" target="_blank" rel="noopener">http://www.jmxtrans.org/</a></p>
+<ul>
+<li>下载地址：<a href="http://central.maven.org/maven2/org/jmxtrans/jmxtrans/" target="_blank" rel="noopener">http://central.maven.org/maven2/org/jmxtrans/jmxtrans/</a></li>
+<li>我下载的jmxtrans-270.rpm</li>
+</ul>
+</li>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 work]# yum localinstall jmxtrans-270.rpm</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件</p>
+</li>
+</ol>
+<ul>
+<li>/etc/jmxtrans/wrapper.conf </li>
+</ul>
+<ol start="4">
+<li>启动<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 ~]# service jmxtrans start</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="收集HBase-Jmx"><a href="#收集HBase-Jmx" class="headerlink" title="收集HBase Jmx"></a>收集HBase Jmx</h2><ul>
+<li>配置一个Demo，即收集<code>HBase</code>里面的监控项，通过Jmxtrans写入到influxDB,然后通过grafana展示。</li>
+</ul>
+<ol>
+<li><p>配置hbase，将<code>hbase-env.sh</code>中以下配置项的注释打开，打开后为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">export HBASE_JMX_BASE=&quot;-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false&quot;</span><br><span class="line">export HBASE_MASTER_OPTS=&quot;$HBASE_MASTER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10101&quot;</span><br><span class="line">export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10102&quot;</span><br><span class="line">export HBASE_THRIFT_OPTS=&quot;$HBASE_THRIFT_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10103&quot;</span><br><span class="line">export HBASE_ZOOKEEPER_OPTS=&quot;$HBASE_ZOOKEEPER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10104&quot;</span><br><span class="line">export HBASE_REST_OPTS=&quot;$HBASE_REST_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10105&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我是使用cloudera manager中的hbase，所以配置hbase-env.sh在 服务环境高级配置代码段中配置（<strong>注意该配置无法识别$变量</strong>）<br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana04.png" alt="grafana web"></li>
+</ul>
+</li>
+<li><p>配置Jmxtrans</p>
+<ul>
+<li><p>Jmxtrans的json默认地址：/var/lib/jmxtrans/，我在/var/lib/jmxtrans/目录下创建hbaseJmx.json配置文件，内容如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"servers"</span>:[&#123;</span><br><span class="line">    <span class="attr">"port"</span>:<span class="string">"10101"</span>,</span><br><span class="line">    <span class="attr">"host"</span>:<span class="string">"10.xxx.IP地址"</span>,</span><br><span class="line">    <span class="attr">"queries"</span>:[&#123;</span><br><span class="line">    <span class="attr">"obj"</span>:<span class="string">"Hadoop:service=HBase,name=JvmMetrics"</span>,</span><br><span class="line">    <span class="attr">"attr"</span>:[<span class="string">"GcCount"</span>],</span><br><span class="line">    <span class="attr">"resultAlias"</span>:<span class="string">"GcCount"</span>,</span><br><span class="line">    <span class="attr">"outputWriters"</span>:[&#123;</span><br><span class="line">        <span class="attr">"@class"</span>:<span class="string">"com.googlecode.jmxtrans.model.output.InfluxDbWriterFactory"</span>,</span><br><span class="line">        <span class="attr">"url"</span>:<span class="string">"http://localhost:8086/"</span>,</span><br><span class="line">        <span class="attr">"username"</span>:<span class="string">"admin"</span>,</span><br><span class="line">        <span class="attr">"password"</span>:<span class="string">"admin"</span>,</span><br><span class="line">        <span class="attr">"database"</span>:<span class="string">"hbaseJmx"</span></span><br><span class="line">     &#125;]</span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>注意：</strong>空格等字符，还有注意上面的服务都是使用自己的用户启动服务，日志、数据等目录需要有相应的权限<br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana05.png" alt="grafana 数据目录"></p>
+</li>
+<li>重启Jmxtrans，在启动服务的时候也<strong>可以手动指定上</strong>面的配置文件。</li>
+</ul>
+</li>
+<li><p>查看influxDB中的数据</p>
+<ul>
+<li><strong>注意：</strong>如果改数据库没有表或者数据，<code>请查看Jmxtrans的日志</code>，启动是否正常等。</li>
+</ul>
+</li>
+</ol>
+<ol start="4">
+<li>配置grafana<br> 4.1. 配置grafanad的database<br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana06.png" alt="grafana 数据目录"><br> 4.2. 配置grafanad的dashboard<br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana07.png" alt="grafana 数据目录"><br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana08.png" alt="grafana 数据目录"><br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana09.png" alt="grafana 数据目录"><br> 4.3. 查看图<br><img src="https://img.xiaoxiaomo.com/blog/img/jigrafana10.png" alt="grafana 数据目录"></li>
+</ol>
+
+                
+
+
+<p class="red-link-context">
+    <a href="/2019/03/15/Java-ConcurrentHashMap笔记整理/" rel="next" title="Java--ConcurrentHashMap笔记整理">
+    下一篇：Java--ConcurrentHashMap笔记整理
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comments">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" sid="监控--jmxtrans+influxdb+Grafana" ></div>
+        <script type="text/javascript">
+        (function(){
+        var appid = 'cyt7oLUgY';
+        var conf = 'prod_dbec59e34abc763018ed5d575da5154e';
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        if (width < 960) {
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      </section>
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large red">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse light-green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer green darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/tangxuandong" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/jasonTangxd" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://blog.xiehaibo.cn" target="_blank">菠菜丛林历险记</a>
+                
+                    <a class="social-link" href="http://mxjhaima.com/" target="_blank">梦想家&#39;s Blog</a>
+                
+                    <a class="social-link" href="http://www.bantwor.com/" target="_blank">Twor</a>
+                
+                    <a class="social-link" href="http://blog.csdn.net/u011204847" target="_blank">聆听的幻树</a>
+                
+                    <a class="social-link" href="http://dmlcoding.com" target="_blank">TIME渐行渐远</a>
+                
+                    <a class="social-link" href="http://sarahzhu.top" target="_blank">Sarah&#39;s World</a>
+                
+                    <a class="social-link" href="http://www.thankjava.com/" target="_blank">Acexy-博客</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright red-link-context">
+        <div class="container" style="font-size:14px;">
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202000624" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                <img src="/img/beian.png" style="float:left;max-width:auto ;padding: 4px;background-color:transparent;border: 0px;"/>
+                <p style="height:50px;line-height:23px;width: 307px;">京公网安备11011202000624号</p>
+            </a>
+            渝ICP备16011596号 © 2016 小小默
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1258893168&web_id=1258893168" language="JavaScript"></script>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('red lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge red"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword red lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77355962-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>
