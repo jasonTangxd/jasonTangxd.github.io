@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">126 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,188 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2016/02/29/Linux-磁盘管理及挂载/">Linux--磁盘管理及挂载</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-02-29T06:46:59.000Z"><a href="/2016/02/29/Linux-磁盘管理及挂载/">2016-02-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　<strong>硬盘</strong>：一个IO设备。设备名称： <code>IDE硬盘为hdx（x为从a—d硬盘最多四个）</code>，SCSI，SATA，USB硬盘为sdx（x为a—z））。<code>硬盘主分区最多为4个（sdb1-sdb4），逻辑分区从sdb5开始</code>。本篇博客主要讲解查看和管理磁盘的基本命令，最主要内容还是磁盘分区和挂载。</p>
+<h2 id="查看磁盘信息"><a href="#查看磁盘信息" class="headerlink" title="查看磁盘信息"></a>查看磁盘信息</h2><h3 id="df命令"><a href="#df命令" class="headerlink" title="df命令"></a>df命令</h3><ul>
+<li>查看已挂载磁盘的总容量、使用容量、剩余容量<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df -i <span class="comment">#使用inodes 显示结果</span></span><br><span class="line">df -h <span class="comment">#用合适的单位显示,G,M等</span></span><br><span class="line">df -k <span class="comment">#显示单位K</span></span><br><span class="line">df –m <span class="comment">#显示单位M</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160314155228.png" alt=""></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/02/29/Linux-磁盘管理及挂载/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/02/28/Linux-常用VI-VIM命令/">Linux--常用VI/VIM命令</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-02-28T02:22:30.000Z"><a href="/2016/02/28/Linux-常用VI-VIM命令/">2016-02-28</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　VI编辑器是Unix和Linux系统下标准的编辑器，VIM就是VI的升级版，多了高亮，等特性。VI和VIM是比较常用的文本编辑工具，是必须要使用的，需要记住常用的命令。下面内容主要使用VIM来表示：</p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/02/28/Linux-常用VI-VIM命令/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/02/25/Linux-Mysql源码安装及配置/">Linux--MySQL源码安装及配置</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-02-25T09:15:15.000Z"><a href="/2016/02/25/Linux-Mysql源码安装及配置/">2016-02-25</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Mysql/" class="chip red lighten-1">Mysql</a>
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　上篇博客<a href="http://blog.xiaoxiaomo.com/2016/02/22/Linux-软件安装之Mysql/">http://blog.xiaoxiaomo.com/2016/02/22/Linux-软件安装之Mysql/</a>，使用了一种相对比较简单的安装方式。本片博客，在讲解另外一种安装方式。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>下载地址Cmake：<a href="https://cmake.org/download/" target="_blank" rel="noopener">http://www.cmake.org/cmake/resources/software.html</a></li>
+<li>下载地址Mysql：<a href="http://www.mysql.com" target="_blank" rel="noopener">http://www.mysql.com</a></li>
+<li>博主下载了版本分别为：<a href="http://download.csdn.net/detail/tang__xuandong/9502755" target="_blank" rel="noopener">mysql-5.5.40 linux.tar.gz</a>和<a href="http://download.csdn.net/detail/tang__xuandong/9502759" target="_blank" rel="noopener">cmake-3.0.2.tar.gz</a>（<em>这里提供了下载</em>）</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/02/25/Linux-Mysql源码安装及配置/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/02/23/Linux-软件安装之Redis/">Linux--软件安装之Redis</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-02-23T01:16:23.000Z"><a href="/2016/02/23/Linux-软件安装之Redis/">2016-02-23</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　<code>Redis</code>是一个开源（BSD许可）的，<code>内存中的数据结构存储系统</code>，它<code>可以用作数据库、缓存和消息中间件</code>。 它支持多种类型的数据结构，事务等。</p>
+<h2 id="下载-安装"><a href="#下载-安装" class="headerlink" title="下载/安装"></a>下载/安装</h2><ul>
+<li>1、官网下载：</li>
+</ul>
+<blockquote>
+<p><a href="http://redis.io/download" target="_blank" rel="noopener">http://redis.io/download</a>  #第一种：官方下载后上传<br><em>wget <a href="http://download.redis.io/releases/redis-3.0.6.tar.gz" target="_blank" rel="noopener">http://download.redis.io/releases/redis-3.0.6.tar.gz</a></em> #第二种：命令字节下载：（软件本身不大，看网速）</p>
+</blockquote>
+<ul>
+<li>2、解压编译源码安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf redis-3.0.6.tar.gz -C /usr/<span class="built_in">local</span>/src　　　<span class="comment">#解压缩到指定目录</span></span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/redis-3.0.1/　　　<span class="comment">#到解压的目录去编译源码</span></span><br><span class="line">make PREFIX=/usr/<span class="built_in">local</span>/redis install　　　<span class="comment">#安装到指定目录</span></span><br></pre></td></tr></table></figure>
+<p><code>注</code>：如果make失败，一般是你们系统中还未安装gcc,那么可以通过yum安装：<code>yum install gcc</code></p>
+<p>出现下面信息表示编译安装成功！<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Hint: It<span class="string">'s a good idea to run '</span>make <span class="built_in">test</span><span class="string">' ;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">make[1]: Leaving directory `/usr/local/src/redis-3.0.6/src'</span></span><br></pre></td></tr></table></figure></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/02/23/Linux-软件安装之Redis/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2016/02/22/Linux-软件安装之Mysql/">Linux--软件安装之MySQL</a></h1>
     
 
@@ -309,162 +491,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/02/22/Linux-软件安装之Mysql/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/02/18/Linux-系统进程管理/">Linux--系统进程管理</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-02-18T06:15:15.000Z"><a href="/2016/02/18/Linux-系统进程管理/">2016-02-18</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　在早期的计算机中不包含操作系统，从头到位一台计算机只运行了一个程序，并且这个程序能访问计算机中的所有资源，只做一件事情。操作系统的出现使得计算机能运行多个程序，并且不同的程序都在单独的进程中运行，进程又可以启动多个线程。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/02/18/Linux-系统进程管理/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/02/16/Linux-操作系统及常用命令/">Linux--操作系统及常用命令</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-02-16T06:10:57.000Z"><a href="/2016/02/16/Linux-操作系统及常用命令/">2016-02-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　主要介绍操作系统上一些<code>常见命令</code>，比如创建文件目录mkdir，查看目录下文件ls，系统环境变量，系统时间，帮助文档等。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/02/16/Linux-操作系统及常用命令/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/02/16/Linux-跟文件系统/">Linux--跟文件系统</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-02-16T01:24:50.000Z"><a href="/2016/02/16/Linux-跟文件系统/">2016-02-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　根文件系统<code>rootfs</code>(<em>Root File System</em>)，Linux是一种树形结构组织文件<code>FHS</code>（<em>FileSystem Hierarchy Standard</em>）。<code>“/”是所有文件的跟</code>，本篇主要介绍一下linux“/”目录下面文件夹的一些作用和用途。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/02/16/Linux-跟文件系统/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/02/14/Linux-基本配置修改/">Linux--基本配置修改</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-02-14T01:19:57.000Z"><a href="/2016/02/14/Linux-基本配置修改/">2016-02-14</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本博客介绍一些我们常用linux配置文件的修改，主要包括网络地址，主机名，hosts文件，端口，防火墙等基本操作。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/02/14/Linux-基本配置修改/">阅读全文</a>
         </ div>
         
     </div>
@@ -533,6 +559,8 @@
         <li class="waves-effect"><a href="/page/27">27</a></li>
     
         <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+        <li class="waves-effect"><a href="/page/29">29</a></li>
     
     
     <li class="">

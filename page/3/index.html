@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">126 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,177 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2017/12/14/SparkException-Could-not-find-CoarseGrainedScheduler-or-it-has-been-stopped/">SparkException: Could not find CoarseGrainedScheduler or it has been stopped.</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-12-14T03:14:37.000Z"><a href="/2017/12/14/SparkException-Could-not-find-CoarseGrainedScheduler-or-it-has-been-stopped/">2017-12-14</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <h1 id="运行异常"><a href="#运行异常" class="headerlink" title="运行异常"></a>运行异常</h1><ul>
+<li><strong>我在Python脚本中通过spark-submit提交运行多个任务</strong>（脚本中有多个spark SQL任务），<strong>任务正常运行完后报错</strong><br>ERROR netty.Inbox: Ignoring error<br>org.apache.spark.SparkException: Could not find CoarseGrainedScheduler or it has been stopped. </li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/12/14/SparkException-Could-not-find-CoarseGrainedScheduler-or-it-has-been-stopped/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/29/Cloudera-Manager-Yarn用户资源隔离配置/">Cloudera Manager--Yarn用户资源隔离配置</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-29T09:54:50.000Z"><a href="/2017/11/29/Cloudera-Manager-Yarn用户资源隔离配置/">2017-11-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cloudera/" class="chip red lighten-1">Cloudera</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　Yarn用户资源隔离配置，主要使用 <strong>Yarn动态资源池(dynamic resource pool)</strong> _ 对YARN应用程序进行资源和策略分配的池。(Impala资源也可以动态管理)_<br>动态资源池允许安排和分配用户访问特定池，用来执行YARN应用程序。<strong>如果一个池的资源未被使用，它可以被占用(preempted)并分配给其他池。否则，就根据各个池的权重来共享资源。访问控制列表(Access control lists (ACLs)) 对提交访问和管理访问进行限制。</strong></p>
+<ul>
+<li>下面主要以下几个步骤来实际的操作：<ol>
+<li>资源隔离前：看看默认的组，以及为什么我们要去从新划分</li>
+<li>规划用户组：举例本例中分配的组，以及我们线上环境一般怎么分配的</li>
+<li>HDFS和Yarn设置：需要修改的一些配置</li>
+<li>资源池设置：主要是资源池设置以及配置相应的规则</li>
+<li>示例展示：截图说明一下修改后的一些运行效果</li>
+</ol>
+</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/29/Cloudera-Manager-Yarn用户资源隔离配置/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/29/Hive-Hive元数据HDFS路径异常/">Hive--Hive元数据HDFS路径异常</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-29T06:14:29.000Z"><a href="/2017/11/29/Hive-Hive元数据HDFS路径异常/">2017-11-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hive/" class="chip red lighten-1">Hive</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <h1 id="发现问题"><a href="#发现问题" class="headerlink" title="发现问题"></a>发现问题</h1><ul>
+<li>在hue上面跑hive语句时，出现如下异常：<br><img src="https://img.xiaoxiaomo.com/blog/img/hive02.png" alt="">
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/29/Hive-Hive元数据HDFS路径异常/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/11/22/Cloudera-Manager-升级Kafka/">Cloudera Manager--升级Kafka</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-11-22T06:41:29.000Z"><a href="/2017/11/22/Cloudera-Manager-升级Kafka/">2017-11-22</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Cloudera/" class="chip red lighten-1">Cloudera</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　之前使用的kafka版本<em>0.10.0.0</em>，因为一个项目用到了<code>kafka streaming流计算</code>中最新的API，要求从<em>0.10.0.0-&gt;0.11.0.0</em>，所以不得不去进行升级。<br><strong>其实总的流程和Cloudera Manager中安装kafka差不多，记录下来，方便以后查询</strong>（只要是在Cloudera Manager中升级Kafka流程是一样的）。</p>
+<h1 id="检查-Kafka-CSD"><a href="#检查-Kafka-CSD" class="headerlink" title="检查 Kafka CSD"></a>检查 Kafka CSD</h1><ol>
+<li><p>查看<code>cloudera manager server服务所在节点</code>的csd是否最新（节点上csd默认地址：<em>/opt/cloudera/csd/</em>）<br>否就去<a href="http://archive.cloudera.com/csds/kafka/" target="_blank" rel="noopener">http://archive.cloudera.com/csds/kafka/</a>下载最新的jar。</p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/11/22/Cloudera-Manager-升级Kafka/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2017/11/21/Linux-gcc-g-离线安装/">Linux--gcc/g++离线安装</a></h1>
     
 
@@ -310,181 +481,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2017/11/21/Linux-gcc-g-离线安装/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/11/21/Cassandra-用户密码设置/">Cassandra--用户密码设置</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-11-21T09:25:05.000Z"><a href="/2017/11/21/Cassandra-用户密码设置/">2017-11-21</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<strong>Cassandra 用户名密码设置</strong>，我使用的cassandra版本为3.11.1。本篇博客不仅仅演示Cassandra 用户密码的设置，还包括Cassandra 用户的一些更新删除的操作。下面一起来看看：</p>
-<h1 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h1><ol>
-<li><p><strong>默认cassandra是不需要账号密码的</strong>，授权信息默认如下配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">authenticator: AllowAllAuthenticator</span><br><span class="line">authorizer: AllowAllAuthorizer</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改<code>conf/cassandra.yaml</code>配置文件，<strong>然后重启</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">authenticator: PasswordAuthenticator</span><br><span class="line">authorizer: CassandraAuthorizer</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/11/21/Cassandra-用户密码设置/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/11/16/Cassandra-Java-API/">Cassandra--Java API</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-11-16T06:58:56.000Z"><a href="/2017/11/16/Cassandra-Java-API/">2017-11-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　前面已经说了一种访问<code>Cassandra</code>的一种方式CQL，本篇博客还讲解一下其他的方式访问，主要是以Java API的方式，当然它是支持很多语言的，看看下图就知道了：<br><img src="https://img.xiaoxiaomo.com/blog/img/cassandra20.png" alt=""><br>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/11/16/Cassandra-Java-API/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/11/16/Cassandra-CQL/">Cassandra--CQL</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-11-16T06:58:26.000Z"><a href="/2017/11/16/Cassandra-CQL/">2017-11-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本篇博客主要讲Cassandra的基本操作，主要是通过<code>cqlsh</code>客户端命令。这个也是我们常用的基本操作，后面再会讲解一下通过java api的方式操作Cassandra。<br>下面让我们一起来熟悉吧！</p>
-<h1 id="启动cqlsh"><a href="#启动cqlsh" class="headerlink" title="启动cqlsh"></a>启动cqlsh</h1><ul>
-<li><p><code>启动cqlsh</code>，如果rpc_address不是设置为0.0.0.0，直接输入cqlsh是会拒绝连接的<br><em>Connection error: (‘Unable to connect to any servers’, {‘127.0.0.1’: error(111, “Tried connecting to [(‘127.0.0.1’, 9042)]. Last error: Connection refused”)})</em></p>
-</li>
-<li><p>需要指定ip，具体操作如下图（我们上篇博客设置为节点的ip）<br><img src="https://img.xiaoxiaomo.com/blog/img/cassandra09.jpg" alt=""></p>
-</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/11/16/Cassandra-CQL/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/11/16/Cassandra-配置文件讲解/">Cassandra--配置文件讲解</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-11-16T06:54:48.000Z"><a href="/2017/11/16/Cassandra-配置文件讲解/">2017-11-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Cassandra/" class="chip red lighten-1">Cassandra</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本篇博客主要讲Cassandra的配置文件，主要是说的<code>cassandra.yaml</code>里面的一些配置项。这里会把主要的都列出来，以供参考，后续有新的东西也会持续补充更新。</p>
-<h2 id="Cassandra配置文件"><a href="#Cassandra配置文件" class="headerlink" title="Cassandra配置文件"></a>Cassandra配置文件</h2><ol>
-<li>在0.7版本之前,cassandra的配置文件是<code>conf/storage-conf.xml</code>文件。0.7之后是<code>conf/cassandra.yaml</code>文件</li>
-<li>可以通过-Dcassandra.conf指定需要加载的配置文件，例如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-Dcassandra.config=alternate-cassandra.yaml</span><br><span class="line">-Dcassandra.config=http://www.example.com/remote-cassandra.yaml</span><br><span class="line">-Dcassandra.config=file:///home/me/external-local-cassandra.yaml</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/11/16/Cassandra-配置文件讲解/">阅读全文</a>
         </ div>
         
     </div>
@@ -553,6 +549,8 @@
         <li class="waves-effect"><a href="/page/27">27</a></li>
     
         <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+        <li class="waves-effect"><a href="/page/29">29</a></li>
     
     
     <li class="">

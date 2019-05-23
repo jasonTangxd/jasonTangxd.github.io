@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">126 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,174 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2016/06/04/HBase-伪分布和集群模式/">HBase--伪分布和集群模式</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-06-04T06:39:01.000Z"><a href="/2016/06/04/HBase-伪分布和集群模式/">2016-06-04</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本博客主要介绍一下，<code>HBase伪分布模式安装</code>和 <code>HBase集群模式的安装</code>，以 <a href="http://pan.baidu.com/s/1eSlrLM6" target="_blank" rel="noopener">hbase-0.98.8-hadoop2-bin.tar.gz</a> 为例 。 操作比较简单，基本都是之前安装 <a href="http://blog.xiaoxiaomo.com/2016/05/09/Hadoop-2-0集群/">hadoop</a> 、<a href="http://blog.xiaoxiaomo.com/2016/04/28/Redis-集群/">redis</a>、<a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-集群搭建/">zookeeper</a>、<a href="http://blog.xiaoxiaomo.com/2016/05/13/Kafka-分布式消息队列/">kafka</a>、<a href="http://blog.xiaoxiaomo.com/2016/05/13/Kafka-分布式消息队列/">flume</a> 、<a href="http://blog.xiaoxiaomo.com/2016/05/27/Hive-概述与使用/">hive</a> 等一样的流程。<strong>下载后上传解压，修改一下配置文件环境变量</strong>，<strong>配置</strong>临时和数据目录，然后<strong>启动</strong>即可。集群就是先<strong>规划</strong>，然后<strong>配置</strong>好一台后 <strong>scp</strong> 等就OK了。</p>
+<p>　　在搭建<strong>HBase</strong>的时候，<strong>需要保证Hdfs已经能正常运行</strong>。<strong>HBase</strong>还需要<code>zookeeper</code>来做协调管理，但HBase也有内置的zk，如果需要使用外部的zk,需要修改配置文件<code>hbase-site</code>如下我们就配置了外部的zk。<br>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/06/04/HBase-伪分布和集群模式/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/06/02/HBase-PleaseHoldException和TableNotDisabledException/">HBase--PleaseHoldException和TableNotDisabledException</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-06-02T13:16:02.000Z"><a href="/2016/06/02/HBase-PleaseHoldException和TableNotDisabledException/">2016-06-02</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hadoop/" class="chip red lighten-1">Hadoop</a>
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　解决问题的能力，就是属于经验的一部分。慢慢积累，今天操作hbase的时候报了两个错误，PleaseHoldException和TableNotDisabledException，具体异常信息如下：</p>
+<h2 id="PleaseHoldException"><a href="#PleaseHoldException" class="headerlink" title="PleaseHoldException"></a>PleaseHoldException</h2><ul>
+<li>异常信息：<br><strong>ERROR</strong>: <strong>org.apache.hadoop.hbase.PleaseHoldException: Master is initializing</strong></li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/06/02/HBase-PleaseHoldException和TableNotDisabledException/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/05/28/Hive-数据类型与表/">Hive--数据类型与表</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-28T07:49:38.000Z"><a href="/2016/05/28/Hive-数据类型与表/">2016-05-28</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hive/" class="chip red lighten-1">Hive</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本片博客介绍了<strong>数据类型</strong>以及<strong>数据的映射</strong>，主要讲解<strong>表</strong>，表的<strong>创建</strong>，表的<strong>两种类型</strong>（受控表、外部表）。还有<strong>分区</strong>、<strong>桶表</strong>和<strong>视图</strong>。</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Hive支持的数据类型如下:</p>
+<ul>
+<li><strong>基本类型</strong><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tinyint smallint <span class="keyword">int</span> bigint</span><br><span class="line">boolean</span><br><span class="line"><span class="keyword">float</span> <span class="keyword">double</span></span><br><span class="line"><span class="built_in">string</span></span><br><span class="line">binary 字节数组(Hive <span class="number">0.8</span><span class="number">.0</span> 以上才可用)</span><br><span class="line">timestamp (Hive <span class="number">0.8</span><span class="number">.0</span> 以上才可用)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/28/Hive-数据类型与表/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/05/27/Hive-概述与使用/">Hive--概述与使用</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-27T15:12:49.000Z"><a href="/2016/05/27/Hive-概述与使用/">2016-05-27</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hive/" class="chip red lighten-1">Hive</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本博客主要讲解<strong>Hive的特点</strong>、<strong>Hive的数据存储</strong>、<strong>数据单元</strong>、<strong>Hive的系统架构</strong>、<strong>Hive的metastore</strong>。以及<strong>安装hive</strong>和简单使用，最后<strong>修改hive默认的metadata derby为mysq</strong>l。</p>
+<h2 id="认识Hive"><a href="#认识Hive" class="headerlink" title="认识Hive"></a>认识Hive</h2><p>　　<code>Hive</code><strong>是基于<code>Hadoop</code>的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供类<code>SQL</code>查询功能。</strong>本质就是将<code>SQL</code>转换为<code>MapReduce</code>程序。与关系型数据库的SQL 略有不同，但支持了绝大多数的语句如DDL、DML 以及常见的聚合函数、连接查询、条件查询。HIVE不<strong>适合用于联机事务处理</strong>，也<strong>不提供实时查询功能</strong>。<strong>它最适合应用在基于大量不可变数据的批处理作业。</strong></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/27/Hive-概述与使用/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2016/05/23/Flume-负载均衡和故障转移/">Flume--负载均衡和故障转移</a></h1>
     
 
@@ -310,180 +478,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/05/23/Flume-负载均衡和故障转移/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/22/Flume-集群及项目实战/">Flume--集群及项目实战</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-22T12:56:24.000Z"><a href="/2016/05/22/Flume-集群及项目实战/">2016-05-22</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本篇博客主要讲解<strong>flume集群的搭建及项目实战</strong>，flume集群相对来说比较简单，重点是后面的项目实战。如果对<strong>flume</strong>还不够理解或者它的<strong>组件</strong>不熟悉可以阅读上篇博客：<a href="http://blog.xiaoxiaomo.com/2016/05/22/Flume-日志收集/">http://blog.xiaoxiaomo.com/2016/05/22/Flume-日志收集/</a></p>
-<h2 id="Flume-集群"><a href="#Flume-集群" class="headerlink" title="Flume 集群"></a>Flume 集群</h2><ol>
-<li><strong>解压缩</strong> ： tar -zxvf <a href="href=&quot;http://www.apache.org/dyn/closer.lua/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz&quot;">apache-flume-1.6.0-bin.tar.gz</a> -C /opt/ ;</li>
-<li><strong>重命名</strong> ： mv /opt/apache-flume-1.6.0-bin/ /opt/flume（可省略） ;</li>
-<li><strong>复制配置文件</strong> ： cp conf/flume-env.sh.template conf/flume-env.sh ;</li>
-<li><strong>修改conf/flume-env.sh</strong> : JAVA_HOME ;</li>
-<li><strong>复制flume到其他节点</strong> ： scp -r …… 。</li>
-</ol>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/22/Flume-集群及项目实战/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/22/Flume-日志收集/">Flume--日志收集</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-22T09:07:00.000Z"><a href="/2016/05/22/Flume-日志收集/">2016-05-22</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<strong>Flume是一个分布式、高可靠、高可用的日志收集系统。能够有效的收集、聚合、移动大量的日志。</strong>把各种类型的<strong>数据源</strong>采集汇总到各种类型的<strong>目的地</strong>,flume有一个口号：“我们不生产数据，我们是数据的搬运工。”</p>
-<ul>
-<li>那我们怎么去搬运数据呢？让我们想想，那就需要一个入口（<strong>采集数据</strong>），和一个出口(<strong>推送数据</strong>)，中间再加上一些队列(<strong>暂存数据</strong>，让数据流动起来)，这样一来我们就可以去搬运数据了，自己也可以去实现一个简单的搬运数据的。当然我们已经不需要了，因为大牛已经帮我们实现了就是<strong>flume</strong>,能采集各种数据(<strong>各种source</strong>),推动到各种目的地（<strong>sink</strong>）。下面我们来看看flume的组件结构：<br><img src="https://img.xiaoxiaomo.com/blog/img/20160522173311.jpg" alt="flume组件"></li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/22/Flume-日志收集/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/">Idea/Eclipse--Windows下调试Hadoop</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-20T15:19:35.000Z"><a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/">2016-05-20</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Hadoop/" class="chip red lighten-1">Hadoop</a>
-        
-            <a href="/tags/工具/" class="chip red lighten-1">工具</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　我想大家对于java的单元测试<strong>junit</strong>都很熟悉了吧，这里我就不介绍了。下面主要介绍Hadoop的测试（<strong>mrunit</strong>）的使用，以及在windows下我们在开发工具（<strong>Idea/Eclipse</strong>）本地调试和集群模式。本博客项目结构如下：</p>
-<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160521005213.png" alt="Maven 项目结构"></p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/19/Flume-kafka-source启动异常/">Flume--kafka source启动异常</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-19T14:02:24.000Z"><a href="/2016/05/19/Flume-kafka-source启动异常/">2016-05-19</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <ul>
-<li>在flume中配置了一个kafka source的agent。如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># 使用kafka作为一个sources</span><br><span class="line"></span><br><span class="line"># Name the components on <span class="keyword">this</span> agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># kfka source</span><br><span class="line">a1.sources.r1.type = org.apache.flume.source.kafka.KafkaSource</span><br><span class="line">a1.sources.r1.zookeeperConnect = xxo08:<span class="number">2181</span>,xxo09:<span class="number">2181</span>,xxo10:<span class="number">2181</span>##zk集群</span><br><span class="line">a1.sources.r1.topic = word</span><br><span class="line">a1.sources.r1.groupId = flume</span><br><span class="line">a1.sources.r1.kafka.consumer.timeout.ms = <span class="number">3000</span></span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source <span class="keyword">and</span> sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/19/Flume-kafka-source启动异常/">阅读全文</a>
         </ div>
         
     </div>
@@ -552,6 +546,8 @@
         <li class="waves-effect"><a href="/page/27">27</a></li>
     
         <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+        <li class="waves-effect"><a href="/page/29">29</a></li>
     
     
     <li class="">

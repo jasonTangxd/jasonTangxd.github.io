@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">126 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,185 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2016/04/27/Redis-基本命令及Java操作/">Redis--基本命令及Java操作</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-04-27T11:37:21.000Z"><a href="/2016/04/27/Redis-基本命令及Java操作/">2016-04-27</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本篇博文主要讲解，Redis的<strong>基本使用</strong>、<strong>基本命令</strong>、<strong>数据类型</strong>以及<strong>通过java操作Redis数据库（Jredis）</strong>。内容命令过多，不会一一演示，建议读者联想记忆。如果还没有搭建好环境请参考上篇博文：<a href="http://blog.xiaoxiaomo.com/2016/02/23/Linux-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B9%8BRedis/">http://blog.xiaoxiaomo.com/2016/02/23/Linux-软件安装之Redis/</a>。</p>
+<h2 id="redis基础命令"><a href="#redis基础命令" class="headerlink" title="redis基础命令"></a>redis基础命令</h2><ol>
+<li><p><strong>获得符合规则的键名称</strong><br>keys 表达式<code>（?,* ,[],\?）</code></p>
+</li>
+<li><p><strong>判断一个键是否存在</strong><br>exists key</p>
+</li>
+<li><p><strong>删除键</strong><br>del key<br>del key1 key2</p>
+</li>
+<li><p><strong>获得键值的数据类型type</strong><br>返回值可能是这五种类型<em>（string,hash,list,set,zset）</em>。</p>
+</li>
+</ol>
+<p><strong>注意：redis的命令不区分大小写</strong></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/04/27/Redis-基本命令及Java操作/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/04/26/Java-数据库连接池/">Java--数据库连接池</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-04-26T14:25:03.000Z"><a href="/2016/04/26/Java-数据库连接池/">2016-04-26</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Mysql/" class="chip red lighten-1">Mysql</a>
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　在我们使用数据库时，每次都需要<strong>获取数据库链接</strong>，而创建连接通常需要消耗较大的资源。对于一个很小的应用是没有什么问题，如果是一个复杂的数据库应用呢？是不是要很大的开销？<strong>如果我们去减少创建、关闭连接就会很好的降低资源消耗提升性能，于是就有了数据库连接池的出现</strong>。（<em>注：本博客主要使用mysql数据库</em>）</p>
+<h2 id="不使用连接池"><a href="#不使用连接池" class="headerlink" title="不使用连接池"></a>不使用连接池</h2><p>需要<em>mysql-connector-java-5.0.8-bin.jar</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xiaoxiaomo.pool;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"><span class="keyword">import</span> java.util.ResourceBundle;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 不使用连接池</span></span><br><span class="line"><span class="comment"> * JDBC DEMO</span></span><br><span class="line"><span class="comment"> * Created by xiaoxiaomo on 2016/4/26.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnPool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建连接</span></span><br><span class="line">        Connection conn = <span class="keyword">null</span>;</span><br><span class="line">        PreparedStatement statm = <span class="keyword">null</span>;</span><br><span class="line">        ResultSet rs = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 加载驱动</span></span><br><span class="line">            Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br><span class="line">            conn = DriverManager.getConnection(</span><br><span class="line">                    <span class="string">"jdbc:mysql:///xiaoxiaomo?useUnicode=true&amp;characterEncoding=UTF-8"</span>,</span><br><span class="line">                    <span class="string">"root"</span>, <span class="string">"root"</span>);</span><br><span class="line">            String sql = <span class="string">"update sys_user set mobile= ? where id = ?"</span>;</span><br><span class="line">            statm = conn.prepareStatement(sql) ;</span><br><span class="line">            statm.setString(<span class="number">1</span>,<span class="string">"15826008888"</span>);</span><br><span class="line">            statm.setInt(<span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line">            <span class="keyword">int</span> b = statm.executeUpdate() ;</span><br><span class="line">            <span class="keyword">if</span> (b == <span class="number">1</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">"更新成功"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"插入失败"</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 关闭连接 释放资源</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (rs != <span class="keyword">null</span>)</span><br><span class="line">                    rs.close();</span><br><span class="line">                <span class="keyword">if</span> (statm != <span class="keyword">null</span>)</span><br><span class="line">                    statm.close();</span><br><span class="line">                <span class="keyword">if</span> (conn != <span class="keyword">null</span>)</span><br><span class="line">                    conn.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/04/26/Java-数据库连接池/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/04/25/Java-NIO之通道-文件通道/">Java--NIO之通道(文件通道)</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-04-25T01:27:05.000Z"><a href="/2016/04/25/Java-NIO之通道-文件通道/">2016-04-25</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　上篇博文<a href="http://blog.xiaoxiaomo.com/2016/04/23/Java-NIO%E4%B9%8B%E9%80%9A%E9%81%93/">http://blog.xiaoxiaomo.com/2016/04/23/Java-NIO之通道/</a>只是泛泛地讨论通道，现在我们将具体讨论文件通道（<em>socket 通道将在下篇博客讨论</em>）。FileChannel 类可以实现常用的 read，write 以及 scatter/gather 操作，同时它也提供了很多专用于文件的新方法。这些方法中的许多都是我们所熟悉的文件操作。</p>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160425094103.png" alt="FileChannel 类层次结构"></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/04/25/Java-NIO之通道-文件通道/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/04/23/Java-NIO之通道/">Java--NIO之通道</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-04-23T02:53:26.000Z"><a href="/2016/04/23/Java-NIO之通道/">2016-04-23</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　通道与缓冲区不同，<code>通道 API 主要由接口指定</code>。<em>不同的操作系统上通道实现（Channel Implementation）会有根本性的差异</em>，所以通道 API 仅仅描述了可以做什么。因此很自然地，通道实现经常使用操作系统的本地代码。通道接口允许您以一种受控且可移植的方式来访问底层的 I/O服务。<br>　<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160423165143.png" alt="Channel结构关系图"></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/04/23/Java-NIO之通道/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2016/04/22/Java-NIO之缓冲区进阶/">Java--NIO之缓冲区进阶</a></h1>
     
 
@@ -311,181 +490,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/04/22/Java-NIO之缓冲区进阶/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/04/20/Linux-Maven和nexus私服搭建/">Linux--Maven和nexus私服搭建</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-04-20T06:35:49.000Z"><a href="/2016/04/20/Linux-Maven和nexus私服搭建/">2016-04-20</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
-        
-            <a href="/tags/Maven/" class="chip red lighten-1">Maven</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<code>Maven是基于项目对象模型(POM)</code>，管理项目的构建，报告和文档的软件项目管理工具。<code>Nexus是一个高效的Maven私有服务器</code>，通过<code>POM文件或者Maven的setting.xml指向私服地址</code>，这样我们便可以通过私服管理jar包；本文就介绍了如何在linux安装maven和nexus私服。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/04/20/Linux-Maven和nexus私服搭建/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/04/16/Java-NIO之缓冲区/">Java-NIO之缓冲区</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-04-16T08:45:04.000Z"><a href="/2016/04/16/Java-NIO之缓冲区/">2016-04-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
-        
-            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<strong>通道</strong> 和 <strong>缓冲区</strong> 是 NIO 中的核心对象。<strong>数据从通道读入缓冲区，然后从缓冲区写入到通道中</strong>。<code>缓冲区本质上是一块可以写入/读取数据的内存</code>。这块内存被包装成<code>NIO Buffer</code>对象，并提供了一组方法，用来方便的访问该块内存。</p>
-<h2 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h2><ol>
-<li><p>缓冲区 （Buffer） 是一个对象， 它包含一些要写入或者刚读出的数据。在 NIO 库中，<strong>所有数据都是用缓冲区处理的</strong>在读取数据时，它是直接读到缓冲区中的。在写入数据时，它是写入到缓冲区中的。任何时候访问 NIO 中的数据，您都是将它放到缓冲区中。<em>缓冲区实质上是一个数组，它提供了对数据的结构化访问，而且还可以跟踪系统的读/写进程</em>。</p>
-</li>
-<li><p>最常用的缓冲区类型是 <strong>ByteBuffer</strong>。一个 ByteBuffer 可以在其底层字节数组上进行 get/set 操作(即字节的获取和设置)。ByteBuffer 不是 NIO 中唯一的缓冲区类型。事实上，对于每一种基本 Java 类型都有一种缓冲区类型：</p>
-</li>
-</ol>
-<blockquote>
-<p>ByteBuffer<br>CharBuffer<br>ShortBuffer<br>IntBuffer<br>LongBuffer<br>FloatBuffer<br>DoubleBuffer</p>
-</blockquote>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/04/16/Java-NIO之缓冲区/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/04/16/Java-NIO之概述/">Java-NIO之概述</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-04-16T05:54:55.000Z"><a href="/2016/04/16/Java-NIO之概述/">2016-04-16</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
-        
-            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<code>新的输入/输出 (NIO) 库</code>是在JDK1.4中引入的，弥补了原IO的不足，叫做<code>非阻塞IO</code>。本篇博客主要讲解IO与NIO的区别以及NIO的基本概念。</p>
-<h2 id="为什么使用NIO"><a href="#为什么使用NIO" class="headerlink" title="为什么使用NIO"></a>为什么使用NIO</h2><p>　　NIO的创建目的是为了实现高速 I/O 而无需编写自定义的本机代码。NIO 将最耗时的 I/O 操作(即填充和提取缓冲区)转移回操作系统，因而可以极大地提高速度。I/O 与 NIO 最重要的区别是数据打包和传输的方式， I/O 以流的方式处理数据，而 NIO 以块的方式处理数据。</p>
-<p>　　面向流 的 I/O 系统一次一个字节地处理数据。一个输入流产生一个字节的数据，一个输出流消费一个字节的数据。一个 面向块 的 I/O 系统以块的形式处理数据。每一个操作都在一步中产生或者消费一个数据块。按块处理数据比按(流式的)字节处理数据要快得多。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/04/16/Java-NIO之概述/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/04/13/Java-网络编程InetAddr和URL/">Java--网络编程InetAddr和URL</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-04-13T07:50:24.000Z"><a href="/2016/04/13/Java-网络编程InetAddr和URL/">2016-04-13</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
-        
-            <a href="/tags/网络编程/" class="chip red lighten-1">网络编程</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　Java中提供了专门的网络开发程序包<strong>java.net</strong>，提供了两种通信协议：TCP和UDP（<a href="http://blog.xiaoxiaomo.com/2016/04/12/Java-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8BTCP%E5%92%8CUDP/" title="tcp和udp">Java-网络编程TCP和UDP</a>）。这里主要讲解一下常用的网络编程类<code>InetAddr</code>和<code>URL</code>。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/04/13/Java-网络编程InetAddr和URL/">阅读全文</a>
         </ div>
         
     </div>
@@ -554,6 +558,8 @@
         <li class="waves-effect"><a href="/page/27">27</a></li>
     
         <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+        <li class="waves-effect"><a href="/page/29">29</a></li>
     
     
     <li class="">

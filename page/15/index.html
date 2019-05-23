@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">126 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,180 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2016/05/22/Flume-集群及项目实战/">Flume--集群及项目实战</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-22T12:56:24.000Z"><a href="/2016/05/22/Flume-集群及项目实战/">2016-05-22</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本篇博客主要讲解<strong>flume集群的搭建及项目实战</strong>，flume集群相对来说比较简单，重点是后面的项目实战。如果对<strong>flume</strong>还不够理解或者它的<strong>组件</strong>不熟悉可以阅读上篇博客：<a href="http://blog.xiaoxiaomo.com/2016/05/22/Flume-日志收集/">http://blog.xiaoxiaomo.com/2016/05/22/Flume-日志收集/</a></p>
+<h2 id="Flume-集群"><a href="#Flume-集群" class="headerlink" title="Flume 集群"></a>Flume 集群</h2><ol>
+<li><strong>解压缩</strong> ： tar -zxvf <a href="href=&quot;http://www.apache.org/dyn/closer.lua/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz&quot;">apache-flume-1.6.0-bin.tar.gz</a> -C /opt/ ;</li>
+<li><strong>重命名</strong> ： mv /opt/apache-flume-1.6.0-bin/ /opt/flume（可省略） ;</li>
+<li><strong>复制配置文件</strong> ： cp conf/flume-env.sh.template conf/flume-env.sh ;</li>
+<li><strong>修改conf/flume-env.sh</strong> : JAVA_HOME ;</li>
+<li><strong>复制flume到其他节点</strong> ： scp -r …… 。</li>
+</ol>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/22/Flume-集群及项目实战/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/05/22/Flume-日志收集/">Flume--日志收集</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-22T09:07:00.000Z"><a href="/2016/05/22/Flume-日志收集/">2016-05-22</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　<strong>Flume是一个分布式、高可靠、高可用的日志收集系统。能够有效的收集、聚合、移动大量的日志。</strong>把各种类型的<strong>数据源</strong>采集汇总到各种类型的<strong>目的地</strong>,flume有一个口号：“我们不生产数据，我们是数据的搬运工。”</p>
+<ul>
+<li>那我们怎么去搬运数据呢？让我们想想，那就需要一个入口（<strong>采集数据</strong>），和一个出口(<strong>推送数据</strong>)，中间再加上一些队列(<strong>暂存数据</strong>，让数据流动起来)，这样一来我们就可以去搬运数据了，自己也可以去实现一个简单的搬运数据的。当然我们已经不需要了，因为大牛已经帮我们实现了就是<strong>flume</strong>,能采集各种数据(<strong>各种source</strong>),推动到各种目的地（<strong>sink</strong>）。下面我们来看看flume的组件结构：<br><img src="https://img.xiaoxiaomo.com/blog/img/20160522173311.jpg" alt="flume组件"></li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/22/Flume-日志收集/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/">Idea/Eclipse--Windows下调试Hadoop</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-20T15:19:35.000Z"><a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/">2016-05-20</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Hadoop/" class="chip red lighten-1">Hadoop</a>
+        
+            <a href="/tags/工具/" class="chip red lighten-1">工具</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　我想大家对于java的单元测试<strong>junit</strong>都很熟悉了吧，这里我就不介绍了。下面主要介绍Hadoop的测试（<strong>mrunit</strong>）的使用，以及在windows下我们在开发工具（<strong>Idea/Eclipse</strong>）本地调试和集群模式。本博客项目结构如下：</p>
+<p><img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160521005213.png" alt="Maven 项目结构"></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/20/Idea-Eclipse-Windows下调试Hadoop/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/05/19/Flume-kafka-source启动异常/">Flume--kafka source启动异常</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-19T14:02:24.000Z"><a href="/2016/05/19/Flume-kafka-source启动异常/">2016-05-19</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Flume/" class="chip red lighten-1">Flume</a>
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <ul>
+<li>在flume中配置了一个kafka source的agent。如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># 使用kafka作为一个sources</span><br><span class="line"></span><br><span class="line"># Name the components on <span class="keyword">this</span> agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># kfka source</span><br><span class="line">a1.sources.r1.type = org.apache.flume.source.kafka.KafkaSource</span><br><span class="line">a1.sources.r1.zookeeperConnect = xxo08:<span class="number">2181</span>,xxo09:<span class="number">2181</span>,xxo10:<span class="number">2181</span>##zk集群</span><br><span class="line">a1.sources.r1.topic = word</span><br><span class="line">a1.sources.r1.groupId = flume</span><br><span class="line">a1.sources.r1.kafka.consumer.timeout.ms = <span class="number">3000</span></span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source <span class="keyword">and</span> sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/19/Flume-kafka-source启动异常/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2016/05/16/游记-晴空万里的阳台山/">游记--晴空万里的阳台山</a></h1>
     
 
@@ -308,213 +482,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/05/16/游记-晴空万里的阳台山/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/14/Kafka-Consumer消费者/">Kafka--Consumer消费者</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-14T10:21:01.000Z"><a href="/2016/05/14/Kafka-Consumer消费者/">2016-05-14</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　Kafka 的 consumer 是以<strong>pull</strong>的形式获取消息数据的。 <strong>producer push消息到kafka cluster ，consumer从集群中pull消息</strong>，如下图。该博客主要讲解. Parts在消费者中的<strong>分配</strong>、以及相关的<strong>消费者顺序</strong>、<strong>底层结构元数据信息</strong>、<strong>Kafka数据读取和存储等</strong>。<br>　　　<img src="https://img.xiaoxiaomo.com/blog%2Fimg%2F20160514200520.png" alt="kafka消息生产/消费"></p>
-<h2 id="Parts在消费者中的分配"><a href="#Parts在消费者中的分配" class="headerlink" title="Parts在消费者中的分配"></a>Parts在消费者中的分配</h2><ul>
-<li><strong>首先partition和consumer都会字典排序</strong></li>
-</ul>
-<ol>
-<li><strong>分区Partition从小到大排序</strong>：分区顺序是0,1,2,3,4,5,6,7,8,9</li>
-<li><strong>消费者Consumer id按照字典顺序排序</strong>：f0b87809-0, f1b87809-0, f1b87809-1</li>
-</ol>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/14/Kafka-Consumer消费者/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/14/Kafka-数据迁移/">Kafka--集群及API操作</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-14T01:53:25.000Z"><a href="/2016/05/14/Kafka-数据迁移/">2016-05-14</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本篇博客，主要讲解<strong>kafka集群配置</strong>、<strong>kafka的容错</strong>和<strong>kafka扩展机制</strong>。以及使用kafka<strong>模拟一个网络流量实时统计</strong>来看一看Kafka的一些api使用方法。</p>
-<h2 id="kafka集群"><a href="#kafka集群" class="headerlink" title="kafka集群"></a>kafka集群</h2><h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><ul>
-<li><strong>一、准备</strong>集群机器（这里使用3台）：主机名xxo08、xxo09、xxo10（<em>我把zookeeper集群也放在了这里</em>）。</li>
-<li><p><strong>二、搭建并启动 </strong><a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"><strong>zookeeper集群</strong></a>。</p>
-</li>
-<li><p><strong>三、修改配置文件</strong></p>
-</li>
-</ul>
-<ol>
-<li>/opt/kafka/config/server.properties <strong>broker.id=0</strong>　　##broker的id每一个broker应该不同</li>
-<li>log.dirs=<strong>/opt/kafka_logs</strong>　　##</li>
-<li>zookeeper.connect=<strong>xxo08:2181,xxo09:2181,xxo10:2181</strong>  ##<strong>注意</strong>：我的zokeeper也在这三台机器上</li>
-</ol>
-<ul>
-<li><strong>四、同步其它节点</strong><br>scp -r /opt/kafka/ root@xxo09:/opt/<br>scp -r /opt/kafka/ root@xxo10:/opt/<br>并修改<br>xxo09 /opt/kafka/config/server.properties <strong>broker.id=1</strong>　　##broker的id<br>xxo10 /opt/kafka/config/server.properties <strong>broker.id=2</strong>　　##broker的id</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/14/Kafka-数据迁移/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/14/Kafka-集群及API操作/">Kafka--集群及API操作</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-14T01:53:25.000Z"><a href="/2016/05/14/Kafka-集群及API操作/">2016-05-14</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本篇博客，主要讲解<strong>kafka集群配置</strong>、<strong>kafka的容错</strong>和<strong>kafka扩展机制</strong>。以及使用kafka<strong>模拟一个网络流量实时统计</strong>来看一看Kafka的一些api使用方法。</p>
-<h2 id="kafka集群"><a href="#kafka集群" class="headerlink" title="kafka集群"></a>kafka集群</h2><h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><ul>
-<li><strong>一、准备</strong>集群机器（这里使用3台）：主机名xxo08、xxo09、xxo10（<em>我把zookeeper集群也放在了这里</em>）。</li>
-<li><p><strong>二、搭建并启动 </strong><a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"><strong>zookeeper集群</strong></a>。</p>
-</li>
-<li><p><strong>三、修改配置文件</strong></p>
-</li>
-</ul>
-<ol>
-<li>/opt/kafka/config/server.properties <strong>broker.id=0</strong>　　##broker的id每一个broker应该不同</li>
-<li>log.dirs=<strong>/opt/kafka_logs</strong>　　##</li>
-<li>zookeeper.connect=<strong>xxo08:2181,xxo09:2181,xxo10:2181</strong>  ##<strong>注意</strong>：我的zokeeper也在这三台机器上</li>
-</ol>
-<ul>
-<li><strong>四、同步其它节点</strong><br>scp -r /opt/kafka/ root@xxo09:/opt/<br>scp -r /opt/kafka/ root@xxo10:/opt/<br>并修改<br>xxo09 /opt/kafka/config/server.properties <strong>broker.id=1</strong>　　##broker的id<br>xxo10 /opt/kafka/config/server.properties <strong>broker.id=2</strong>　　##broker的id</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/14/Kafka-集群及API操作/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/05/13/Kafka-分布式消息队列/">Kafka--分布式消息队列</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-13T13:31:34.000Z"><a href="/2016/05/13/Kafka-分布式消息队列/">2016-05-13</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<code>Kafka</code> <strong>分布式的发布-订阅消息系统</strong>。最初由 <strong>LinkedIn</strong> 公司开发，使用 <strong>Scala</strong> 语言编写，2010年12月份开源成为 Apache 项目的一部分。<strong>Kafka 是一个高吞吐量的、持久性的、分布式发布订阅消息系统</strong>。<strong>它主要用于处理活跃的数据（登录、浏览、点击、分享、喜欢等用户行为产生的数据）。</strong></p>
-<h2 id="Kafka概述"><a href="#Kafka概述" class="headerlink" title="Kafka概述"></a>Kafka概述</h2><h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><ul>
-<li><strong><a href="http://kafka.apache.org/documentation.html#design" target="_blank" rel="noopener">主要的设计元素</a>：</strong><blockquote>
-<ol>
-<li>Kafka在设计之时为就将<strong>持久化消息</strong>作为通常的使用情况进行了考虑。</li>
-<li>主要的设计约束是<strong>吞吐量</strong>而不是功能。</li>
-<li>有关哪些数据<strong>已经被使用了的状态信息保存为数据使用者（consumer）的一部分</strong>，而不是保存在服务器之上。</li>
-<li>Kafka是<strong>一种显式的分布式系统</strong>。它假设，数据生产者（producer）、代理（brokers）和数据使用者（consumer）分散于多台机器之上。</li>
-</ol>
-</blockquote>
-</li>
-</ul>
-<ul>
-<li><strong>在对消息进行存储和缓存时，Kafka严重地依赖于文件系统。所有数据都要立即写入文件系统持久化的日志中但不进行刷新数据的任何调用（<em>有刷新策略，可以配置</em>）</strong>。就意味着，数据被传输到OS内核的页面缓存中了，OS随后会将这些数据刷新到磁盘的。</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/13/Kafka-分布式消息队列/">阅读全文</a>
         </ div>
         
     </div>
@@ -583,6 +550,8 @@
         <li class="waves-effect"><a href="/page/27">27</a></li>
     
         <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+        <li class="waves-effect"><a href="/page/29">29</a></li>
     
     
     <li class="">

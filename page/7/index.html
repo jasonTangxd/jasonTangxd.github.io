@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">126 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,184 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2017/07/05/Spark-从RDD的角度来看Spark内部原理/">Spark--从RDD的角度来看Spark内部原理</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-07-05T07:29:08.000Z"><a href="/2017/07/05/Spark-从RDD的角度来看Spark内部原理/">2017-07-05</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　- 上篇博客主要讲了<a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">Spark的执行流程</a>，看完后应该是对Spark有一个整体的了解，对Spark各个组件的工作流程都应该是有一个很清晰的认识了。<br>本篇博客，笔者主要是继续接着“<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener">宜人蜂巢内部分享</a>”，从RDD的角度来看Spark的内部原理，包括以下内容：</p>
+<blockquote>
+<ol>
+<li>RDD为什么是Spark的核心概念</li>
+<li>通过一个wordCount例子来看一看RDD</li>
+<li>RDD的管理与操作（算子）</li>
+<li>常见的RDD操作有哪些（包括RDD的分类）</li>
+<li>RDD的依赖关系（DAG）</li>
+<li>RDD依赖关系的划分（stage）</li>
+</ol>
+</blockquote>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/07/05/Spark-从RDD的角度来看Spark内部原理/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">Spark--从Spark组件来看Spark的执行流程</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-07-05T02:19:25.000Z"><a href="/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">2017-07-05</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　上周在<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener"> 宜人蜂巢 </a>内部分享了 <code>spark</code> 、和 <code>spark streaming</code> 相关的主题，现在有些空闲时间，就整理了一下，放在博客上面。</p>
+<ul>
+<li>一篇博客描述不完整，即使讲完了也会显得很臃肿，所以会分为以下几篇博客来讲解：</li>
+</ul>
+<ol>
+<li><a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">Spark – Spark 相关介绍（如下）</a></li>
+<li><a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">Spark – 从Spark组件来看Spark的执行流程（如下）</a></li>
+<li><a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从RDD的角度来看Spark内部原理/">Spark – 从RDD的角度来看Spark内部原理</a></li>
+<li><a href="http://blog.xiaoxiaomo.com/2017/07/06/SparkStreaming-相关介绍/">Spark Streaming – 相关介绍</a></li>
+<li><a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-一/">Spark Streaming – 相关应用（这个之前的博客已经讲了）</a></li>
+</ol>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/07/05/Spark-从Spark组件来看Spark的执行流程/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/06/29/SparkStreaming-应用与实战-六/">Spark Streaming--应用与实战(六)</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-06-29T09:45:48.000Z"><a href="/2017/06/29/SparkStreaming-应用与实战-六/">2017-06-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <h1 id="管理Streaming任务"><a href="#管理Streaming任务" class="headerlink" title="管理Streaming任务"></a>管理Streaming任务</h1><p>　　- 这是目前<a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-一/"><code>Spark Streaming</code></a>系列博客的最后一篇文章了，该篇文章主要讲一下我自己对<code>Spark Streaming</code>任务的一些划分，还有一个<code>Spark Streaming</code>任务的邮件监控。</p>
+<h2 id="Streaming-任务的划分"><a href="#Streaming-任务的划分" class="headerlink" title="Streaming 任务的划分"></a>Streaming 任务的划分</h2>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/06/29/SparkStreaming-应用与实战-六/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/06/29/SparkStreaming-应用与实战-五/">Spark Streaming--应用与实战(五)</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-06-29T07:18:59.000Z"><a href="/2017/06/29/SparkStreaming-应用与实战-五/">2017-06-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　前期的一系列 <strong><strong><em>Spark Streaming相关博客</em></strong></strong> 其实还没写完，对于<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener">宜人蜂巢</a>这样一个多维度的实时数据抓取服务来讲，对性能的要求极高，需要更多的压测与性能检测。 <strong>还有一些优化和监控，一直没更新主要是因为还不够完善</strong>，但是最近也没时间来弄了。虽然不完善但是还是可以写写已经完成的，因为也有不少网友通过微信和邮件联系到了我，也讨论了一些问题，后续再继续跟进吧。</p>
+<h1 id="Streaming-持续优化之HBase"><a href="#Streaming-持续优化之HBase" class="headerlink" title="Streaming 持续优化之HBase"></a>Streaming 持续优化之HBase</h1>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/06/29/SparkStreaming-应用与实战-五/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-四/">Spark Streaming--应用与实战(四)</a></h1>
     
 
@@ -310,190 +488,6 @@
         <div class="card-action red-link-context">
             <a href="/2017/06/10/SparkStreaming-应用与实战-四/">阅读全文</a>
         </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-三/">Spark Streaming--应用与实战(三)</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-06-10T09:03:10.000Z"><a href="/2017/06/10/SparkStreaming-应用与实战-三/">2017-06-10</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　<a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-一/">第一篇</a>介绍了项目背景，为什么需要对架构进行一些改造，以及为啥要引入SparkStreaming，<a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-二/">第二篇</a>就是一些具体的方法实现，<br><a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-三/">第三篇</a>，该篇主要在代码运行起来的情况下来看一下任务的运行情况主要是streaming的监控界面，以及我们怎么去通过监控界面发现问题和解决问题。</p>
-<h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><ul>
-<li>官网中指出，spark中专门为SparkStreaming程序的监控设置了额外的途径，当使用StreamingContext时，在WEB UI中会出现一个”Streaming”的选项卡，<br><img src="https://img.xiaoxiaomo.com/blog/img/sparkstreaming6.png" alt="WEB UI中的”Streaming”选项卡"></li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/06/10/SparkStreaming-应用与实战-三/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-二/">Spark Streaming--应用与实战(二)</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-06-10T08:56:00.000Z"><a href="/2017/06/10/SparkStreaming-应用与实战-二/">2017-06-10</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
-        
-            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
-        
-            <a href="/tags/Zookeeper/" class="chip red lighten-1">Zookeeper</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <h1 id="然后就开始写代码了"><a href="#然后就开始写代码了" class="headerlink" title="然后就开始写代码了"></a>然后就开始写代码了</h1><ul>
-<li>总体思路就是:</li>
-</ul>
-<ol>
-<li>put数据构造json数据，写入kafka；</li>
-<li>spark streaming任务启动后首先去zookeeper中去读取offset,组装成fromOffsets；</li>
-<li>spark streaming 获取到fromOffsets后通过KafkaUtils.createDirectStream去消费Kafka的数据；</li>
-<li>读取kafka数据返回一个InputDStream的信息，foreachRDD遍历，同时记录读取到的offset到zk中；</li>
-<li>写入数据到HBase<br><img src="https://img.xiaoxiaomo.com/blog/img/sparkstreaming3.png" alt="详细一点的架构图">
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/06/10/SparkStreaming-应用与实战-二/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-一/">Spark Streaming--应用与实战(一)</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-06-10T08:37:10.000Z"><a href="/2017/06/10/SparkStreaming-应用与实战-一/">2017-06-10</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
-        
-            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
-        
-            <a href="/tags/Zookeeper/" class="chip red lighten-1">Zookeeper</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　接下来的几篇博客是一个连续的部分，主要分为了：</p>
-<ol>
-<li><a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-一/">SparkStreaming-应用与实战(一),讲解背景与架构改造，以及为什么使用spark streaming</a></li>
-<li><a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-二/">SparkStreaming-应用与实战(二),通过代码实现具体细节，并运行项目</a></li>
-<li><a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-三/">SparkStreaming-应用与实战(三),对streaming监控的介绍以及解决实际问题</a></li>
-<li><a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-四/">SparkStreaming-应用与实战(四),对项目做压测与相关的优化</a></li>
-<li><a href="http://blog.xiaoxiaomo.com/2017/06/29/SparkStreaming-应用与实战-五/">SparkStreaming-应用与实战(五),Streaming优化之HBase</a></li>
-<li><a href="http://blog.xiaoxiaomo.com/2017/06/29/SparkStreaming-应用与实战-六/">SparkStreaming-应用与实战(六),Streaming任务的管理及监控</a></li>
-</ol>
-<h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><ul>
-<li>笔者所在部门<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener"><code>宜人蜂巢</code></a> ，是由<strong>李善仁 宜人贷副总裁，宜人蜂巢负责人</strong> 2013年创建。<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener"><code>宜人蜂巢</code></a> 是做什么的？笔者在这里简单表述一下<a href="http://honeycomb.yirendai.com" target="_blank" rel="noopener"><code>宜人蜂巢</code></a> – <strong>数据科学驱动的互联网风控解决方案，通过千万级爬虫并发技术、计算机视觉技术、机器学习技术等；实时数据采集源；鲜活信用分析特征提取；多维度特征下的欺诈行为交叉检测等一系列科技手段助力金融生态和谐健康发展。</strong></li>
-<li>在大数据风控领域，数据是一切工作的根基。数据量的多少、维度的多少，抓取的速度、成功率都是评判数据质量、获取能力的重要条件。在经过用户授权的情况下，宜人蜂巢可以实现对“社交、电商、金融、信用、社保”五大维度的实时数据抓取。宜人蜂巢正在积极与银行、电商、电信运营商、保险公司以及社保基金等机构展开合作，进一步提高数据抓取的工作效率。</li>
-<li><strong>所以在大量数据获取之后，对于底层的数据存储依赖也是相当高的，传统的数据库已经没法在支持，对底层数据服务架构的改造迫在眉睫。</strong></li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/06/10/SparkStreaming-应用与实战-一/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/06/07/Linux-Linux相关系列博客/">Linux--Linux相关系列博客</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-06-07T07:20:19.000Z"><a href="/2017/06/07/Linux-Linux相关系列博客/">2017-06-07</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
-        
-    </div>
-
-
-
-            
-        </div>
-
         
     </div>
 </article>
@@ -561,6 +555,8 @@
         <li class="waves-effect"><a href="/page/27">27</a></li>
     
         <li class="waves-effect"><a href="/page/28">28</a></li>
+    
+        <li class="waves-effect"><a href="/page/29">29</a></li>
     
     
     <li class="">
