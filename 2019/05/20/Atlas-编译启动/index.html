@@ -298,13 +298,36 @@
 <li>这个过程有点长，主要是这里，如果使用自带的服务需要下载一个hbase,100多MB</li>
 <li>如果不想等，可以自己手动下载然后放入下面提示的目录，即通过：<a href="http://archive.apache.org/dist/hbase/2.0.2/hbase-2.0.2-bin.tar.gz" target="_blank" rel="noopener">http://archive.apache.org/dist/hbase/2.0.2/hbase-2.0.2-bin.tar.gz</a>下载<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_1.png" alt="apache atlas"> <a id="more"></a></li>
 <li>solr服务同理，如下比较耗时，可以手动下载<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_2.png" alt=""> </li>
-<li>重新编译，成功<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_3.png" alt="apache atlas编译成功"> </li>
+<li><p>重新编译，成功<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_3.png" alt="apache atlas编译成功"><br><strong>注意</strong>：这种方式（自带hbase+solr）只用于开发环境，不要用于生产</p>
+</li>
+<li><p>编译完后有如下gz压缩包，可以发现已经被解压</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">txd:conf tangxuandong$ cd /opt/dev/idea/apache-atlas-sources-2.0.0/distro/target/</span><br><span class="line">txd:target tangxuandong$ ll</span><br><span class="line">total 4151232</span><br><span class="line">drwxr-xr-x   5 tangxuandong  wheel        160  5 20 18:17 META-INF</span><br><span class="line">drwxr-xr-x   4 tangxuandong  wheel        128  5 20 18:17 antrun</span><br><span class="line">drwxr-xr-x   4 tangxuandong  wheel        128  5 22 18:16 apache-atlas-2.0.0-bin</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel  699096451  5 20 18:20 apache-atlas-2.0.0-bin.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:18 apache-atlas-2.0.0-falcon-hook</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel    9211833  5 20 18:18 apache-atlas-2.0.0-falcon-hook.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:18 apache-atlas-2.0.0-hbase-hook</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel   11079551  5 20 18:18 apache-atlas-2.0.0-hbase-hook.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:18 apache-atlas-2.0.0-hive-hook</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel   16267168  5 20 18:18 apache-atlas-2.0.0-hive-hook.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:18 apache-atlas-2.0.0-kafka-hook</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel    9219793  5 20 18:18 apache-atlas-2.0.0-kafka-hook.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:19 apache-atlas-2.0.0-server</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel  594436213  5 20 18:19 apache-atlas-2.0.0-server.tar.gz</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel   11078022  5 20 18:21 apache-atlas-2.0.0-sources.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:18 apache-atlas-2.0.0-sqoop-hook</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel    9200673  5 20 18:18 apache-atlas-2.0.0-sqoop-hook.tar.gz</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:18 apache-atlas-2.0.0-storm-hook</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel   58914529  5 20 18:18 apache-atlas-2.0.0-storm-hook.tar.gz</span><br><span class="line">drwxr-xr-x   2 tangxuandong  wheel         64  5 20 18:18 archive-tmp</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel  678903752  5 20 18:18 atlas-distro-2.0.0.jar</span><br><span class="line">drwxr-xr-x  13 tangxuandong  wheel        416  5 20 18:17 bin</span><br><span class="line">drwxr-xr-x  11 tangxuandong  wheel        352  5 20 18:17 conf</span><br><span class="line">drwxr-xr-x  13 tangxuandong  wheel        416  5 20 18:17 hbase</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:16 hbase.temp</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:17 maven-archiver</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:16 maven-shared-archive-resources</span><br><span class="line">-rw-r--r--   1 tangxuandong  wheel       3833  5 20 18:16 rat.txt</span><br><span class="line">drwxr-xr-x  14 tangxuandong  wheel        448  5 20 18:17 solr</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:17 solr.temp</span><br><span class="line">drwxr-xr-x   3 tangxuandong  wheel         96  5 20 18:17 test-classes</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 <h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><ul>
 <li>编译好后，进入$project_name/distro/target/apache-atlas-2.0.0-bin/apache-atlas-2.0.0目录</li>
-<li>运行服务：./bin/atlas_start.py<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_4.png" alt="apache atlas 启动服务"> </li>
+<li><p>把这个压缩包apache-atlas-2.0.0-bin.tar.gz放入到其他地方，解压后运行也是可以的，<strong>同上面一样的</strong></p>
+</li>
+<li><p>修改配置文件,conf/atlas-env.sh</p>
+</li>
 </ul>
-<h2 id="访问服务"><a href="#访问服务" class="headerlink" title="访问服务"></a>访问服务</h2><p>访问服务，端口21000 <a href="http://localhost:21000/index.html" target="_blank" rel="noopener">http://localhost:21000/index.html</a><br>默认账号密码：admin/admin<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_5.png" alt="atlas 访问服务"> </p>
+<ol>
+<li><p>如果运行的本地hbase/solr需要配置（默认已经配置好了）<br>export MANAGE_LOCAL_HBASE=true<br>export MANAGE_LOCAL_SOLR=true</p>
+</li>
+<li><p>设置支持大量的元数据对象<br>如果你计划来存储大量的元数据对象,建议您使用值调整GC JVM的性能更好。 　　 　　<br>以下值是常见的服务器端选项:（参见官网）<br>export ATLAS_SERVER_OPTS=”-server -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+PrintTenuringDistribution -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dumps/atlas_server.hprof -Xloggc:logs/gc-worker.log -verbose:gc -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=1m -XX:+PrintGCDetails -XX:+PrintHeapAtGC -XX:+PrintGCTimeStamps”</p>
+</li>
+<li><p>如果是mac os<br>配置<br>export ATLAS_SERVER_OPTS=”-Djava.awt.headless=true -Djava.security.krb5.realm= -Djava.security.krb5.kdc=”</p>
+</li>
+</ol>
+<ul>
+<li>运行服务：./bin/atlas_start.py （默认hbase/solr一起启动）<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_4.png" alt="apache atlas 启动服务"> </li>
+</ul>
+<h2 id="访问服务"><a href="#访问服务" class="headerlink" title="访问服务"></a>访问服务</h2><ul>
+<li>访问服务，端口21000 <a href="http://localhost:21000/index.html" target="_blank" rel="noopener">http://localhost:21000/index.html</a><br>默认账号密码：admin/admin<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_5.png" alt="atlas 访问服务"> </li>
+</ul>
+<ul>
+<li>参考：<br><a href="https://atlas.apache.org/InstallationSteps.html" target="_blank" rel="noopener">https://atlas.apache.org/InstallationSteps.html</a></li>
+</ul>
 
                 
 <p class="red-link-context">

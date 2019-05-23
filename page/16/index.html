@@ -366,60 +366,6 @@
             <div class="article-title">
                 
     
-        <h1 class="green-link-context"><a href="/2016/05/14/Kafka-数据迁移/">Kafka--集群及API操作</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-05-14T01:53:25.000Z"><a href="/2016/05/14/Kafka-数据迁移/">2016-05-14</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　本篇博客，主要讲解<strong>kafka集群配置</strong>、<strong>kafka的容错</strong>和<strong>kafka扩展机制</strong>。以及使用kafka<strong>模拟一个网络流量实时统计</strong>来看一看Kafka的一些api使用方法。</p>
-<h2 id="kafka集群"><a href="#kafka集群" class="headerlink" title="kafka集群"></a>kafka集群</h2><h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><ul>
-<li><strong>一、准备</strong>集群机器（这里使用3台）：主机名xxo08、xxo09、xxo10（<em>我把zookeeper集群也放在了这里</em>）。</li>
-<li><p><strong>二、搭建并启动 </strong><a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"><strong>zookeeper集群</strong></a>。</p>
-</li>
-<li><p><strong>三、修改配置文件</strong></p>
-</li>
-</ul>
-<ol>
-<li>/opt/kafka/config/server.properties <strong>broker.id=0</strong>　　##broker的id每一个broker应该不同</li>
-<li>log.dirs=<strong>/opt/kafka_logs</strong>　　##</li>
-<li>zookeeper.connect=<strong>xxo08:2181,xxo09:2181,xxo10:2181</strong>  ##<strong>注意</strong>：我的zokeeper也在这三台机器上</li>
-</ol>
-<ul>
-<li><strong>四、同步其它节点</strong><br>scp -r /opt/kafka/ root@xxo09:/opt/<br>scp -r /opt/kafka/ root@xxo10:/opt/<br>并修改<br>xxo09 /opt/kafka/config/server.properties <strong>broker.id=1</strong>　　##broker的id<br>xxo10 /opt/kafka/config/server.properties <strong>broker.id=2</strong>　　##broker的id</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/05/14/Kafka-数据迁移/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
         <h1 class="green-link-context"><a href="/2016/05/14/Kafka-集群及API操作/">Kafka--集群及API操作</a></h1>
     
 
@@ -462,6 +408,60 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/05/14/Kafka-集群及API操作/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/05/14/Kafka-数据迁移/">Kafka--集群及API操作</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-05-14T01:53:25.000Z"><a href="/2016/05/14/Kafka-数据迁移/">2016-05-14</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　本篇博客，主要讲解<strong>kafka集群配置</strong>、<strong>kafka的容错</strong>和<strong>kafka扩展机制</strong>。以及使用kafka<strong>模拟一个网络流量实时统计</strong>来看一看Kafka的一些api使用方法。</p>
+<h2 id="kafka集群"><a href="#kafka集群" class="headerlink" title="kafka集群"></a>kafka集群</h2><h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><ul>
+<li><strong>一、准备</strong>集群机器（这里使用3台）：主机名xxo08、xxo09、xxo10（<em>我把zookeeper集群也放在了这里</em>）。</li>
+<li><p><strong>二、搭建并启动 </strong><a href="http://blog.xiaoxiaomo.com/2016/05/05/Zookeeper-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"><strong>zookeeper集群</strong></a>。</p>
+</li>
+<li><p><strong>三、修改配置文件</strong></p>
+</li>
+</ul>
+<ol>
+<li>/opt/kafka/config/server.properties <strong>broker.id=0</strong>　　##broker的id每一个broker应该不同</li>
+<li>log.dirs=<strong>/opt/kafka_logs</strong>　　##</li>
+<li>zookeeper.connect=<strong>xxo08:2181,xxo09:2181,xxo10:2181</strong>  ##<strong>注意</strong>：我的zokeeper也在这三台机器上</li>
+</ol>
+<ul>
+<li><strong>四、同步其它节点</strong><br>scp -r /opt/kafka/ root@xxo09:/opt/<br>scp -r /opt/kafka/ root@xxo10:/opt/<br>并修改<br>xxo09 /opt/kafka/config/server.properties <strong>broker.id=1</strong>　　##broker的id<br>xxo10 /opt/kafka/config/server.properties <strong>broker.id=2</strong>　　##broker的id</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/05/14/Kafka-数据迁移/">阅读全文</a>
         </ div>
         
     </div>
