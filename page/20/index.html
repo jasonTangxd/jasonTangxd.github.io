@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">131 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -280,49 +280,6 @@
             <div class="article-title">
                 
     
-        <h1 class="green-link-context"><a href="/2016/04/22/Java-NIO之缓冲区进阶/">Java--NIO之缓冲区进阶</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-04-22T08:44:47.000Z"><a href="/2016/04/22/Java-NIO之缓冲区进阶/">2016-04-22</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
-        
-            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　上一篇<a href="http://blog.xiaoxiaomo.com/2016/04/16/Java-NIO之缓冲区/" title="Java-NIO之缓冲区">http://blog.xiaoxiaomo.com/2016/04/16/Java-NIO之缓冲区/</a>讲了基本的缓冲区概念、属性以及部分操作。本片博客，主要讲解<code>缓冲区的创建、复制和字节缓冲区</code>。</p>
-<h2 id="缓冲区的创建"><a href="#缓冲区的创建" class="headerlink" title="缓冲区的创建"></a>缓冲区的创建</h2><p>　　对于这一讨论，我们将以 CharBuffer 类为例，但是对于其它六种主要的缓冲区类也是适用的：IntBuffer，DoubleBuffer，ShortBuffer，LongBuffer，FloatBuffer，和 ByteBuffer。下面是<strong>创建一个缓冲区</strong>的关键函数，对所有的缓冲区类通用（要按照需要替换类名）：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBuffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">CharSequence</span>, <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing </span></span><br><span class="line">	<span class="comment">//这些都是静态方法。</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">allocate</span><span class="params">(<span class="keyword">int</span> capacity)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(<span class="keyword">char</span> [] array)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(<span class="keyword">char</span> [] array, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasArray</span><span class="params">( )</span> </span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">char</span> [] <span class="title">array</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">arrayOffset</span><span class="params">( )</span> </span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/04/22/Java-NIO之缓冲区进阶/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
         <h1 class="green-link-context"><a href="/2016/04/20/Linux-Maven和nexus私服搭建/">Linux--Maven和nexus私服搭建</a></h1>
     
 
@@ -334,9 +291,9 @@
             
     <div class="tags-row">
         
-            <a href="/tags/Maven/" class="chip red lighten-1">Maven</a>
-        
             <a href="/tags/Linux/" class="chip red lighten-1">Linux</a>
+        
+            <a href="/tags/Maven/" class="chip red lighten-1">Maven</a>
         
     </div>
 
@@ -486,6 +443,47 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/04/13/Java-网络编程InetAddr和URL/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/04/12/Java-网络编程TCP和UDP/">Java--网络编程TCP和UDP</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-04-12T01:36:45.000Z"><a href="/2016/04/12/Java-网络编程TCP和UDP/">2016-04-12</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
+        
+            <a href="/tags/网络编程/" class="chip red lighten-1">网络编程</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　<code>计算机网络</code>，就是把分布在不同区域的计算机用通信线路连接在一起、可以方便地互相传递信息，共享资源。<code>网络编程</code>，就是<code>直接或间接地通过网络协议与其他计算机进行通讯</code>。</p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/04/12/Java-网络编程TCP和UDP/">阅读全文</a>
         </ div>
         
     </div>

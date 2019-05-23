@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">131 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -273,54 +273,6 @@
 
 
 <div id="article-list" class="container main-container">
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/07/06/SparkStreaming-相关介绍/">Spark Streaming--相关介绍</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-07-06T01:59:32.000Z"><a href="/2017/07/06/SparkStreaming-相关介绍/">2017-07-06</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　我接着<a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从Spark组件来看Spark的执行流程"> 分享主题 </a>往下看，<a href="http://blog.xiaoxiaomo.com/2017/07/05/Spark-从RDD的角度来看Spark内部原理/">上</a>两篇主要介绍了<a href="http://blog.xiaoxiaomo.com/tags/Spark/">Spark</a>，本篇文章主要介绍<code>Spark Streaming</code>相关概念，有如下内容：</p>
-<ul>
-<li>（介绍的比较基础哈，大神就可以跳过了，对<a href="http://blog.xiaoxiaomo.com/2017/06/10/SparkStreaming-应用与实战-一/"> Spark Streaming 相关的应用 </a>可以看之前的博客）</li>
-</ul>
-<ol>
-<li><strong>Spark Streaming</strong> 在计算引擎中的位置</li>
-<li><strong>Spark Streaming</strong> 的介绍</li>
-<li><strong>Spark Streaming</strong> 处理的数据流</li>
-<li><strong>Spark Streaming</strong> 相关概念</li>
-</ol>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/07/06/SparkStreaming-相关介绍/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
     
         <article class="simple-article">
     <div class="card">
@@ -494,6 +446,47 @@
         
         <div class="card-action red-link-context">
             <a href="/2017/06/29/SparkStreaming-应用与实战-五/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-四/">Spark Streaming--应用与实战(四)</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-06-10T09:21:49.000Z"><a href="/2017/06/10/SparkStreaming-应用与实战-四/">2017-06-10</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　对项目做压测与相关的优化，主要从内存(executor-memory和driver-memory)、num-executors、executor-cores，以及代码层面做一些测试和改造。</p>
+<h1 id="压测"><a href="#压测" class="headerlink" title="压测"></a>压测</h1><ol>
+<li><code>spark-submit –master yarn-client –conf spark.driver.memory=256m –class com.xiaoxiaomo.KafkaDataStream –num-executors 1 –executor-memory 256m –executor-cores 2 –conf spark.locality.wait=100ms hspark.jar 3 1000</code><br>Spark streaming 处理速度为3s一次，每次1000条<br>Kafka product 每秒1000条数据， 与上面spark consumer消费者恰好相等。结果：数据量大导致积压，这个过程中active Batches会越变越大.
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/06/10/SparkStreaming-应用与实战-四/">阅读全文</a>
         </ div>
         
     </div>

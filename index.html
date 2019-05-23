@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">131 篇</span></a>
+                    技术 <span class="right">130 篇</span></a>
                 </a>
             </li>
 
@@ -332,39 +332,6 @@
             <div class="article-title">
                 
     
-        <h1 class="green-link-context"><a href="/2019/05/20/Atlas-与Hive集成/">Atlas-与Hive集成</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2019-05-20T08:58:16.000Z"><a href="/2019/05/20/Atlas-与Hive集成/">2019-05-20</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Atlas/" class="chip red lighten-1">Atlas</a>
-        
-            <a href="/tags/数据治理/" class="chip red lighten-1">数据治理</a>
-        
-    </div>
-
-
-
-            
-        </div>
-
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
         <h1 class="green-link-context"><a href="/2019/04/10/Zookeeper-通过idea搭建源码阅读环境/">Zookeeper--通过idea搭建源码阅读环境</a></h1>
     
 
@@ -491,6 +458,69 @@
         
         <div class="card-action red-link-context">
             <a href="/2019/04/07/HBase-通过idea搭建源码阅读环境/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2019/04/01/监控-jmxtrans+influxdb+Grafana/">监控--jmxtrans+influxdb+Grafana</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2019-04-01T07:11:20.000Z"><a href="/2019/04/01/监控-jmxtrans+influxdb+Grafana/">2019-04-01</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+            <a href="/tags/监控/" class="chip red lighten-1">监控</a>
+        
+            <a href="/tags/jmxtrans/" class="chip red lighten-1">jmxtrans</a>
+        
+            <a href="/tags/influxDB/" class="chip red lighten-1">influxDB</a>
+        
+            <a href="/tags/Grafana/" class="chip red lighten-1">Grafana</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　这里主要梳理一下大数据常用的监控组件的组合使用，<strong><code>jmxtrans</code>+<code>influxdb</code>+<code>Grafana</code></strong>。jmxtrans用于收集服务的jmx信息（通过配置json文件），然后入库到influxDB。<br>　　通过配置Grafana，把influxDB里面的数据通过web展示出来。<br>　　我这里主要做一些简单的安装，然后<strong>以HBase为例做收集存储展示</strong>，<em>更多详细的内容，会在后面的内容分享</em>。</p>
+<h2 id="influxDB安装"><a href="#influxDB安装" class="headerlink" title="influxDB安装"></a>influxDB安装</h2><ol>
+<li><p>下载地址：<a href="https://portal.influxdata.com/downloads/#influxdb" target="_blank" rel="noopener">https://portal.influxdata.com/downloads/#influxdb</a></p>
+<ul>
+<li>我这里通过wget下载1.7.5的版本</li>
+<li>wget <a href="https://dl.influxdata.com/influxdb/releases/influxdb-1.7.5.x86_64.rpm" target="_blank" rel="noopener">https://dl.influxdata.com/influxdb/releases/influxdb-1.7.5.x86_64.rpm</a> </li>
+</ul>
+</li>
+<li><p>安装</p>
+<ul>
+<li>sudo yum localinstall influxdb-1.7.5.x86_64.rpm</li>
+</ul>
+</li>
+<li><p>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@fetch-slave2 ~]# service influxdb start</span><br><span class="line">Starting influxdb...</span><br><span class="line">influxdb process was started [ OK ]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2019/04/01/监控-jmxtrans+influxdb+Grafana/">阅读全文</a>
         </ div>
         
     </div>
