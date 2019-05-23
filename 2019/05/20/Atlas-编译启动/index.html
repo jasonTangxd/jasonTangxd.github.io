@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">130 篇</span></a>
+                    技术 <span class="right">131 篇</span></a>
                 </a>
             </li>
 
@@ -286,7 +286,7 @@
 
             <div class="entry red-link-context">
                 <h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><ul>
-<li>我下载的最新版2.0：<a href="https://atlas.apache.org/Downloads.html" target="_blank" rel="noopener">https://atlas.apache.org/Downloads.html</a></li>
+<li>我下载的最新版apache atlas 2.0：<a href="https://atlas.apache.org/Downloads.html" target="_blank" rel="noopener">https://atlas.apache.org/Downloads.html</a></li>
 <li>下载后解压，进入该目录，然后开始编译。</li>
 <li>命令：<blockquote>
 <p>mvn clean -DskipTests install (atlas使用外部hbase和solr服务)<br>mvn clean -DskipTests package -Pdist,embedded-hbase-solr (atlas使用自带的hbase和solr服务)</p>
@@ -296,17 +296,23 @@
 <ol>
 <li>我目前使用他自带的服务hbase、solr服务.命令：mvn clean -DskipTests package -Pdist,embedded-hbase-solr</li>
 <li>这个过程有点长，主要是这里，如果使用自带的服务需要下载一个hbase,100多MB</li>
-<li>如果不想等，可以自己手动下载然后放入下面提示的目录，即通过：<a href="http://archive.apache.org/dist/hbase/2.0.2/hbase-2.0.2-bin.tar.gz" target="_blank" rel="noopener">http://archive.apache.org/dist/hbase/2.0.2/hbase-2.0.2-bin.tar.gz</a>下载<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_1.png" alt=""> <a id="more"></a></li>
+<li>如果不想等，可以自己手动下载然后放入下面提示的目录，即通过：<a href="http://archive.apache.org/dist/hbase/2.0.2/hbase-2.0.2-bin.tar.gz" target="_blank" rel="noopener">http://archive.apache.org/dist/hbase/2.0.2/hbase-2.0.2-bin.tar.gz</a>下载<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_1.png" alt="apache atlas"> <a id="more"></a></li>
 <li>solr服务同理，如下比较耗时，可以手动下载<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_2.png" alt=""> </li>
-<li>重新编译，成功<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_3.png" alt=""> </li>
+<li>重新编译，成功<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_3.png" alt="apache atlas编译成功"> </li>
 </ol>
 <h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><ul>
 <li>编译好后，进入$project_name/distro/target/apache-atlas-2.0.0-bin/apache-atlas-2.0.0目录</li>
-<li>运行服务：./bin/atlas_start.py<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_4.png" alt=""> </li>
+<li>运行服务：./bin/atlas_start.py<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_4.png" alt="apache atlas 启动服务"> </li>
 </ul>
-<h2 id="访问服务"><a href="#访问服务" class="headerlink" title="访问服务"></a>访问服务</h2><p>访问服务，端口21000 <a href="http://localhost:21000/index.html" target="_blank" rel="noopener">http://localhost:21000/index.html</a><br>默认账号密码：admin/admin<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_5.png" alt=""> </p>
+<h2 id="访问服务"><a href="#访问服务" class="headerlink" title="访问服务"></a>访问服务</h2><p>访问服务，端口21000 <a href="http://localhost:21000/index.html" target="_blank" rel="noopener">http://localhost:21000/index.html</a><br>默认账号密码：admin/admin<br><img src="https://img.xiaoxiaomo.com/blog/img/atlas_build_5.png" alt="atlas 访问服务"> </p>
 
                 
+<p class="red-link-context">
+    <a href="/2019/05/22/Atlas-与Hive集成/" rel="next" title="Atlas-与Hive集成">
+    上一篇：Atlas-与Hive集成
+  </a>
+</p>
+
 
 
 <p class="red-link-context">

@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">130 篇</span></a>
+                    技术 <span class="right">131 篇</span></a>
                 </a>
             </li>
 
@@ -273,6 +273,81 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2016/04/28/Redis-持久化方案及备份/">Redis--持久化方案及备份</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2016-04-28T02:53:38.000Z"><a href="/2016/04/28/Redis-持久化方案及备份/">2016-04-28</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Redis/" class="chip red lighten-1">Redis</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　<strong>redis支持两种方式的持久化，可以单独使用或者结合起来使用</strong>。第一种：<strong>RDB方式</strong>redis默认的持久化方式，第二种：<strong>AOF方式</strong>，需要手动修改配置。下面我们来看一下两种持久化方式以及持久化中所注意的一些问题。</p>
+<h2 id="持久化之RDB"><a href="#持久化之RDB" class="headerlink" title="持久化之RDB"></a>持久化之RDB</h2><p><strong>rdb方式的持久化是通过快照完成的，当符合一定条件时redis会自动将内存中的所有数据执行快照操作并存储到硬盘上</strong>。默认存储在dump.rdb文件中(文件名在配置文件中dbfilename)，默认打开可以到启动的目录去查看，注意： <strong>dump.rdb是在哪儿启动redis，就会在哪儿生成rdb文件</strong>。</p>
+<ul>
+<li><strong>dump.rdb</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@momo1 ~]<span class="comment"># cd /usr/local/redis/</span></span><br><span class="line">[root@momo1 redis]<span class="comment"># ll</span></span><br><span class="line">总用量 156</span><br><span class="line">-rw-rw-r--.  1 root root 34339 12月 18 23:19 00-RELEASENOTES</span><br><span class="line">-rw-rw-r--.  1 root root    53 12月 18 23:19 BUGS</span><br><span class="line">-rw-rw-r--.  1 root root  1805 12月 18 23:19 CONTRIBUTING</span><br><span class="line">-rw-rw-r--.  1 root root  1487 12月 18 23:19 COPYING</span><br><span class="line">drwxrwxr-x.  6 root root  4096 4月  27 19:40 deps</span><br><span class="line">-rw-r--r--.  1 root root    36 4月  29 01:20 dump.rdb   <span class="comment">##dump.rdb</span></span><br><span class="line">-rw-rw-r--.  1 root root    11 12月 18 23:19 INSTALL</span><br><span class="line">-rw-rw-r--.  1 root root   151 12月 18 23:19 Makefile</span><br><span class="line">-rw-rw-r--.  1 root root  4223 12月 18 23:19 MANIFESTO</span><br><span class="line">-rw-rw-r--.  1 root root  5201 12月 18 23:19 README</span><br><span class="line">-rw-rw-r--.  1 root root 41561 4月  27 19:53 redis.conf</span><br><span class="line">-rwxrwxr-x.  1 root root   271 12月 18 23:19 runtest</span><br><span class="line">-rwxrwxr-x.  1 root root   280 12月 18 23:19 runtest-cluster</span><br><span class="line">-rwxrwxr-x.  1 root root   281 12月 18 23:19 runtest-sentinel</span><br><span class="line">-rw-rw-r--.  1 root root  7113 4月  29 00:26 sentinel.conf</span><br><span class="line">drwxrwxr-x.  2 root root  4096 4月  27 19:41 src</span><br><span class="line">drwxrwxr-x. 10 root root  4096 12月 18 23:19 tests</span><br><span class="line">drwxrwxr-x.  5 root root  4096 12月 18 23:19 utils</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol>
+<li><p><strong>redis进行快照的时机</strong>（在配置文件redis.conf中）</p>
+<blockquote>
+<ol>
+<li>save 900 1：表示900秒内至少一个键被更改则进行快照。</li>
+<li>save 300 10</li>
+<li>save 60 10000</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>redis实现快照的过程</strong></p>
+<blockquote>
+<ol>
+<li>redis使用fork函数复制一份当前进程的副本(子进程)</li>
+<li>父进程继续接收并处理客户端发来的命令，而子进程开始将内存中的数据写入硬盘中的临时文件</li>
+<li>当子进程写入完所有数据后会用该临时文件替换旧的RDB文件，至此，一次快照操作完成。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>手动执行save或者bgsave命令让redis执行快照</strong>。</p>
+<blockquote>
+<ol>
+<li><code>save</code>是由主进程进行快照操作，会阻塞其它请求。</li>
+<li><code>bgsave</code>是由redis执行fork函数复制出一个子进程来进行快照操作。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>文件修复</strong>：redis-check-dump</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@iZ94r8hgrjcZ /]<span class="comment"># redis-check-dump dump.rdb </span></span><br><span class="line">==== Processed 5 valid opcodes (<span class="keyword">in</span> 45 bytes) ===================================</span><br><span class="line">CRC64 checksum is OK</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2016/04/28/Redis-持久化方案及备份/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
     
         <article class="simple-article">
     <div class="card">
@@ -447,49 +522,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/04/23/Java-NIO之通道/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/04/22/Java-NIO之缓冲区进阶/">Java--NIO之缓冲区进阶</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-04-22T08:44:47.000Z"><a href="/2016/04/22/Java-NIO之缓冲区进阶/">2016-04-22</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/Java/" class="chip red lighten-1">Java</a>
-        
-            <a href="/tags/NIO/" class="chip red lighten-1">NIO</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　上一篇<a href="http://blog.xiaoxiaomo.com/2016/04/16/Java-NIO之缓冲区/" title="Java-NIO之缓冲区">http://blog.xiaoxiaomo.com/2016/04/16/Java-NIO之缓冲区/</a>讲了基本的缓冲区概念、属性以及部分操作。本片博客，主要讲解<code>缓冲区的创建、复制和字节缓冲区</code>。</p>
-<h2 id="缓冲区的创建"><a href="#缓冲区的创建" class="headerlink" title="缓冲区的创建"></a>缓冲区的创建</h2><p>　　对于这一讨论，我们将以 CharBuffer 类为例，但是对于其它六种主要的缓冲区类也是适用的：IntBuffer，DoubleBuffer，ShortBuffer，LongBuffer，FloatBuffer，和 ByteBuffer。下面是<strong>创建一个缓冲区</strong>的关键函数，对所有的缓冲区类通用（要按照需要替换类名）：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CharBuffer</span></span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">CharSequence</span>, <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a partial API listing </span></span><br><span class="line">	<span class="comment">//这些都是静态方法。</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">allocate</span><span class="params">(<span class="keyword">int</span> capacity)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(<span class="keyword">char</span> [] array)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CharBuffer <span class="title">wrap</span> <span class="params">(<span class="keyword">char</span> [] array, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasArray</span><span class="params">( )</span> </span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">char</span> [] <span class="title">array</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">arrayOffset</span><span class="params">( )</span> </span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/04/22/Java-NIO之缓冲区进阶/">阅读全文</a>
         </ div>
         
     </div>
