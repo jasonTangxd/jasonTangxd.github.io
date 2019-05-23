@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">130 篇</span></a>
+                    技术 <span class="right">131 篇</span></a>
                 </a>
             </li>
 
@@ -273,6 +273,48 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="green-link-context"><a href="/2017/03/29/HBase-服务异常排查/">HBase--服务异常排查</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-03-29T14:46:43.000Z"><a href="/2017/03/29/HBase-服务异常排查/">2017-03-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <h2 id="潜在的危机"><a href="#潜在的危机" class="headerlink" title="潜在的危机"></a>潜在的危机</h2><ul>
+<li>就在某一天下午，刚去公司楼下逛了一圈，悠哉悠哉的回到自己的工位上，几个同事就找过来了。说HBase服务巨慢，立即调出日志，晕，全是插入请求超时的日志。立即调出HBase监控，发现HBase一些可疑的信息！<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #61, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #54, waiting for some tasks to finish. Expected max=0, tasksInProgress=6</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #18, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #62, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #46, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #70, waiting for some tasks to finish. Expected max=0, tasksInProgress=4</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #45, waiting for some tasks to finish. Expected max=0, tasksInProgress=6</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #47, waiting for some tasks to finish. Expected max=0, tasksInProgress=15</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INFO org.apache.hadoop.hbase.regionserver.wal.FSHLog: Slow sync cost: 204 ms, current pipeline: [DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-47fdd2fe-7722-47d9-9518-151b49a59fc7,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-f55c19d9-5494-47d0-a97b-5d0d07fc8a95,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-4413d571-cab8-4b5f-bc7f-9cf11d2ec2e8,DISK]]</span><br><span class="line">INFO org.apache.hadoop.hbase.regionserver.wal.FSHLog: Slow sync cost: 148 ms, current pipeline: [DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-47fdd2fe-7722-47d9-9518-151b49a59fc7,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-f55c19d9-5494-47d0-a97b-5d0d07fc8a95,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-4413d571-cab8-4b5f-bc7f-9cf11d2ec2e8,DISK]]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/03/29/HBase-服务异常排查/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
     
         <article class="simple-article">
     <div class="card">
@@ -442,45 +484,6 @@
         
         <div class="card-action red-link-context">
             <a href="/2016/11/12/HBase-强制删除表/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2016/11/11/VirtualBox-网络配置/">VirtualBox--网络配置</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2016-11-11T14:44:19.000Z"><a href="/2016/11/11/VirtualBox-网络配置/">2016-11-11</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/虚拟机/" class="chip red lighten-1">虚拟机</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <p>　　下面是对VirtualBox进行网络配置，我需要的网络要求是<strong>虚拟机可以通过外网，虚拟机与虚拟机之间可以相互访问</strong>。<br>对于VMWare相对来说简单一点，其实VirtualBox也比较简单，只是概念稍微绕一些，不想VMWare那样通过一个nat就能访问外网内网。<br>VirtualBox的四种网络模式各有各的优点，不过不能同时支持我的需求，<br><code>所以需要同时启动两块网卡，一种采用默认的NAT方式访问外网，一种使用Host-Only模式使得主机和虚拟机之间可以相互访问。</code></p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2016/11/11/VirtualBox-网络配置/">阅读全文</a>
         </ div>
         
     </div>

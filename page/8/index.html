@@ -172,7 +172,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/技术/">
-                    技术 <span class="right">130 篇</span></a>
+                    技术 <span class="right">131 篇</span></a>
                 </a>
             </li>
 
@@ -280,6 +280,47 @@
             <div class="article-title">
                 
     
+        <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-四/">Spark Streaming--应用与实战(四)</a></h1>
+    
+
+
+            </div>
+
+            <time class="red-link-context" datetime="2017-06-10T09:21:49.000Z"><a href="/2017/06/10/SparkStreaming-应用与实战-四/">2017-06-10</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry red-link-context">
+                    <p>　　对项目做压测与相关的优化，主要从内存(executor-memory和driver-memory)、num-executors、executor-cores，以及代码层面做一些测试和改造。</p>
+<h1 id="压测"><a href="#压测" class="headerlink" title="压测"></a>压测</h1><ol>
+<li><code>spark-submit –master yarn-client –conf spark.driver.memory=256m –class com.xiaoxiaomo.KafkaDataStream –num-executors 1 –executor-memory 256m –executor-cores 2 –conf spark.locality.wait=100ms hspark.jar 3 1000</code><br>Spark streaming 处理速度为3s一次，每次1000条<br>Kafka product 每秒1000条数据， 与上面spark consumer消费者恰好相等。结果：数据量大导致积压，这个过程中active Batches会越变越大.
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action red-link-context">
+            <a href="/2017/06/10/SparkStreaming-应用与实战-四/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="green-link-context"><a href="/2017/06/10/SparkStreaming-应用与实战-三/">Spark Streaming--应用与实战(三)</a></h1>
     
 
@@ -333,9 +374,9 @@
             
     <div class="tags-row">
         
-            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
-        
             <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
         
             <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
         
@@ -386,9 +427,9 @@
             
     <div class="tags-row">
         
-            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
-        
             <a href="/tags/Kafka/" class="chip red lighten-1">Kafka</a>
+        
+            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
         
             <a href="/tags/Spark/" class="chip red lighten-1">Spark</a>
         
@@ -453,48 +494,6 @@
             
         </div>
 
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="green-link-context"><a href="/2017/03/29/HBase-服务异常排查/">HBase--服务异常排查</a></h1>
-    
-
-
-            </div>
-
-            <time class="red-link-context" datetime="2017-03-29T14:46:43.000Z"><a href="/2017/03/29/HBase-服务异常排查/">2017-03-29</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/HBase/" class="chip red lighten-1">HBase</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry red-link-context">
-                    <h2 id="潜在的危机"><a href="#潜在的危机" class="headerlink" title="潜在的危机"></a>潜在的危机</h2><ul>
-<li>就在某一天下午，刚去公司楼下逛了一圈，悠哉悠哉的回到自己的工位上，几个同事就找过来了。说HBase服务巨慢，立即调出日志，晕，全是插入请求超时的日志。立即调出HBase监控，发现HBase一些可疑的信息！<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #61, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #54, waiting for some tasks to finish. Expected max=0, tasksInProgress=6</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #18, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #62, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #46, waiting for some tasks to finish. Expected max=0, tasksInProgress=5</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #70, waiting for some tasks to finish. Expected max=0, tasksInProgress=4</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #45, waiting for some tasks to finish. Expected max=0, tasksInProgress=6</span><br><span class="line">INFO org.apache.hadoop.hbase.client.AsyncProcess: #47, waiting for some tasks to finish. Expected max=0, tasksInProgress=15</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INFO org.apache.hadoop.hbase.regionserver.wal.FSHLog: Slow sync cost: 204 ms, current pipeline: [DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-47fdd2fe-7722-47d9-9518-151b49a59fc7,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-f55c19d9-5494-47d0-a97b-5d0d07fc8a95,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-4413d571-cab8-4b5f-bc7f-9cf11d2ec2e8,DISK]]</span><br><span class="line">INFO org.apache.hadoop.hbase.regionserver.wal.FSHLog: Slow sync cost: 148 ms, current pipeline: [DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-47fdd2fe-7722-47d9-9518-151b49a59fc7,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-f55c19d9-5494-47d0-a97b-5d0d07fc8a95,DISK], DatanodeInfoWithStorage[10.xx.xx.xx:50010,DS-4413d571-cab8-4b5f-bc7f-9cf11d2ec2e8,DISK]]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action red-link-context">
-            <a href="/2017/03/29/HBase-服务异常排查/">阅读全文</a>
-        </ div>
         
     </div>
 </article>
